@@ -28,7 +28,6 @@
 #include "sys/process.h"
 #include "dev/watchdog.h"
 
-/** NOT_YET_DOCUMENTED_PTV */
 interrupt(TIMER1_A0_VECTOR) timera1(void)
 {
     ENERGEST_ON(ENERGEST_TYPE_IRQ);
@@ -42,7 +41,7 @@ interrupt(TIMER1_A0_VECTOR) timera1(void)
     ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Initialize the Real-Timer. */
 void rtimer_arch_init(void)
 {
     dint();
@@ -70,7 +69,10 @@ rtimer_clock_t rtimer_arch_now(void)
     return t1;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Set the delay before the next Real-Timer interruption.
+ *
+ * \param t Delay before next interruption.
+ */
 void rtimer_arch_schedule(rtimer_clock_t t)
 {
     TA1CCR0 = t;

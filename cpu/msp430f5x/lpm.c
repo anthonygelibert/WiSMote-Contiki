@@ -24,11 +24,8 @@
 #include "dco.h"
 
 
-/* This variable seems unused.
- * I keep it only to be sure of that.
- * static const int MSP430_REQUIRE_CPUON = 0;
- */
-
+/** NOT_YET_DOCUMENTED_PTV */
+static const int MSP430_REQUIRE_CPUON = 0;
 /** NOT_YET_DOCUMENTED_PTV */
 static const int MSP430_REQUIRE_LPM1 = 1;
 /** NOT_YET_DOCUMENTED_PTV */

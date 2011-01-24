@@ -171,19 +171,19 @@ void msp430_sync_dco(void)
         }
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Increment the msp430_dco_required value. */
 void msp430_dco_required_inc(void)
 {
     msp430_dco_required++;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Decrement the msp430_dco_required value. */
 void msp430_dco_required_dec(void)
 {
     msp430_dco_required--;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Reset the msp430_dco_required value. */
 void msp430_dco_required_reset(void)
 {
     msp430_dco_required = 0;

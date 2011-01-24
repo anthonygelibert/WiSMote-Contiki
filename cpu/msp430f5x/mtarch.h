@@ -28,7 +28,7 @@
 #define PUBLIC
 #endif
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Size of the stack. */
 #define MTARCH_STACKSIZE 128
 
 /** NOT_YET_DOCUMENTED_PTV */
