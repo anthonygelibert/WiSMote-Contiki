@@ -16,7 +16,7 @@
 /**
  * \author Anthony Gelibert and Fabien Rey
  * \date Jan 24, 2010
- * \version 0.0.2
+ * \version 0.0.3
  *
  * This file defines the "include", "typedef", "define", etc... required by the
  * platform.
@@ -24,12 +24,19 @@
 #ifndef __CONTIKI_CONF_H__
 #define __CONTIKI_CONF_H__
 
+/** NOT_YET_DOCUMENTED_PTV */
 #define CC_CONF_REGISTER_ARGS          1
+/** NOT_YET_DOCUMENTED_PTV */
 #define CC_CONF_FUNCTION_POINTER_ARGS  1
+/** NOT_YET_DOCUMENTED_PTV */
 #define CC_CONF_FASTCALL
+/** NOT_YET_DOCUMENTED_PTV */
 #define CC_CONF_VA_ARGS                1
+/** NOT_YET_DOCUMENTED_PTV */
 #define CC_CONF_INLINE                 inline
+/** NOT_YET_DOCUMENTED_PTV */
 #define CCIF
+/** NOT_YET_DOCUMENTED_PTV */
 #define CLIF
 
 /** CPU target speed in Hz (default value: 2457600uL) */
@@ -39,7 +46,9 @@
 /** Baud to UBR */
 #define BAUD2UBR(baud) ((F_CPU/baud))
 
+/** NOT_YET_DOCUMENTED_PTV */
 typedef unsigned short uip_stats_t;
+/** NOT_YET_DOCUMENTED_PTV */
 typedef unsigned long clock_time_t;
 
 #include <msp430f5437.h>
