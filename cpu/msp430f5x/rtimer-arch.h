@@ -22,13 +22,14 @@
 #ifndef __RTIMER_ARCH_H__
 #define __RTIMER_ARCH_H__
 
+#include <io.h>
+#include "sys/rtimer.h"
+
 #ifndef __C_RTIMER_ARCH_H__
 #define PUBLIC extern
 #else
 #define PUBLIC
 #endif
-
-#include "sys/rtimer.h"
 
 /** NOT_YET_DOCUMENTED_PTV
  *  \note Ask to NICOLAS.
