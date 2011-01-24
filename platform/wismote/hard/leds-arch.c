@@ -19,6 +19,7 @@
  * \version 0.0.2
  */
 
+#include "contiki-conf.h"
 #include "dev/leds.h"
 
 /** PxDIR used for the blue LED. */
