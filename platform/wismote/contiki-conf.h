@@ -24,6 +24,7 @@
 #ifndef __CONTIKI_CONF_H__
 #define __CONTIKI_CONF_H__
 
+
 /** Support of va_args function. */
 #define CC_CONF_VA_ARGS                1
 /** Give the keyword for explicitly "inlined" functions. */
@@ -45,7 +46,7 @@ typedef unsigned short uip_stats_t;
 /** Type for clock_time. */
 typedef unsigned long clock_time_t;
 
-#include "msp430def.h"
+#include "msp430.h"
 #include <msp430f5437.h>
 
 

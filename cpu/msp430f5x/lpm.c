@@ -14,68 +14,46 @@
  *    limitations under the License.                                          *
  ******************************************************************************/
 /**
- * \author Anthony Gelibert and Fabien Rey
+ * \author Anthony Gelibert
  * \date Jan 24, 2010
  * \version 0.0.1
  */
 
-#ifndef __MSP430DEF_H__
-#define __MSP430DEF_H__
+#define __C_LPM_H__
+#include "lpm.h"
+#include "dco.h"
 
-#ifndef __C_MSP430DEF_H_
-#define PUBLIC extern
-#else
-#define PUBLIC
-#endif
 
-#include <stdint.h>
-/* These names are deprecated, use C99 names. */
-typedef  uint8_t    u8_t;
-typedef uint16_t   u16_t;
-typedef uint32_t   u32_t;
-typedef  int32_t   s32_t;
-
-/* default DCOSYNCH Period is 30 seconds */
-#ifdef DCOSYNCH_CONF_PERIOD
-/** NOT_YET_DOCUMENTED_PTV */
-#define DCOSYNCH_PERIOD DCOSYNCH_CONF_PERIOD
-#else
-/** NOT_YET_DOCUMENTED_PTV */
-#define DCOSYNCH_PERIOD 30
-#endif
-
-/** Permits to mask the real "cpu_init" function. */
-#define cpu_init() msp430_cpu_init()
-/** NOT_YET_DOCUMENTED_PTV */
-#define splhigh() splhigh_()
-/** NOT_YET_DOCUMENTED_PTV */
-#define splx(sr) __asm__ __volatile__("bis %0, r2" : : "r" (sr))
-
-/** Type for spl */
-typedef int spl_t;
-
-/** Initialize the MSP430 CPU.
- *
- *  This function initializes :
- *  <ol>
- *      <li>WatchDog</li>
- *      <li>Ports</li>
- *      <li>DCO</li>
- *  </ol>
+/* This variable seems unused.
+ * I keep it only to be sure of that.
+ * static const int MSP430_REQUIRE_CPUON = 0;
  */
-PUBLIC void msp430_cpu_init(void);
-/**
- * Synchronize the DCO.
- *
- * \note this code will always start the TimerB if not already started
- */
-PUBLIC void msp430_sync_dco(void);
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC void *sbrk(int);
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC void splx_(spl_t);
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC spl_t splhigh_(void);
 
-#undef PUBLIC
-#endif /* __MSP430DEF_H__ */
+/** NOT_YET_DOCUMENTED_PTV */
+static const int MSP430_REQUIRE_LPM1 = 1;
+/** NOT_YET_DOCUMENTED_PTV */
+static const int MSP430_REQUIRE_LPM2 = 2;
+/** NOT_YET_DOCUMENTED_PTV */
+static const int MSP430_REQUIRE_LPM3 = 3;
+
+/*---------------------------------------------------------------------------*/
+/* add/remove_lpm_req - for requiring a specific LPM mode. currently Contiki */
+/* jumps to LPM3 to save power, but DMA will not work if DCO is not clocked  */
+/* so some modules might need to enter their LPM requirements                */
+/* NOTE: currently only works with LPM1 (e.g. DCO) requirements.             */
+/*---------------------------------------------------------------------------*/
+void msp430_add_lpm_req(int req)
+{
+    if (req <= MSP430_REQUIRE_LPM1)
+    {
+        msp430_dco_required_inc();
+    }
+}
+
+void msp430_remove_lpm_req(int req)
+{
+    if (req <= MSP430_REQUIRE_LPM1)
+    {
+        msp430_dco_required_dec();
+    }
+}

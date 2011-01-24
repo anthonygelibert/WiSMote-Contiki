@@ -14,46 +14,41 @@
  *    limitations under the License.                                          *
  ******************************************************************************/
 /**
- * \author Anthony Gelibert and Fabien Rey
+ * \author Anthony Gelibert
  * \date Jan 24, 2010
- * \version 0.0.2
+ * \version 0.0.1
  */
 
-#ifndef __MSP430_H__
-#define __MSP430_H__
+#ifndef __DCO_H__
+#define __DCO_H__
 
-#include "contiki-conf.h"
-#include "dco.h"
-#include "lpm.h"
-#include "types.h"
-
-#ifndef __C_MSP430_H__
+#ifndef __C_DCO_H__
 #define PUBLIC extern
 #else
 #define PUBLIC
 #endif
 
-#ifdef F_CPU
-/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
-#define MSP430_CPU_SPEED F_CPU
-#else
-/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
-#define MSP430_CPU_SPEED 2457600UL
-#endif
-
-/** Permits to mask the real "cpu_init" function. */
-#define cpu_init() msp430_cpu_init()
-
-/** Initialize the MSP430 CPU.
+/** Initialize DCO
  *
- *  This function initializes :
- *  <ol>
- *      <li>WatchDog</li>
- *      <li>Ports</li>
- *      <li>DCO</li>
- *  </ol>
+ * FIXME_PTV
  */
-PUBLIC void msp430_cpu_init(void);
+PUBLIC void msp430_init_dco(void);
+
+/**
+ * Synchronize the DCO.
+ *
+ * \note this code will always start the TimerB if not already started
+ */
+PUBLIC void msp430_sync_dco(void);
+
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void msp430_dco_required_inc(void);
+
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void msp430_dco_required_dec(void);
+
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void msp430_dco_required_reset(void);
 
 #undef PUBLIC
-#endif /* __MSP430_H__ */
+#endif

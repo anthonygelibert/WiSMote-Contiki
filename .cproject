@@ -42,7 +42,6 @@
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1753941219" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/msp430/include"/>
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/lib/gcc/msp430/4.4.5/include/"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/contiki/core}&quot;"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.490612353" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
@@ -340,7 +339,6 @@
 							</tool>
 							<tool errorParsers="org.eclipse.cdt.core.VCErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GASErrorParser;org.eclipse.cdt.core.GLDErrorParser" id="org.eclipse.cdt.build.core.settings.holder.1969699765" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.403739721" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/contiki/core}&quot;"/>
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/msp430/include"/>
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/lib/gcc/msp430/4.4.5/include/"/>
 								</option>
