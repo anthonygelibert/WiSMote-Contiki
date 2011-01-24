@@ -40,8 +40,8 @@ void watchdog_init(void)
     counter = 0;
     watchdog_stop();
 
-    IFG1 &= ~WDTIFG;
-    IE1 |= WDTIE;
+    SFRIFG1 &= ~WDTIFG;
+    SFRIE1 |= WDTIE;
 }
 
 /** NOT_YET_DOCUMENTED_PTV */
