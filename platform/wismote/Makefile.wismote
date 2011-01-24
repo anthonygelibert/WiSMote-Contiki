@@ -1,0 +1,24 @@
+# Enable IPv6
+CFLAGS += -DWITH_UIP6=1
+
+### The parameters for our own target (our platform)
+# Code of the platform.
+ARCH = 
+# All the directories containing code for our platform (relative path from /platform/wismote).
+CONTIKI_TARGET_DIRS += .
+# File containing the "main" symbol of our platform. 
+CONTIKI_TARGET_MAIN = contiki-main.c
+# All the files of our platform.
+CONTIKI_TARGET_SOURCEFILES += $(ARCH) $(CONTIKI_TARGET_MAIN)
+
+### The parameters for our own cpu (the CPU of our platform)
+## Macros
+# Path to MSPGCC
+MSPGCCPATH=/opt/msp430-gcc-4.4.5/bin
+# Enable the debug flags (see cpu/msp430f5x/Makefile.msp430f5x)
+DEBUG_FLAGS=1
+# MCU of our platform
+MCU=msp430x5437
+## CPU
+CONTIKI_CPU=$(CONTIKI)/cpu/msp430f5x
+include $(CONTIKI)/cpu/msp430f5x/Makefile.msp430f5x
