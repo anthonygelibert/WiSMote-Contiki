@@ -24,9 +24,6 @@
 #ifndef __CONTIKI_CONF_H__
 #define __CONTIKI_CONF_H__
 
-#include <msp430f5437.h>
-#include "msp430def.h"
-
 #define CC_CONF_REGISTER_ARGS          1
 #define CC_CONF_FUNCTION_POINTER_ARGS  1
 #define CC_CONF_FASTCALL
@@ -44,5 +41,8 @@
 
 typedef unsigned short uip_stats_t;
 typedef unsigned long clock_time_t;
+
+#include <msp430f5437.h>
+#include "msp430def.h"
 
 #endif /* __CONTIKI_CONF_H__ */
