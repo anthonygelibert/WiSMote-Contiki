@@ -24,34 +24,29 @@
 #ifndef __CONTIKI_CONF_H__
 #define __CONTIKI_CONF_H__
 
-/** NOT_YET_DOCUMENTED_PTV */
-#define CC_CONF_REGISTER_ARGS          1
-/** NOT_YET_DOCUMENTED_PTV */
-#define CC_CONF_FUNCTION_POINTER_ARGS  1
-/** NOT_YET_DOCUMENTED_PTV */
-#define CC_CONF_FASTCALL
-/** NOT_YET_DOCUMENTED_PTV */
+/** Support of va_args function. */
 #define CC_CONF_VA_ARGS                1
-/** NOT_YET_DOCUMENTED_PTV */
+/** Give the keyword for explicitly "inlined" functions. */
 #define CC_CONF_INLINE                 inline
-/** NOT_YET_DOCUMENTED_PTV */
+/** Suppress the MACRO CCIF when encountered in code. */
 #define CCIF
-/** NOT_YET_DOCUMENTED_PTV */
+/** Suppress the MACRO CLIF when encountered in code. */
 #define CLIF
 
-/** CPU target speed in Hz (default value: 2457600uL) */
+/** CPU target speed in Hz (default value: 2457600uL). */
 #define F_CPU 3900000uL
 /** Our clock resolution, this is the same as Unix HZ. */
 #define CLOCK_CONF_SECOND 128UL
-/** Baud to UBR */
+/** Baud to UBR. */
 #define BAUD2UBR(baud) ((F_CPU/baud))
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Type for uip_stats. */
 typedef unsigned short uip_stats_t;
-/** NOT_YET_DOCUMENTED_PTV */
+/** Type for clock_time. */
 typedef unsigned long clock_time_t;
 
-#include <msp430f5437.h>
 #include "msp430def.h"
+#include <msp430f5437.h>
+
 
 #endif /* __CONTIKI_CONF_H__ */

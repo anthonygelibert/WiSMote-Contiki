@@ -44,30 +44,38 @@ typedef  int32_t   s32_t;
 #define DCOSYNCH_PERIOD 30
 #endif
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()
-
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC void msp430_cpu_init(void);
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC void msp430_sync_dco(void);
-
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC void   *sbrk(int);
-
-/** NOT_YET_DOCUMENTED_PTV */
-typedef int spl_t;
-
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC void    splx_(spl_t);
-/** NOT_YET_DOCUMENTED_PTV */
-PUBLIC spl_t   splhigh_(void);
-
 /** NOT_YET_DOCUMENTED_PTV */
 #define splhigh() splhigh_()
-
 /** NOT_YET_DOCUMENTED_PTV */
 #define splx(sr) __asm__ __volatile__("bis %0, r2" : : "r" (sr))
+
+/** Type for spl */
+typedef int spl_t;
+
+/** Initialize the MSP430 CPU.
+ *
+ *  This function initializes :
+ *  <ol>
+ *      <li>WatchDog</li>
+ *      <li>Ports</li>
+ *      <li>DCO</li>
+ *  </ol>
+ */
+PUBLIC void msp430_cpu_init(void);
+/**
+ * Synchronize the DCO.
+ *
+ * \note this code will always start the TimerB if not already started
+ */
+PUBLIC void msp430_sync_dco(void);
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void *sbrk(int);
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void splx_(spl_t);
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC spl_t splhigh_(void);
 
 #undef PUBLIC
 #endif /* __MSP430DEF_H__ */

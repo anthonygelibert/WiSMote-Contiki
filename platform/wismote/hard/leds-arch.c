@@ -64,8 +64,7 @@ void leds_arch_init(void)
 /**
  * Get the state of the leds.
  *
- * \return NOT_YET_DOCUMENTED_PTV
- *
+ * \return State of the leds (in one byte).
  */
 unsigned char leds_arch_get(void)
 {
@@ -77,7 +76,7 @@ unsigned char leds_arch_get(void)
 /**
  * Set the state of the leds.
  *
- * \param leds NOT_YET_DOCUMENTED_PTV
+ * \param leds New state of the leds (in one byte).
  */
 void leds_arch_set(unsigned char leds)
 {

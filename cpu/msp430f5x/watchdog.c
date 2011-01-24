@@ -17,65 +17,74 @@
  * \author Anthony Gelibert and Fabien Rey
  * \date Jan 24, 2010
  * \version 0.0.3
+ *
+ * XXX_PTV: Check the usage of the counter...
  */
 #include <io.h>
 #include <signal.h>
 #include "dev/watchdog.h"
 
-/** NOT_YET_DOCUMENTED_PTV */
-static int counter = 0;
+/** Counter for watchdog's cycle. */
+static int s_counter = 0;
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Reboot the watchdog timer.
+ *
+ *  This interrupt vector restart the watchdog timer.
+ */
 interrupt(WDT_VECTOR) watchdog_interrupt(void)
 {
     watchdog_reboot();
 }
 
-/** NOT_YET_DOCUMENTED_PTV
- *  FIXME_PTV
+/**
+ * Initialize the watchdog timer.
+ *
+ * \note The MSP430 watchdog is enabled at boot-up, so we stop it during initialization.
  */
 void watchdog_init(void)
 {
-    /* The MSP430 watchdog is enabled at boot-up, so we stop it during initialization. */
-    counter = 0;
+    s_counter = 0;
     watchdog_stop();
 
     SFRIFG1 &= ~WDTIFG;
     SFRIE1 |= WDTIE;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/**
+ * Start the watchdog timer.
+ *
+ * \note We setup the watchdog to reset the device after one second,
+ *    unless watchdog_periodic() is called.
+ */
 void watchdog_start(void)
 {
-    /* We setup the watchdog to reset the device after one second,
-     unless watchdog_periodic() is called. */
-    counter--;
-    if (counter == 0)
+    if ((--s_counter) == 0)
     {
         WDTCTL = WDTPW | WDTCNTCL | WDT_ARST_1000 | WDTTMSEL;
     }
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Restart periodically the watchdog timer.
+ *
+ * This function is called periodically to restart the watchdog timer.
+ */
 void watchdog_periodic(void)
 {
-    /* This function is called periodically to restart the watchdog timer. */
     /*  if(counter < 0) {*/
     WDTCTL = (WDTCTL & 0xff) | WDTPW | WDTCNTCL | WDTTMSEL;
     /*  }*/
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Stop the counter */
 void watchdog_stop(void)
 {
-    counter++;
-    if (counter == 1)
+    if ((++s_counter) == 1)
     {
         WDTCTL = WDTPW | WDTHOLD;
     }
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Reboot the watchdog timer. */
 void watchdog_reboot(void)
 {
     WDTCTL = 0;

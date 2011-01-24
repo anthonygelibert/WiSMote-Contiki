@@ -22,6 +22,8 @@
 #ifndef __MSP430_H__
 #define __MSP430_H__
 
+#include "contiki-conf.h"
+
 #ifndef __C_MSP430_H__
 #define PUBLIC extern
 #else
@@ -29,10 +31,10 @@
 #endif
 
 #ifdef F_CPU
-/** NOT_YET_DOCUMENTED_PTV */
+/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
 #define MSP430_CPU_SPEED F_CPU
 #else
-/** NOT_YET_DOCUMENTED_PTV */
+/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
 #define MSP430_CPU_SPEED 2457600UL
 #endif
 
