@@ -18,13 +18,17 @@
  * \date Jan 24, 2010
  * \version 0.0.1
  */
+
 #include "contiki.h"
+#include "dev/leds.h"
 
 int main(void)
 {
     /* SETUP : BEGIN */
     /* Initialize the msp430 */
     cpu_init();
+    /* Initialize the leds */
+    leds_init();
 
     /* Initialize the "process system" (core/sys/process.h)     */
     process_init();
