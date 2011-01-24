@@ -33,14 +33,6 @@
 #define PUBLIC
 #endif
 
-#ifdef F_CPU
-/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
-#define MSP430_CPU_SPEED F_CPU
-#else
-/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
-#define MSP430_CPU_SPEED 2457600UL
-#endif
-
 /** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()
 

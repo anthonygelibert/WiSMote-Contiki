@@ -26,6 +26,15 @@
 /** dco_required set to 1 will cause the CPU not to go into sleep modes where the DCO clock stopped */
 static int msp430_dco_required;
 
+#ifdef F_CPU
+/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
+#define MSP430_CPU_SPEED F_CPU
+#else
+/** CPU speed of MSP430 (in MHz) (F_CPU macro). */
+#define MSP430_CPU_SPEED 2457600UL
+#endif
+
+
 /* default DCOSYNCH Period is 30 seconds */
 #ifdef DCOSYNCH_CONF_PERIOD
 /** NOT_YET_DOCUMENTED_PTV */
