@@ -22,7 +22,7 @@
 #ifndef __MSP430_H__
 #define __MSP430_H__
 
-#ifndef C_MSP430_H__
+#ifndef __C_MSP430_H__
 #define PUBLIC extern
 #else
 #define PUBLIC
@@ -35,8 +35,6 @@
 /** NOT_YET_DOCUMENTED_PTV */
 #define MSP430_CPU_SPEED 2457600UL
 #endif
-
-#pragma mark LPM Macro
 
 /** NOT_YET_DOCUMENTED_PTV */
 #define MSP430_REQUIRE_CPUON 0
@@ -53,9 +51,6 @@
  */
 #define MSP430_REQUIRE_LPM4 4
 
-
-#pragma mark LPM Functions
-
 /**
  * NOT_YET_DOCUMENTED_PTV
  *
@@ -70,4 +65,5 @@ PUBLIC void msp430_add_lpm_req(int req);
  */
 PUBLIC void msp430_remove_lpm_req(int req);
 
+#undef PUBLIC
 #endif /* __MSP430_H__ */

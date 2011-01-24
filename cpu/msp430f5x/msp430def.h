@@ -1,39 +1,34 @@
-/*
- * Copyright (c) 2007, Swedish Institute of Computer Science
- * All rights reserved. 
- *
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions 
- * are met: 
- * 1. Redistributions of source code must retain the above copyright 
- *    notice, this list of conditions and the following disclaimer. 
- * 2. Redistributions in binary form must reproduce the above copyright 
- *    notice, this list of conditions and the following disclaimer in the 
- *    documentation and/or other materials provided with the distribution. 
- * 3. Neither the name of the Institute nor the names of its contributors 
- *    may be used to endorse or promote products derived from this software 
- *    without specific prior written permission. 
- *
- * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE 
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
- * SUCH DAMAGE. 
- *
- * @(#)$Id: msp430def.h,v 1.5 2010/03/19 14:50:07 joxe Exp $
+/******************************************************************************
+ * Copyright 2010, Plateforme Technologique de Valence                        *
+ *                                                                            *
+ *    Licensed under the Apache License, Version 2.0 (the "License");         *
+ *    you may not use this file except in compliance with the License.        *
+ *    You may obtain a copy of the License at                                 *
+ *                                                                            *
+ *        http://www.apache.org/licenses/LICENSE-2.0                          *
+ *                                                                            *
+ *    Unless required by applicable law or agreed to in writing, software     *
+ *    distributed under the License is distributed on an "AS IS" BASIS,       *
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*
+ *    See the License for the specific language governing permissions and     *
+ *    limitations under the License.                                          *
+ ******************************************************************************/
+/**
+ * \author Anthony Gelibert and Fabien Rey
+ * \date Jan 24, 2010
+ * \version 0.0.1
  */
 
-#ifndef MSP430DEF_H
-#define MSP430DEF_H
+#ifndef __MSP430DEF_H__
+#define __MSP430DEF_H__
+
+#ifndef __C_MSP430DEF_H_
+#define PUBLIC extern
+#else
+#define PUBLIC
+#endif
 
 #include <stdint.h>
-
 /* These names are deprecated, use C99 names. */
 typedef  uint8_t    u8_t;
 typedef uint16_t   u16_t;
@@ -42,24 +37,37 @@ typedef  int32_t   s32_t;
 
 /* default DCOSYNCH Period is 30 seconds */
 #ifdef DCOSYNCH_CONF_PERIOD
+/** NOT_YET_DOCUMENTED_PTV */
 #define DCOSYNCH_PERIOD DCOSYNCH_CONF_PERIOD
 #else
+/** NOT_YET_DOCUMENTED_PTV */
 #define DCOSYNCH_PERIOD 30
 #endif
 
-void msp430_cpu_init(void);	/* Rename to cpu_init() later! */
-void msp430_sync_dco(void);
-
+/** NOT_YET_DOCUMENTED_PTV */
 #define cpu_init() msp430_cpu_init()
 
-/** TODO: implement */
-void   *sbrk(int);
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void msp430_cpu_init(void);
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void msp430_sync_dco(void);
 
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void   *sbrk(int);
+
+/** NOT_YET_DOCUMENTED_PTV */
 typedef int spl_t;
-void    splx_(spl_t);
-spl_t   splhigh_(void);
 
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC void    splx_(spl_t);
+/** NOT_YET_DOCUMENTED_PTV */
+PUBLIC spl_t   splhigh_(void);
+
+/** NOT_YET_DOCUMENTED_PTV */
 #define splhigh() splhigh_()
+
+/** NOT_YET_DOCUMENTED_PTV */
 #define splx(sr) __asm__ __volatile__("bis %0, r2" : : "r" (sr))
 
-#endif /* MSP430DEF_H */
+#undef PUBLIC
+#endif /* __MSP430DEF_H__ */

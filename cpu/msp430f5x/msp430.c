@@ -17,20 +17,20 @@
  * \author Anthony Gelibert and Fabien Rey
  * \date Jan 24, 2010
  * \version 0.0.1
+ *
+ * TODO_PTV Subdivide into several files
  */
 
 #include <io.h>
 #include <signal.h>
 #include <sys/unistd.h>
 
-#define C_MSP430_H__
+#define __C_MSP430_H__
 #include "msp430.h"
-
+#define __C_MSP430DEF_H_
 #include "msp430def.h"
 #include "dev/watchdog.h"
 #include "net/uip.h"
-
-#pragma mark DCO
 
 /** dco_required set to 1 will cause the CPU not to go into sleep modes where the DCO clock stopped */
 int msp430_dco_required;
@@ -161,8 +161,6 @@ void msp430_sync_dco(void)
             }
         }
 }
-
-#pragma mark port
 
 /** Ports initialization.
  *
