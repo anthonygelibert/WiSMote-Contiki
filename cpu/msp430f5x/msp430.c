@@ -14,7 +14,6 @@
  *    limitations under the License.                                          *
  ******************************************************************************/
 /**
- * \filename msp430.c
  * \author Anthony Gelibert and Fabien Rey
  * \date Jan 24, 2010
  * \version 0.0.1

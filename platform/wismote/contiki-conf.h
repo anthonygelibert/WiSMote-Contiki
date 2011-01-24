@@ -14,7 +14,6 @@
  *    limitations under the License.                                          *
  ******************************************************************************/
 /**
- * \filename contiki-conf.h
  * \author Anthony Gelibert and Fabien Rey
  * \date Jan 24, 2010
  * \version 0.0.2
