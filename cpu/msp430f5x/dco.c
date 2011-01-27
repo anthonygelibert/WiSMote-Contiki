@@ -44,8 +44,6 @@ static int msp430_dco_required;
 #endif
 
 /** Initialize DCO
- *
- * FIXME_PTV
  */
 void
 msp430_init_dco(void)
@@ -100,15 +98,15 @@ msp430_init_dco(void)
       break; /* if equal, leave "while(1)" */
     } else {
       if (DELTA < compare) { /* DCO is too fast, slow it down */
-//        DCOCTL--;
+        //        DCOCTL--;
         UCSCTL0_H--;
         if (UCSCTL0_H == 0x1F) { /* Did DCO role under? */
-          UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) - 1) << 4) ;
+          UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) - 1) << 4);
         }
       } else { /* -> Select next lower RSEL */
         UCSCTL0_H++;
         if (UCSCTL0_H == 0x00) { /* Did DCO role over? */
-          UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) + 1) << 4) ;
+          UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) + 1) << 4);
         }
         /* -> Select next higher RSEL  */
       }
@@ -125,7 +123,6 @@ msp430_init_dco(void)
 /** Synchronize DCO.
  *
  *  \note this code will always start the TimerB if not already started
- *  FIXME_PTV
  */
 void
 msp430_sync_dco(void)
@@ -163,18 +160,32 @@ msp430_sync_dco(void)
   /*   printf("CPU Speed: %lu DCOCTL: %d\n", speed, DCOCTL); */
 
   /* resynchronize the DCO speed if not at target */
+  /*  if (DELTA_2 < diff) {
+   DCOCTL--;
+   if (DCOCTL == 0xFF) {
+   BCSCTL1--;
+   }
+   } else
+   if (DELTA_2 > diff) {
+   DCOCTL++;
+   if (DCOCTL == 0x00) {
+   BCSCTL1++;
+   }
+   }*/
   if (DELTA_2 < diff) { /* DCO is too fast, slow it down */
-    DCOCTL--;
-    if (DCOCTL == 0xFF) { /* Did DCO role under? */
-      BCSCTL1--;
+    //        DCOCTL--;
+    UCSCTL0_H--;
+    if (UCSCTL0_H == 0x1F) { /* Did DCO role under? */
+      UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) - 1) << 4);
     }
-  } else
-    if (DELTA_2 > diff) {
-      DCOCTL++;
-      if (DCOCTL == 0x00) { /* Did DCO role over? */
-        BCSCTL1++;
+  } else {
+    if (DELTA_2 > diff) { /* -> Select next lower RSEL */
+      UCSCTL0_H++;
+      if (UCSCTL0_H == 0x00) { /* Did DCO role over? */
+        UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) + 1) << 4);
       }
     }
+  }
 }
 
 /** Increment the msp430_dco_required value. */
