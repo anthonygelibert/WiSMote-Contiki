@@ -1,2 +1,5 @@
 syntax: regexp
-^.*/.*/obj_.*$
+^examples/.*/obj_.*$
+^examples/.*/.*\.a
+^examples/.*/.*\.map
+
