@@ -106,6 +106,9 @@ static void init_ports(void)
 #endif
 }
 
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ */
 void msp430_cpu_init(void)
 {
     dint();
