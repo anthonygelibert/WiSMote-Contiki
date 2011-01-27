@@ -31,9 +31,10 @@ static int s_counter = 0;
  *
  *  This interrupt vector restart the watchdog timer.
  */
-interrupt(WDT_VECTOR) watchdog_interrupt(void)
+interrupt(WDT_VECTOR)
+watchdog_interrupt(void)
 {
-    watchdog_reboot();
+  watchdog_reboot();
 }
 
 /**
@@ -41,13 +42,14 @@ interrupt(WDT_VECTOR) watchdog_interrupt(void)
  *
  * \note The MSP430 watchdog is enabled at boot-up, so we stop it during initialization.
  */
-void watchdog_init(void)
+void
+watchdog_init(void)
 {
-    s_counter = 0;
-    watchdog_stop();
+  s_counter = 0;
+  watchdog_stop();
 
-    SFRIFG1 &= ~WDTIFG;
-    SFRIE1 |= WDTIE;
+  SFRIFG1 &= ~WDTIFG;
+  SFRIE1 |= WDTIE;
 }
 
 /**
@@ -56,36 +58,38 @@ void watchdog_init(void)
  * \note We setup the watchdog to reset the device after one second,
  *    unless watchdog_periodic() is called.
  */
-void watchdog_start(void)
+void
+watchdog_start(void)
 {
-    if ((--s_counter) == 0)
-    {
-        WDTCTL = WDTPW | WDTCNTCL | WDT_ARST_1000 | WDTTMSEL;
-    }
+  if ((--s_counter) == 0) {
+    WDTCTL = WDTPW | WDTCNTCL | WDT_ARST_1000 | WDTTMSEL;
+  }
 }
 
 /** Restart periodically the watchdog timer.
  *
  * This function is called periodically to restart the watchdog timer.
  */
-void watchdog_periodic(void)
+void
+watchdog_periodic(void)
 {
-    /*  if(counter < 0) {*/
-    WDTCTL = (WDTCTL & 0xff) | WDTPW | WDTCNTCL | WDTTMSEL;
-    /*  }*/
+  /*  if(counter < 0) {*/
+  WDTCTL = (WDTCTL & 0xff) | WDTPW | WDTCNTCL | WDTTMSEL;
+  /*  }*/
 }
 
 /** Stop the counter */
-void watchdog_stop(void)
+void
+watchdog_stop(void)
 {
-    if ((++s_counter) == 1)
-    {
-        WDTCTL = WDTPW | WDTHOLD;
-    }
+  if ((++s_counter) == 1) {
+    WDTCTL = WDTPW | WDTHOLD;
+  }
 }
 
 /** Reboot the watchdog timer. */
-void watchdog_reboot(void)
+void
+watchdog_reboot(void)
 {
-    WDTCTL = 0;
+  WDTCTL = 0;
 }

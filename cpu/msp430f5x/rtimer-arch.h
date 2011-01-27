@@ -18,18 +18,10 @@
  * \date Jan 24, 2010
  * \version 0.0.1
  */
-
 #ifndef __RTIMER_ARCH_H__
 #define __RTIMER_ARCH_H__
-
 #include <io.h>
 #include "sys/rtimer.h"
-
-#ifndef __C_RTIMER_ARCH_H__
-#define PUBLIC extern
-#else
-#define PUBLIC
-#endif
 
 /** NOT_YET_DOCUMENTED_PTV
  *  \note Ask to NICOLAS.
@@ -41,7 +33,7 @@
  *
  * @return NOT_YET_DOCUMENTED_PTV
  */
-PUBLIC rtimer_clock_t rtimer_arch_now(void);
+rtimer_clock_t
+rtimer_arch_now(void);
 
-#undef PUBLIC
 #endif /* __RTIMER_ARCH_H__ */

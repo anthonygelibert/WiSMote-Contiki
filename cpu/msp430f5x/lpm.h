@@ -22,25 +22,20 @@
 #ifndef __LPM_H__
 #define __LPM_H__
 
-#ifndef __C_LPM_H__
-#define PUBLIC extern
-#else
-#define PUBLIC
-#endif
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ *
+ * @param req NOT_YET_DOCUMENTED_PTV
+ */
+void
+msp430_add_lpm_req(int req);
 
 /**
  * NOT_YET_DOCUMENTED_PTV
  *
  * @param req NOT_YET_DOCUMENTED_PTV
  */
-PUBLIC void msp430_add_lpm_req(int req);
+void
+msp430_remove_lpm_req(int req);
 
-/**
- * NOT_YET_DOCUMENTED_PTV
- *
- * @param req NOT_YET_DOCUMENTED_PTV
- */
-PUBLIC void msp430_remove_lpm_req(int req);
-
-#undef PUBLIC
 #endif /* __LPM_ARCH_H__ */

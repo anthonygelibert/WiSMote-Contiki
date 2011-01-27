@@ -22,26 +22,20 @@
 #ifndef __MTARCH_H__
 #define __MTARCH_H__
 
-#ifndef __C_MTARCH_H_
-#define PUBLIC extern
-#else
-#define PUBLIC
-#endif
-
 /** Size of the stack. */
 #define MTARCH_STACKSIZE 128
 
 /** NOT_YET_DOCUMENTED_PTV */
 struct mtarch_thread
 {
-    /** NOT_YET_DOCUMENTED_PTV */
-    unsigned short stack[MTARCH_STACKSIZE];
-    /** NOT_YET_DOCUMENTED_PTV */
-    unsigned short *sp;
-    /** NOT_YET_DOCUMENTED_PTV */
-    void *data;
-    /** NOT_YET_DOCUMENTED_PTV */
-    void *function;
+  /** NOT_YET_DOCUMENTED_PTV */
+  unsigned short stack[MTARCH_STACKSIZE];
+  /** NOT_YET_DOCUMENTED_PTV */
+  unsigned short *sp;
+  /** NOT_YET_DOCUMENTED_PTV */
+  void *data;
+  /** NOT_YET_DOCUMENTED_PTV */
+  void *function;
 };
 
 /** NOT_YET_DOCUMENTED_PTV */
@@ -53,8 +47,8 @@ struct mt_thread;
  * @param t NOT_YET_DOCUMENTED_PTV
  * @return NOT_YET_DOCUMENTED_PTV
  */
-PUBLIC int mtarch_stack_usage(struct mt_thread *t);
+int
+mtarch_stack_usage(struct mt_thread *t);
 
-#undef PUBLIC
 #endif /* __MTARCH_H__ */
 

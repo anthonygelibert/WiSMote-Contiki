@@ -27,12 +27,6 @@
 #include "lpm.h"
 #include "types.h"
 
-#ifndef __C_MSP430_H__
-#define PUBLIC extern
-#else
-#define PUBLIC
-#endif
-
 /** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()
 
@@ -45,7 +39,7 @@
  *      <li>DCO</li>
  *  </ol>
  */
-PUBLIC void msp430_cpu_init(void);
+void
+msp430_cpu_init(void);
 
-#undef PUBLIC
 #endif /* __MSP430_H__ */

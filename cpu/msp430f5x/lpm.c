@@ -23,7 +23,6 @@
 #include "lpm.h"
 #include "dco.h"
 
-
 /** NOT_YET_DOCUMENTED_PTV */
 static const int MSP430_REQUIRE_CPUON = 0;
 /** NOT_YET_DOCUMENTED_PTV */
@@ -39,18 +38,18 @@ static const int MSP430_REQUIRE_LPM3 = 3;
 /* so some modules might need to enter their LPM requirements                */
 /* NOTE: currently only works with LPM1 (e.g. DCO) requirements.             */
 /*---------------------------------------------------------------------------*/
-void msp430_add_lpm_req(int req)
+void
+msp430_add_lpm_req(int req)
 {
-    if (req <= MSP430_REQUIRE_LPM1)
-    {
-        msp430_dco_required_inc();
-    }
+  if (req <= MSP430_REQUIRE_LPM1) {
+    msp430_dco_required_inc();
+  }
 }
 
-void msp430_remove_lpm_req(int req)
+void
+msp430_remove_lpm_req(int req)
 {
-    if (req <= MSP430_REQUIRE_LPM1)
-    {
-        msp430_dco_required_dec();
-    }
+  if (req <= MSP430_REQUIRE_LPM1) {
+    msp430_dco_required_dec();
+  }
 }
