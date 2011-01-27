@@ -16,7 +16,7 @@ CONTIKI_CPU=$(CONTIKI)/cpu/msp430f5x
 #   - ELFLOADER  = elfloader.c elfloader-msp430.c symtab.c
 
 CONTIKI_CPU_DIRS = .
-MSP430     = msp430.c leds.c dco.c lpm.c watchdog.c mtarch.c rtimer-arch.c   
+MSP430     = msp430.c clock.c leds.c dco.c lpm.c watchdog.c mtarch.c rtimer-arch.c   
 UIPDRIVERS = 
 ELFLOADER  = 
 
