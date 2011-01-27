@@ -56,52 +56,70 @@ msp430_init_dco(void)
   unsigned int compare, oldcapture = 0;
   unsigned int i;
 
-  /* ACLK is devided by 4. RSEL=6 no division for MCLK and SSMCLK. XT2 is off. */
-  BCSCTL1 = 0xa4;
+  // ACLK is divided by 4. RSEL=6 no division for MCLK and SSMCLK. XT2 is off. */
+  //BCSCTL1 = 0xa4;
 
-  /* Init FLL to desired frequency using the 32762Hz crystal DCO frquenzy = 2,4576 MHz  */
-  BCSCTL2 = 0x00;
+  /* XXX_PTV CHOOSE THE GOOD VALUE HERE. */
+  /* <=> RSEL = x */
+  UCSCTL1 |= DCORSEL_2;
+  /* <=> XT2 and XT1 is off */
+  UCSCTL6 |= XT2OFF | XT1OFF;
+  /* <=> XTS Low-frequency */
+  UCSCTL6 &= ~XTS;
+  /* <=> ACLK/8 - MCLK/1 - SMCLK/1 */
+  UCSCTL5 = DIVA__8 | DIVS__1 | DIVM__1;
 
-  BCSCTL1 |= DIVA1 + DIVA0; /* ACLK = LFXT1CLK/8 */
+  /* Init FLL to desired frequency using the 32762Hz crystal DCO frequency = 2,4576 MHz  */
+  //BCSCTL2 = 0x00;
+  /* <=> ACLK = DCO - SMCLK = DCO - MCLK = DCO */
+  UCSCTL4 = SELA__DCOCLK | SELS__DCOCLK | SELM__DCOCLK;
+
+  // BCSCTL1 |= DIVA1 + DIVA0; /* ACLK = LFXT1CLK/8 */
   for (i = 0xffff; i > 0; i--) { /* Delay for XTAL to settle */
     asm("nop");
   }
 
-  CCTL2 = CCIS0 + CM0 + CAP; // Define CCR2, CAP, ACLK
-  TACTL = TASSEL1 + TACLR + MC1; // SMCLK, continous mode
+  //CCTL2 = CCIS0 + CM0 + CAP; // Define CCR2, CAP, ACLK
+  TA1CCTL2 = CCIS_0 | CM_0 | CAP;
 
+  //  TACTL = TASSEL1 + TACLR + MC1; // SMCLK, continuous mode
+  /* <=> SMCLK / CLEAR / CONTINOUS */
+  TA1CTL |= TASSEL__SMCLK | TACLR | MC__CONTINOUS;
 
   while (1) {
+    /* Wait until capture occurred! */
+    while (TA1CCTL2 & CCIFG) {
+    }
 
-    while ((CCTL2 & CCIFG) != CCIFG)
-      ; /* Wait until capture occured! */
-    CCTL2 &= ~CCIFG; /* Capture occured, clear flag */
-    compare = CCR2; /* Get current captured SMCLK */
+    TA1CCTL2 &= ~CCIFG; /* Capture occurred, clear flag */
+    compare = TA1CCR2; /* Get current captured SMCLK */
     compare = compare - oldcapture; /* SMCLK difference */
-    oldcapture = CCR2; /* Save current captured SMCLK */
+    oldcapture = TA1CCR2; /* Save current captured SMCLK */
 
     if (DELTA == compare) {
       break; /* if equal, leave "while(1)" */
     } else {
       if (DELTA < compare) { /* DCO is too fast, slow it down */
-        DCOCTL--;
-        if (DCOCTL == 0xFF) { /* Did DCO role under? */
-          BCSCTL1--;
+//        DCOCTL--;
+        UCSCTL0_H--;
+        if (UCSCTL0_H == 0x1F) { /* Did DCO role under? */
+          UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) - 1) << 4) ;
         }
       } else { /* -> Select next lower RSEL */
-        DCOCTL++;
-        if (DCOCTL == 0x00) { /* Did DCO role over? */
-          BCSCTL1++;
+        UCSCTL0_H++;
+        if (UCSCTL0_H == 0x00) { /* Did DCO role over? */
+          UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) + 1) << 4) ;
         }
         /* -> Select next higher RSEL  */
       }
     }
   }
 
-  CCTL2 = 0; /* Stop CCR2 function */
-  TACTL = 0; /* Stop Timer_A */
+  TA1CCTL2 = 0; /* Stop CCR2 function */
+  TA1CTL = 0; /* Stop Timer_A */
 
-  BCSCTL1 &= ~(DIVA1 + DIVA0); /* remove /8 divisor from ACLK again */
+  //  BCSCTL1 &= ~(DIVA1 + DIVA0); /* remove /8 divisor from ACLK again */
+  UCSCTL5 &= ~(DIVA__8);
 }
 
 /** Synchronize DCO.
@@ -114,7 +132,7 @@ msp430_sync_dco(void)
 {
   uint16_t last;
   uint16_t diff;
-  /*   uint32_t speed; */
+
   /* DELTA_2 assumes an ACLK of 32768 Hz */
 #define DELTA_2    ((MSP430_CPU_SPEED) / 32768)
 
