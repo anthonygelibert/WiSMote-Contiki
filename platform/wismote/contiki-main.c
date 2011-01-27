@@ -33,6 +33,8 @@ int main(void)
 
     /* Initialize the "process system" (core/sys/process.h)     */
     process_init();
+
+    autostart_start(autostart_processes);
     /* SETUP : END */
 
     return 0;
