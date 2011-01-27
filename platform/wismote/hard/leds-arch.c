@@ -29,7 +29,7 @@
 /** PxOUT used for the blue LED. */
 #define PORTOUT_LED_BLUE  P2OUT
 /** BIT used for the blue LED. */
-#define BIT_LED_BLUE      BIT2
+#define BIT_LED_BLUE      BIT4
 
 /** PxDIR used for the red LED. */
 #define PORTDIR_LED_RED   P5DIR
@@ -38,7 +38,7 @@
 /** PxOUT used for the red LED. */
 #define PORTOUT_LED_RED   P5OUT
 /** BIT used for the red LED. */
-#define BIT_LED_RED       BIT4
+#define BIT_LED_RED       BIT2
 
 /** PxDIR used for the green LED. */
 #define PORTDIR_LED_GREEN P8DIR
