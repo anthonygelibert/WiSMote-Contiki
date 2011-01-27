@@ -42,17 +42,24 @@
 #include "rtimer-arch.h"
 #include "dev/watchdog.h"
 
+/** NOT_YET_DOCUMENTED_PTV */
 #define INTERVAL (RTIMER_ARCH_SECOND / CLOCK_SECOND)
 
+/** NOT_YET_DOCUMENTED_PTV */
 #define MAX_TICKS (~((clock_time_t)0) / 2)
 
+/** NOT_YET_DOCUMENTED_PTV */
 static volatile unsigned long seconds;
 
+/** NOT_YET_DOCUMENTED_PTV */
 static volatile clock_time_t count = 0;
-/* last_tar is used for calculating clock_fine */
+
+/** last_tar is used for calculating clock_fine */
 static volatile uint16_t last_tar = 0;
 
-/*---------------------------------------------------------------------------*/
+/** NOT_YET_DOCUMENTED_PTV
+ * FIXME_PTV
+ */
 interrupt(TIMERA1_VECTOR)
 timera1(void)
 {
@@ -104,7 +111,12 @@ timera1(void)
   
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
-/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ *
+ * @return NOT_YET_DOCUMENTED_PTV
+ */
 clock_time_t
 clock_time(void)
 {
@@ -116,7 +128,12 @@ clock_time(void)
   while (t1 != t2);
   return t1;
 }
-/*---------------------------------------------------------------------------*/
+
+/** NOT_YET_DOCUMENTED_PTV
+ * FIXME_PTV
+ * @param clock NOT_YET_DOCUMENTED_PTV
+ * @param fclock NOT_YET_DOCUMENTED_PTV
+ */
 void
 clock_set(clock_time_t clock, clock_time_t fclock)
 {
@@ -124,13 +141,22 @@ clock_set(clock_time_t clock, clock_time_t fclock)
   TACCR1 = fclock + INTERVAL;
   count = clock;
 }
-/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ * @return NOT_YET_DOCUMENTED_PTV
+ */
 int
 clock_fine_max(void)
 {
   return INTERVAL;
 }
-/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ * FIXME_PTV
+ * @return NOT_YET_DOCUMENTED_PTV
+ */
 unsigned short
 clock_fine(void)
 {
@@ -140,7 +166,11 @@ clock_fine(void)
   /* perform calc based on t, TAR will not be changed during interrupt */
   return (unsigned short) (TAR - t);
 }
-/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ * FIXME_PTV
+ */
 void
 clock_init(void)
 {
@@ -171,7 +201,7 @@ clock_init(void)
   eint();
 
 }
-/*---------------------------------------------------------------------------*/
+
 /**
  * Delay the CPU for a multiple of 2.83 us.
  */
@@ -190,10 +220,9 @@ clock_delay(unsigned int i)
    * } while(i > 0);
    */
 }
-/*---------------------------------------------------------------------------*/
+
 /**
  * Wait for a multiple of 10 ms.
- *
  */
 void
 clock_wait(int i)
@@ -201,16 +230,23 @@ clock_wait(int i)
   clock_time_t start;
 
   start = clock_time();
-  while (clock_time() - start < (clock_time_t) i)
-    ;
+  while (clock_time() - start < (clock_time_t) i) {
+  }
 }
-/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ * @param sec NOT_YET_DOCUMENTED_PTV
+ */
 void
 clock_set_seconds(unsigned long sec)
 {
-
 }
-/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ * @return NOT_YET_DOCUMENTED_PTV
+ */
 unsigned long
 clock_seconds(void)
 {
@@ -222,10 +258,14 @@ clock_seconds(void)
   while (t1 != t2);
   return t1;
 }
-/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ * FIXME_PTV
+ * @return NOT_YET_DOCUMENTED_PTV
+ */
 rtimer_clock_t
 clock_counter(void)
 {
   return TAR;
 }
-/*---------------------------------------------------------------------------*/
