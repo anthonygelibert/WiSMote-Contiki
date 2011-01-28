@@ -108,7 +108,7 @@ timera1(void)
    }*/
 
   watchdog_stop();
-  
+
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
