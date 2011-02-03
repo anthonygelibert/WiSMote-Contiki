@@ -10,11 +10,16 @@ void
 clock_init(void)
 {
    dint();
+
+   /* XXX_PTV : In platform --- */
    P4DIR |= 0x80;
    P4SEL |= 0x80;
 
    // Activate XT1
    P7SEL |= BIT0 + BIT1;
+
+   /* ---- */
+
    // Set XT1 On
    UCSCTL6 &= ~XT1OFF;
    // Max drive strength, adjust according to crystal frequency. LFXT1 HF mode
