@@ -108,7 +108,7 @@ timera1(void)
    }*/
 
   watchdog_stop();
-  
+
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
@@ -177,10 +177,10 @@ clock_init(void)
   dint();
 
   /* Select SMCLK (2.4576MHz), clear TAR */
-  /* TACTL = TASSEL1 | TACLR | ID_3; */
+  /* TA1CTL = TASSEL1 | TACLR | ID_3; */
 
   /* Select ACLK 32768Hz clock, divide by 2 */
-  /*  TACTL = TASSEL0 | TACLR | ID_1;*/
+  /*  TA1CTL = TASSEL0 | TACLR | ID_1;*/
 
   /* Select ACLK 32768Hz clock */
   TA1CTL = TASSEL0 | TACLR;

@@ -49,7 +49,7 @@ void
 msp430_init_dco(void)
 {
   /* This code taken from the FU Berlin sources and reformatted. */
-#define DELTA    ((MSP430_CPU_SPEED) / (32768 / 8))
+  unsigned int DELTA = ((MSP430_CPU_SPEED) / (32768 / 8));
 
   unsigned int compare, oldcapture = 0;
   unsigned int i;
@@ -70,7 +70,7 @@ msp430_init_dco(void)
   /* Init FLL to desired frequency using the 32762Hz crystal DCO frequency = 2,4576 MHz  */
   //BCSCTL2 = 0x00;
   /* <=> ACLK = DCO - SMCLK = DCO - MCLK = DCO */
-  UCSCTL4 = SELA__DCOCLK | SELS__DCOCLK | SELM__DCOCLK;
+  UCSCTL4 = SELA__DCOCLK | SELS__DCOCLK |  SELM__DCOCLK;
 
   // BCSCTL1 |= DIVA1 + DIVA0; /* ACLK = LFXT1CLK/8 */
   for (i = 0xffff; i > 0; i--) { /* Delay for XTAL to settle */
@@ -78,37 +78,37 @@ msp430_init_dco(void)
   }
 
   //CCTL2 = CCIS0 + CM0 + CAP; // Define CCR2, CAP, ACLK
-  TA1CCTL2 = CCIS_0 | CM_0 | CAP;
+  TA1CCTL2 = CCIS_0 | CM_0 | CAP | CCIE;
 
   //  TACTL = TASSEL1 + TACLR + MC1; // SMCLK, continuous mode
   /* <=> SMCLK / CLEAR / CONTINOUS */
   TA1CTL |= TASSEL__SMCLK | TACLR | MC__CONTINOUS;
 
   while (1) {
-    /* Wait until capture occurred! */
+    // Wait until capture occurred!
     while (TA1CCTL2 & CCIFG) {
     }
 
-    TA1CCTL2 &= ~CCIFG; /* Capture occurred, clear flag */
-    compare = TA1CCR2; /* Get current captured SMCLK */
-    compare = compare - oldcapture; /* SMCLK difference */
-    oldcapture = TA1CCR2; /* Save current captured SMCLK */
+    TA1CCTL2 &= ~CCIFG; // Capture occurred, clear flag
+    compare = TA1CCR2; // Get current captured SMCLK
+    compare -= oldcapture; // SMCLK difference
+    oldcapture = TA1CCR2; // Save current captured SMCLK
 
     if (DELTA == compare) {
-      break; /* if equal, leave "while(1)" */
+      break; /// if equal, leave "while(1)"
     } else {
-      if (DELTA < compare) { /* DCO is too fast, slow it down */
+      if (DELTA < compare) { /// DCO is too fast, slow it down
         //        DCOCTL--;
         UCSCTL0_H--;
-        if (UCSCTL0_H == 0x1F) { /* Did DCO role under? */
+        if (UCSCTL0_H == 0x1F) { // Did DCO role under?
           UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) - 1) << 4);
         }
-      } else { /* -> Select next lower RSEL */
+      } else { // -> Select next lower RSEL
         UCSCTL0_H++;
-        if (UCSCTL0_H == 0x00) { /* Did DCO role over? */
+        if (UCSCTL0_H == 0x00) { // Did DCO role over?
           UCSCTL1_L = (UCSCTL1_L & ~DCORSEL_7) | (((UCSCTL1_L >> 4) + 1) << 4);
         }
-        /* -> Select next higher RSEL  */
+        // -> Select next higher RSEL
       }
     }
   }

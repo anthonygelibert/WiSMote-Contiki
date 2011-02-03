@@ -22,21 +22,33 @@
 #include "contiki.h"
 #include "dev/leds.h"
 
-int main(void)
+int
+main(void)
 {
-    /* SETUP : BEGIN */
-    /* Initialize the msp430 */
-    cpu_init();
-    clock_init();
-    /* Initialize the leds */
-    leds_init();
+  /* SETUP : BEGIN */
+  /* Initialize the msp430 */
+  cpu_init();
+  //clock_init();
+  /* Initialize the leds */
+  leds_init();
+  leds_on(LEDS_RED);
 
-    /* Initialize the "process system" (core/sys/process.h)     */
-    process_init();
+  /* Initialize the "process system" (core/sys/process.h)     */
+  process_init();
+  /* SETUP : END */
 
-    autostart_start(autostart_processes);
-    /* SETUP : END */
+  autostart_start(autostart_processes);
 
-    return 0;
+  while (1) {
+    int r;
+
+    do {
+      r = process_run();
+    }
+    while (r > 0);
+
+    /* TODO_PTV: implement idle processing. */
+  }
+  return 0;
 }
 
