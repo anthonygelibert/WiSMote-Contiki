@@ -2,4 +2,4 @@ syntax: regexp
 ^examples/.*/obj_.*$
 ^examples/.*/.*\.a
 ^examples/.*/.*\.map
-
+^examples/.*/.*\.wismote
