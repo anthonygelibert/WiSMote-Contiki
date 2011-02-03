@@ -67,16 +67,16 @@ timera1(void)
 
   watchdog_start();
 
-  if (TAIV == 2) {
+  if (TA1IV == 2) {
 
     /* HW timer bug fix: Interrupt handler called before TR==CCR.
      * Occurrs when timer state is toggled between STOP and CONT. */
-    while (TACTL & MC1 && TACCR1 - TAR == 1)
+    while (TA1CTL & MC1 && TA1CCR1 - TA1R == 1)
       ;
 
     /* Make sure interrupt time is future */
     do {
-      TACCR1 += INTERVAL;
+      TA1CCR1 += INTERVAL;
       ++count;
 
       /* Make sure the CLOCK_CONF_SECOND is a power of two, to ensure
@@ -92,9 +92,9 @@ timera1(void)
         energest_flush();
       }
     }
-    while ((TACCR1 - TAR) > INTERVAL);
+    while ((TA1CCR1 - TA1R) > INTERVAL);
 
-    last_tar = TAR;
+    last_tar = TA1R;
 
     if (etimer_pending() && (etimer_next_expiration_time() - count - 1)
         > MAX_TICKS) {
@@ -137,8 +137,8 @@ clock_time(void)
 void
 clock_set(clock_time_t clock, clock_time_t fclock)
 {
-  TAR = fclock;
-  TACCR1 = fclock + INTERVAL;
+  TA1R = fclock;
+  TA1CCR1 = fclock + INTERVAL;
   count = clock;
 }
 
@@ -164,7 +164,7 @@ clock_fine(void)
   /* Assign last_tar to local varible that can not be changed by interrupt */
   t = last_tar;
   /* perform calc based on t, TAR will not be changed during interrupt */
-  return (unsigned short) (TAR - t);
+  return (unsigned short) (TA1R - t);
 }
 
 /**
@@ -177,23 +177,23 @@ clock_init(void)
   dint();
 
   /* Select SMCLK (2.4576MHz), clear TAR */
-  /* TACTL = TASSEL1 | TACLR | ID_3; */
+  /* TA1CTL = TASSEL1 | TACLR | ID_3; */
 
   /* Select ACLK 32768Hz clock, divide by 2 */
-  /*  TACTL = TASSEL0 | TACLR | ID_1;*/
+  /*  TA1CTL = TASSEL0 | TACLR | ID_1;*/
 
   /* Select ACLK 32768Hz clock */
-  TACTL = TASSEL0 | TACLR;
+  TA1CTL = TASSEL0 | TACLR;
 
   /* Initialize ccr1 to create the X ms interval. */
   /* CCR1 interrupt enabled, interrupt occurs when timer equals CCR1. */
-  TACCTL1 = CCIE;
+  TA1CCTL1 = CCIE;
 
   /* Interrupt after X ms. */
-  TACCR1 = INTERVAL;
+  TA1CCR1 = INTERVAL;
 
   /* Start Timer_A in continuous mode. */
-  TACTL |= MC1;
+  TA1CTL |= MC1;
 
   count = 0;
 
@@ -267,5 +267,5 @@ clock_seconds(void)
 rtimer_clock_t
 clock_counter(void)
 {
-  return TAR;
+  return TA1R;
 }
