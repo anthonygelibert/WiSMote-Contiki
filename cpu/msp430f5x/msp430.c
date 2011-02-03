@@ -115,6 +115,5 @@ msp430_cpu_init(void)
   dint();
   watchdog_init();
   init_ports();
-  msp430_init_clock();
   eint();
 }

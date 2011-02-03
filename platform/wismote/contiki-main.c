@@ -28,7 +28,7 @@ main(void)
   /* SETUP : BEGIN */
   /* Initialize the msp430 */
   cpu_init();
-  //clock_init();
+  clock_init();
   /* Initialize the leds */
   leds_init();
   leds_on(LEDS_RED);

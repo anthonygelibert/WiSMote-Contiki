@@ -24,7 +24,6 @@
 
 #include "contiki-conf.h"
 #include "types.h"
-#include "clock-arch.h"
 
 /** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()
