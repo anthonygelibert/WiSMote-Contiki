@@ -21,7 +21,6 @@
 #include <io.h>
 #include <signal.h>
 
-#define __C_RTIMER_ARCH_H__
 #include "rtimer-arch.h"
 #include "sys/energest.h"
 #include "sys/rtimer.h"

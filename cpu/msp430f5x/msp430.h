@@ -23,9 +23,8 @@
 #define __MSP430_H__
 
 #include "contiki-conf.h"
-#include "dco.h"
-#include "lpm.h"
 #include "types.h"
+#include "clock-arch.h"
 
 /** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()

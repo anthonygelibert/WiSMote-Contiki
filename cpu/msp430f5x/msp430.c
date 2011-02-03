@@ -19,7 +19,6 @@
  * \version 0.0.1
  */
 
-#define __C_MSP430_H__
 #include "msp430.h"
 #include "dev/watchdog.h"
 
@@ -116,7 +115,6 @@ msp430_cpu_init(void)
   dint();
   watchdog_init();
   init_ports();
-  msp430_init_dco();
+  msp430_init_clock();
   eint();
-  msp430_dco_required_reset();
 }
