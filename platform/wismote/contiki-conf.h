@@ -25,10 +25,11 @@
 #define __CONTIKI_CONF_H__
 
 
-/** Support of va_args function. */
-#define CC_CONF_VA_ARGS                1
+/* For the CC_CONF_* macros, see : /core/sys/cc.h */
+/** Support of register keyword. */
+#define CC_CONF_REGISTER_ARGS 1
 /** Give the keyword for explicitly "inlined" functions. */
-#define CC_CONF_INLINE                 inline
+#define CC_CONF_INLINE  __inline__
 /** Suppress the MACRO CCIF when encountered in code. */
 #define CCIF
 /** Suppress the MACRO CLIF when encountered in code. */
