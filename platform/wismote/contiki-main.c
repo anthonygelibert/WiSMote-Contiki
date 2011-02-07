@@ -21,6 +21,8 @@
 
 #include "contiki.h"
 #include "dev/leds.h"
+#include "dev/watchdog.h"
+#include "uart0.h"
 
 int
 main(void)
@@ -32,6 +34,10 @@ main(void)
   /* Initialize the leds */
   leds_init();
   leds_on(LEDS_RED);
+  /* Initialize the uart */
+  uart0_init(BAUD2UBR(115200));
+  leds_on(LEDS_GREEN);
+
 
   /* Initialize the "process system" (core/sys/process.h)     */
   process_init();
@@ -43,6 +49,7 @@ main(void)
     int r;
 
     do {
+      watchdog_periodic();
       r = process_run();
     }
     while (r > 0);
