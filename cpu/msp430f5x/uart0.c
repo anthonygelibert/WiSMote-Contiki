@@ -41,7 +41,7 @@
 
 /** NOT_YET_DOCUMENTED_PTV */
 void
-uart0_init(const unsigned int baudrate)
+uart0_init(const unsigned int br)
 {
 
 }
