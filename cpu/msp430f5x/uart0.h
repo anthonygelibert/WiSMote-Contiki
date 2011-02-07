@@ -32,10 +32,10 @@
 
 /** NOT_YET_DOCUMENTED_PTV
  *
- *  \param baudrate NOT_YET_DOCUMENTED_PTV
+ *  \param br NOT_YET_DOCUMENTED_PTV
  */
 void
-uart0_init(const unsigned int baudrate);
+uart0_init(const unsigned int br);
 
 /** NOT_YET_DOCUMENTED_PTV
  *
