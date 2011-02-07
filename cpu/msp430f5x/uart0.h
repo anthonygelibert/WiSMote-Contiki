@@ -27,58 +27,30 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 7, 2011
- * \version 0.0.1
+#ifndef __UART0_H__
+#define __UART0_H__
+
+/** NOT_YET_DOCUMENTED_PTV
+ *
+ *  \param baudrate NOT_YET_DOCUMENTED_PTV
  */
-
-#include <stdio.h>
-#include <errno.h>
-#include "msp430.h"
-#include "uart0.h"
-#include "dev/watchdog.h"
-
-/** NOT_YET_DOCUMENTED_PTV */
 void
-uart0_init(const unsigned int baudrate)
-{
+uart0_init(const unsigned int baudrate);
 
-}
-
-/** NOT_YET_DOCUMENTED_PTV */
+/** NOT_YET_DOCUMENTED_PTV
+ *
+ * \param c NOT_YET_DOCUMENTED_PTV
+ * \return
+ */
 int
-uart0_writeb(const unsigned char c)
-{
-  watchdog_periodic();
-  return c;
-}
+uart0_writeb(const unsigned char c);
 
 /** NOT_YET_DOCUMENTED_PTV */
 uint8_t
-uart0_active(void)
-{
-  return (UCA0STAT & UCBUSY);
-}
+uart0_active(void);
 
-/**
- * \brief Writes character to the current position in the standard output.
- *
- * Writes character to the current position in the standard output (stdout)
- * and advances the internal file position indicator to the next position.
- * It is equivalent to putc(character,stdout).
- *
- * \param c Character to be written. The character is passed as its int promotion.
- *
- * \retval c No errors.
- * \retval EOF Error occurs and the error indicator is set.
- */
-int
-putchar(int c)
-{
-  if (c < 0 || c > 255) {
-    errno = EINVAL;
-    return EOF;
-  }
-  return uart0_writeb(c);
-}
+/** NOT_YET_DOCUMENTED_PTV */
+void
+uart0_set_input(const int (* const input)(const unsigned char c));
+
+#endif /* __UART0_H__ */
