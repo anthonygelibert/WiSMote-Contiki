@@ -27,6 +27,12 @@
  * SUCH DAMAGE.
  */
 
+/**
+ * \author Anthony Gelibert and Fabien Rey
+ * \date Feb 3, 2011
+ * \version 0.0.2
+ */
+
 #include "contiki-conf.h"
 #include "sys/clock.h"
 #include "signal.h"
@@ -37,13 +43,12 @@ clock_platform_init(void);
 
 /* TODO_PTV msp430/clock.c (interrupt) */
 
+/* NOT_YET_DOCUMENTED_PTV */
 void
 clock_init(void)
 {
   dint();
-
   clock_platform_init();
-
   /* Set XT1 On */
   UCSCTL6 &= ~XT1OFF;
   /* Max drive strength, adjust according to crystal frequency. LFXT1 HF mode */
@@ -65,10 +70,10 @@ clock_init(void)
   eint();
 }
 
+/* NOT_YET_DOCUMENTED_PTV */
 void
 clock_delay(unsigned int i)
 {
   asm("add #-1, r15");
   asm("jnz $-2");
-
 }
