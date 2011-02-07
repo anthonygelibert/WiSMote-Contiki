@@ -3,7 +3,7 @@ CFLAGS += -DWITH_UIP6=1
 
 ### The parameters for our own target (our platform)
 # Code of the platform.
-ARCH = leds-arch.c clock-arch.c
+ARCH = leds-arch.c clock-arch.c uart0-arch.c
 # All the directories containing code for our platform (relative path from /platform/wismote).
 CONTIKI_TARGET_DIRS += . hard
 # File containing the "main" symbol of our platform. 
