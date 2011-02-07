@@ -1,5 +1,5 @@
 # Enable IPv6
-# CFLAGS += -DWITH_UIP6=1
+CFLAGS += -DWITH_UIP6=1
 
 ### The parameters for our own target (our platform)
 # Code of the platform.
