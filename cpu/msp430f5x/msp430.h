@@ -37,6 +37,7 @@
 
 #include "contiki-conf.h"
 #include "types.h"
+#include "uart0.h"
 
 /*
  * <errno.h> doesn't define this symbol.
