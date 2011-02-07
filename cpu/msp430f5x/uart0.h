@@ -35,7 +35,7 @@
  *  \param br NOT_YET_DOCUMENTED_PTV
  */
 void
-uart0_init(const unsigned int br);
+uart0_init(const u16_t br);
 
 /** NOT_YET_DOCUMENTED_PTV
  *
@@ -43,7 +43,7 @@ uart0_init(const unsigned int br);
  * \return
  */
 int
-uart0_writeb(const unsigned char c);
+uart0_writeb(const u8_t c);
 
 /** NOT_YET_DOCUMENTED_PTV */
 uint8_t
@@ -51,6 +51,6 @@ uart0_active(void);
 
 /** NOT_YET_DOCUMENTED_PTV */
 void
-uart0_set_input(const int (* const input)(const unsigned char c));
+uart0_set_input(const int (* const input)(const u8_t c));
 
 #endif /* __UART0_H__ */

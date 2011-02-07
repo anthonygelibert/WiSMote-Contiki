@@ -39,18 +39,38 @@
 #include "uart0.h"
 #include "dev/watchdog.h"
 
+extern void uart0_arch_init();
+
 /** NOT_YET_DOCUMENTED_PTV */
 void
-uart0_init(const unsigned int br)
+uart0_init(const u16_t br)
 {
+  uart0_arch_init();
 
+  /* -- Put state machine in reset -- */
+  UCA0CTL1 |= UCSWRST;
+  /* Choose SMCLK */
+  UCA0CTL1 |= UCSSEL__SMCLK;
+
+  /* Set baudrate */
+  UCA0BR0 = br | 0x00FF;
+  UCA0BR1 = (br >> 8);
+
+  /* Modulation UCBRSx=1, UCBRFx=0 */
+  UCA0MCTL |= UCBRS_1 + UCBRF_0;
+
+  /* -- Init. USCI state machine -- */
+  UCA0CTL1 &= ~UCSWRST;
+
+  /* TODO_PTV Implement init */
 }
 
 /** NOT_YET_DOCUMENTED_PTV */
 int
-uart0_writeb(const unsigned char c)
+uart0_writeb(const u8_t c)
 {
   watchdog_periodic();
+  /* TODO_PTV Implement writeb */
   return c;
 }
 
