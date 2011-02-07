@@ -75,7 +75,6 @@ rtimer_arch_now(void)
 {
   rtimer_clock_t t1, t2;
   do {
-    /* TODO_PTV check TAR -> TA1R */
     t1 = TA1R;
     t2 = TA1R;
   }
