@@ -44,6 +44,7 @@ static struct mtarch_thread *running;
 /** NOT_YET_DOCUMENTED_PTV */
 static void
 mtarch_wrapper(void);
+
 /** NOT_YET_DOCUMENTED_PTV */
 static void
 sw(void);
@@ -54,7 +55,12 @@ mtarch_init(void)
 {
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** NOT_YET_DOCUMENTED_PTV
+ *
+ * \param t NOT_YET_DOCUMENTED_PTV
+ * \param function NOT_YET_DOCUMENTED_PTV
+ * \param data NOT_YET_DOCUMENTED_PTV
+ */
 void
 mtarch_start(struct mtarch_thread *t, void
 (*function)(void *), void *data)
@@ -80,7 +86,10 @@ mtarch_start(struct mtarch_thread *t, void
   t->function = function;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** NOT_YET_DOCUMENTED_PTV
+ *
+ * \param t NOT_YET_DOCUMENTED_PTV
+ */
 void
 mtarch_exec(struct mtarch_thread *t)
 {
@@ -114,15 +123,22 @@ mtarch_pstart(void)
 {
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** NOT_YET_DOCUMENTED_PTV
+ *
+ *  \param thread NOT_YET_DOCUMENTED_PTV
+ */
 void
 mtarch_stop(struct mtarch_thread *thread)
 {
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** NOT_YET_DOCUMENTED_PTV
+ *
+ * \param t NOT_YET_DOCUMENTED_PTV
+ * \return NOT_YET_DOCUMENTED_PTV
+ */
 int
-mtarch_stack_usage(struct mt_thread *t)
+mtarch_stack_usage(const struct mt_thread * const t)
 {
   int i;
 

@@ -57,11 +57,11 @@ struct mt_thread;
 /**
  * NOT_YET_DOCUMENTED_PTV
  *
- * @param t NOT_YET_DOCUMENTED_PTV
- * @return NOT_YET_DOCUMENTED_PTV
+ * \param t NOT_YET_DOCUMENTED_PTV
+ * \return NOT_YET_DOCUMENTED_PTV
  */
 int
-mtarch_stack_usage(struct mt_thread *t);
+mtarch_stack_usage(const struct mt_thread * const t);
 
 #endif /* __MTARCH_H__ */
 
