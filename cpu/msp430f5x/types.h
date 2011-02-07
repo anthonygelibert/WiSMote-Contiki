@@ -27,6 +27,12 @@
  * SUCH DAMAGE.
  */
 
+/**
+ * \author Anthony Gelibert
+ * \date Feb 7, 2011
+ * \version 0.0.1
+ */
+
 #ifndef __TYPES_H__
 #define __TYPES_H__
 
