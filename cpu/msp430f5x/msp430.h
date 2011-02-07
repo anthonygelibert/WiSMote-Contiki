@@ -38,6 +38,14 @@
 #include "contiki-conf.h"
 #include "types.h"
 
+/*
+ * <errno.h> doesn't define this symbol.
+ */
+#ifndef EINVAL
+/** Invalid argument */
+#define EINVAL 22
+#endif /* EINVAL */
+
 /** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()
 
