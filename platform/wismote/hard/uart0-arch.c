@@ -27,49 +27,4 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
- * \version 0.0.1
- */
-
-#include "contiki.h"
-#include "dev/leds.h"
-#include "dev/watchdog.h"
-#include "uart0.h"
-
-int
-main(void)
-{
-  /* SETUP : BEGIN */
-  /* Initialize the msp430 */
-  cpu_init();
-  clock_init();
-  /* Initialize the leds */
-  leds_init();
-  leds_on(LEDS_RED);
-  /* Initialize the uart */
-  uart0_init(BAUD2UBR(115200));
-  leds_on(LEDS_GREEN);
-
-
-  /* Initialize the "process system" (core/sys/process.h)     */
-  process_init();
-  /* SETUP : END */
-
-  autostart_start(autostart_processes);
-
-  while (1) {
-    int r;
-
-    do {
-      watchdog_periodic();
-      r = process_run();
-    }
-    while (r > 0);
-
-    /* TODO_PTV: implement idle processing. */
-  }
-  return 0;
-}
 
