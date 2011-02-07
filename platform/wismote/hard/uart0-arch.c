@@ -27,4 +27,15 @@
  * SUCH DAMAGE.
  */
 
+/**
+ * \author Anthony Gelibert
+ * \date Feb 07, 2010
+ * \version 0.0.1
+ */
 
+#include <contiki-conf.h>
+
+void uart0_arch_init(void)
+{
+  P3SEL = 0x30;
+}
