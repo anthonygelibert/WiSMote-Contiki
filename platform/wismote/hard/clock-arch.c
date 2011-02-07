@@ -26,6 +26,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+/**
+ * \author Anthony Gelibert
+ * \date Feb 07, 2010
+ * \version 0.0.1
+ */
+
 #include <contiki-conf.h>
 
 #define DEBUG_CLOCK
