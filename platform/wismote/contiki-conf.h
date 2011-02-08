@@ -52,17 +52,13 @@
 /** Our clock resolution, this is the same as Unix HZ. */
 #define CLOCK_CONF_SECOND 128UL
 
-/** Frequency of the MSP430 (in MHz). */
-#define MSP430_CLOCK_FREQUENCY 4000000
-
-/** Estimate BR field of UART according to a clock frequency
- * of MSP430_CLOCK_FREQUENCY Hz.*/
-#define BAUD2UBR(baudrate) ((unsigned int)(MSP430_CLOCK_FREQUENCY/baudrate))
-
 /** Type for uip_stats. */
 typedef unsigned short uip_stats_t;
 /** Type for clock_time. */
 typedef unsigned long clock_time_t;
+
+/** Enable the interruptions for the UART0 TX. */
+#define UART0_CONF_TX_WITH_INTERRUPT 1
 
 #include "msp430.h"
 #include <msp430f5437.h>
