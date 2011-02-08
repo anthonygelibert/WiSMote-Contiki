@@ -71,32 +71,32 @@ uart0_init(const u16_t br, const u8_t brs, const u8_t brf)
   /* See MSP430x5xx/6xx Family User's Guide p. 577 */
 
   /* -- Put state machine in reset -- */
-  UCA0CTL1 |= UCSWRST;
+  UCA1CTL1 |= UCSWRST;
 
   /* Choose SMCLK */
-  UCA0CTL1 |= UCSSEL__SMCLK;
+  UCA1CTL1 |= UCSSEL__SMCLK;
   /* Set baudrate */
-  UCA0BRW = br;
+  UCA1BRW = br;
   /* Modulation UCBRSx=1, UCBRFx=0 */
-  UCA0MCTL |= brs | brf;
+  UCA1MCTL |= brs | brf;
   /* We don't transmit */
   transmitting = 0;
   /* Clear pending flags. */
-  UCA0IFG &= ~UCRXIFG;
-  UCA0IFG &= ~UCTXIFG;
+  UCA1IFG &= ~UCRXIFG;
+  UCA1IFG &= ~UCTXIFG;
 
   uart0_arch_init();
 
   /* -- Initialize USCI state machine -- */
-  UCA0CTL1 &= ~UCSWRST;
+  UCA1CTL1 &= ~UCSWRST;
 
   /* USCI Receive Interrupt Enable */
-  UCA0IE |= UCRXIE;
+  UCA1IE |= UCRXIE;
 
 #if TX_WITH_INTERRUPT
   /* USCI Transmit Interrupt Enable */
   ringbuf_init(&txbuf, txbuf_data, sizeof(txbuf_data));
-  UCA0IE |= UCTXIE;
+  UCA1IE |= UCTXIE;
 #endif /* TX_WITH_INTERRUPT */
 }
 
@@ -117,14 +117,14 @@ uart0_writeb(const u8_t c)
    the first byte into the UART. */
   if (transmitting == 0) {
     transmitting = 1;
-    UCA0TXBUF = ringbuf_get(&txbuf);
+    UCA1TXBUF = ringbuf_get(&txbuf);
   }
 #else
   /* Loop until the transmission buffer is available. */
-  while((UCA0STAT & UCBUSY)) {
+  while((UCA1STAT & UCBUSY)) {
   }
   /* Transmit the data. */
-  UCA0TXBUF = c;
+  UCA1TXBUF = c;
 #endif /* TX_WITH_INTERRUPT */
 
   return c;
@@ -134,7 +134,7 @@ uart0_writeb(const u8_t c)
 uint8_t
 uart0_active(void)
 {
-  return (UCA0STAT & UCBUSY) | transmitting;
+  return (UCA1STAT & UCBUSY) | transmitting;
 }
 
 /**
@@ -172,7 +172,7 @@ putchar(int c)
 }
 
 /** NOT_YET_DOCUMENTED_PTV*/
-interrupt(USCI_A0_VECTOR)
+interrupt(USCI_A1_VECTOR)
 uart0_interrupt(void)
 {
   uint8_t c;
@@ -180,12 +180,12 @@ uart0_interrupt(void)
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   leds_toggle(LEDS_RED);
 
-  if (UCA0IFG & UCRXIFG) {
-    if (UCA0STAT & UCRXERR) {
+  if (UCA1IFG & UCRXIFG) {
+    if (UCA1STAT & UCRXERR) {
       /* Clear error flags by forcing a dummy read. */
-      c = UCA0RXBUF;
+      c = UCA1RXBUF;
     } else {
-      c = UCA0RXBUF;
+      c = UCA1RXBUF;
       if (uart0_input_handler != NULL) {
         if (uart0_input_handler(c)) {
           LPM4_EXIT;
@@ -195,12 +195,16 @@ uart0_interrupt(void)
   }
 #if TX_WITH_INTERRUPT
   else {
-    if (UCA0IFG & UCTXIFG) {
+    if (UCA1IFG & UCTXIFG) {
       if (ringbuf_elements(&txbuf) == 0) {
         transmitting = 0;
       } else {
-        UCA0TXBUF = ringbuf_get(&txbuf);
+        UCA1TXBUF = ringbuf_get(&txbuf);
       }
+
+      /* In a stand-alone app won't work without this. Is the UG misleading? */
+      UCA1IFG &= ~UCTXIFG;
+
     }
   }
 #endif /* TX_WITH_INTERRUPT */
