@@ -29,62 +29,75 @@
 
 /**
  * \author Anthony Gelibert
- * \date Feb 7, 2011
- * \version 0.0.1
+ * \date Feb 8, 2011
+ * \version 0.1.0
  */
 
 #include <stdio.h>
 #include <errno.h>
 #include "msp430.h"
 #include "uart0.h"
+#include "signal.h"
 #include "dev/watchdog.h"
+#include "dev/leds.h"
+#include "sys/energest.h"
+#include "lib/ringbuf.h"
 
-
-/*********fab***********************/
+#ifdef UART0_CONF_TX_WITH_INTERRUPT
 #define TX_WITH_INTERRUPT UART0_CONF_TX_WITH_INTERRUPT
-
+#else
+#define TX_WITH_INTERRUPT 0
+#endif /* UART0_CONF_TX_WITH_INTERRUPT */
 
 #if TX_WITH_INTERRUPT
 #define TXBUFSIZE 64
-
 static struct ringbuf txbuf;
 static uint8_t txbuf_data[TXBUFSIZE];
 #endif /* TX_WITH_INTERRUPT */
-/*****************************************/
-extern void uart0_arch_init();
 
+static int
+(* uart0_input_handler)(const u8_t c);
 
+static volatile uint8_t transmitting;
 
-/** NOT_YET_DOCUMENTED_PTV */
+extern void
+uart0_arch_init();
+
+/** NOT_YET_DOCUMENTED_PTV
+ */
 void
-uart0_init(const u16_t br)
+uart0_init(const u16_t br, const u8_t brs, const u8_t brf)
 {
-  uart0_arch_init();
+  /* See MSP430x5xx/6xx Family User's Guide p. 577 */
 
   /* -- Put state machine in reset -- */
   UCA0CTL1 |= UCSWRST;
+
   /* Choose SMCLK */
   UCA0CTL1 |= UCSSEL__SMCLK;
-
   /* Set baudrate */
- // UCA0BRW = br;
-  UCA0BR0 = br & 0x00FF;
-  UCA0BR1 = (br >> 8);
-
+  UCA0BRW = br;
   /* Modulation UCBRSx=1, UCBRFx=0 */
-  UCA0MCTL |= UCBRS_1 + UCBRF_0;
+  UCA0MCTL |= brs | brf;
+  /* We don't transmit */
+  transmitting = 0;
+  /* Clear pending flags. */
+  UCA0IFG &= ~UCRXIFG;
+  UCA0IFG &= ~UCTXIFG;
 
-  /* -- Init. USCI state machine -- */
+  uart0_arch_init();
+
+  /* -- Initialize USCI state machine -- */
   UCA0CTL1 &= ~UCSWRST;
 
- /**************fab***************************************/
-  /* TODO_PTV Implement init */
-  UCA1IE |=  UCRXIE ;                       /* USCI Receive Interrupt Enable */
-  #if TX_WITH_INTERRUPT
+  /* USCI Receive Interrupt Enable */
+  UCA0IE |= UCRXIE;
+
+#if TX_WITH_INTERRUPT
+  /* USCI Transmit Interrupt Enable */
   ringbuf_init(&txbuf, txbuf_data, sizeof(txbuf_data));
-  UCA1IE |= UCTXIE;                        /* USCI Transmit Interrupt Enable */
-  #endif /* TX_WITH_INTERRUPT */
-/*************************************************************/
+  UCA0IE |= UCTXIE;
+#endif /* TX_WITH_INTERRUPT */
 }
 
 /** NOT_YET_DOCUMENTED_PTV */
@@ -92,7 +105,28 @@ int
 uart0_writeb(const u8_t c)
 {
   watchdog_periodic();
-  /* TODO_PTV Implement writeb */
+
+#if TX_WITH_INTERRUPT
+  /* Put the outgoing byte on the transmission buffer. If the buffer
+   is full, we just keep on trying to put the byte into the buffer
+   until it is possible to put it there. */
+  while (ringbuf_put(&txbuf, c) == 0) {
+  }
+
+  /* If there is no transmission going, we need to start it by putting
+   the first byte into the UART. */
+  if (transmitting == 0) {
+    transmitting = 1;
+    UCA0TXBUF = ringbuf_get(&txbuf);
+  }
+#else
+  /* Loop until the transmission buffer is available. */
+  while((UCA0STAT & UCBUSY)) {
+  }
+  /* Transmit the data. */
+  UCA0TXBUF = c;
+#endif /* TX_WITH_INTERRUPT */
+
   return c;
 }
 
@@ -100,7 +134,19 @@ uart0_writeb(const u8_t c)
 uint8_t
 uart0_active(void)
 {
-  return (UCA0STAT & UCBUSY);
+  return (UCA0STAT & UCBUSY) | transmitting;
+}
+
+/**
+ * Set the UART0 RX handler.
+ *
+ * @param input The handler
+ */
+void
+uart0_set_input(int
+(* input)(const u8_t c))
+{
+  uart0_input_handler = input;
 }
 
 /**
@@ -123,4 +169,41 @@ putchar(int c)
     return EOF;
   }
   return uart0_writeb(c);
+}
+
+/** NOT_YET_DOCUMENTED_PTV*/
+interrupt(USCI_A0_VECTOR)
+uart0_interrupt(void)
+{
+  uint8_t c;
+
+  ENERGEST_ON(ENERGEST_TYPE_IRQ);
+  leds_toggle(LEDS_RED);
+
+  if (UCA0IFG & UCRXIFG) {
+    if (UCA0STAT & UCRXERR) {
+      /* Clear error flags by forcing a dummy read. */
+      c = UCA0RXBUF;
+    } else {
+      c = UCA0RXBUF;
+      if (uart0_input_handler != NULL) {
+        if (uart0_input_handler(c)) {
+          LPM4_EXIT;
+        }
+      }
+    }
+  }
+#if TX_WITH_INTERRUPT
+  else {
+    if (UCA0IFG & UCTXIFG) {
+      if (ringbuf_elements(&txbuf) == 0) {
+        transmitting = 0;
+      } else {
+        UCA0TXBUF = ringbuf_get(&txbuf);
+      }
+    }
+  }
+#endif /* TX_WITH_INTERRUPT */
+
+  ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }

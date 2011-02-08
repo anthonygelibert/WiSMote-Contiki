@@ -27,6 +27,12 @@
  * SUCH DAMAGE.
  */
 
+/**
+ * \author Anthony Gelibert
+ * \date Feb 8, 2011
+ * \version 0.1.0
+ */
+
 #ifndef __UART0_H__
 #define __UART0_H__
 
@@ -35,7 +41,7 @@
  *  \param br NOT_YET_DOCUMENTED_PTV
  */
 void
-uart0_init(const u16_t br);
+uart0_init(const u16_t br, const u8_t brs, const u8_t brf);
 
 /** NOT_YET_DOCUMENTED_PTV
  *
@@ -49,8 +55,12 @@ uart0_writeb(const u8_t c);
 uint8_t
 uart0_active(void);
 
-/** NOT_YET_DOCUMENTED_PTV */
+/**
+ * Set the UART0 RX handler.
+ *
+ * @param input The handler
+ */
 void
-uart0_set_input(const int (* const input)(const u8_t c));
+uart0_set_input(int (* input)(const u8_t c));
 
 #endif /* __UART0_H__ */
