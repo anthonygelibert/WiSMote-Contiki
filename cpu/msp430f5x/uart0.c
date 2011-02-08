@@ -39,7 +39,21 @@
 #include "uart0.h"
 #include "dev/watchdog.h"
 
+
+/*********fab***********************/
+#define TX_WITH_INTERRUPT UART0_CONF_TX_WITH_INTERRUPT
+
+
+#if TX_WITH_INTERRUPT
+#define TXBUFSIZE 64
+
+static struct ringbuf txbuf;
+static uint8_t txbuf_data[TXBUFSIZE];
+#endif /* TX_WITH_INTERRUPT */
+/*****************************************/
 extern void uart0_arch_init();
+
+
 
 /** NOT_YET_DOCUMENTED_PTV */
 void
@@ -53,7 +67,8 @@ uart0_init(const u16_t br)
   UCA0CTL1 |= UCSSEL__SMCLK;
 
   /* Set baudrate */
-  UCA0BR0 = br | 0x00FF;
+ // UCA0BRW = br;
+  UCA0BR0 = br & 0x00FF;
   UCA0BR1 = (br >> 8);
 
   /* Modulation UCBRSx=1, UCBRFx=0 */
@@ -62,7 +77,14 @@ uart0_init(const u16_t br)
   /* -- Init. USCI state machine -- */
   UCA0CTL1 &= ~UCSWRST;
 
+ /**************fab***************************************/
   /* TODO_PTV Implement init */
+  UCA1IE |=  UCRXIE ;                       /* USCI Receive Interrupt Enable */
+  #if TX_WITH_INTERRUPT
+  ringbuf_init(&txbuf, txbuf_data, sizeof(txbuf_data));
+  UCA1IE |= UCTXIE;                        /* USCI Transmit Interrupt Enable */
+  #endif /* TX_WITH_INTERRUPT */
+/*************************************************************/
 }
 
 /** NOT_YET_DOCUMENTED_PTV */
