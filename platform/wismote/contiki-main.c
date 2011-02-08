@@ -33,10 +33,27 @@
  * \version 0.0.1
  */
 
+#include <stdio.h>
+
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/watchdog.h"
 #include "uart0.h"
+
+#define DEBUG_PROCESS
+
+#ifdef DEBUG_PROCESS
+static void
+print_processes(struct process * const processes[])
+{
+  printf("Starting");
+  while(*processes != NULL) {
+    printf(" '%s'", PROCESS_NAME_STRING(*processes));
+    processes++;
+  }
+  putchar('\n');
+}
+#endif /* DEBUG_PROCESS */
 
 int
 main(void)
@@ -52,12 +69,17 @@ main(void)
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
   leds_on(LEDS_GREEN);
+  leds_off(LEDS_RED);
 
   /* Initialize the "process system" (core/sys/process.h)     */
   process_init();
-  leds_on(LEDS_BLUE);
+
   /* SETUP : END */
 
+  printf(CONTIKI_VERSION_STRING " started. ");
+#ifdef DEBUG_PROCESS
+  print_processes(autostart_processes);
+#endif /* DEBUG_PROCESS */
   autostart_start(autostart_processes);
 
   while (1) {
