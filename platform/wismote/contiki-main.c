@@ -49,9 +49,9 @@ main(void)
   leds_init();
   leds_on(LEDS_RED);
   /* Initialize the uart */
-  uart0_init(BAUD2UBR(115200));
+  /* See MSP430x5xx/6xx Family User's Guide p. 588 */
+  uart0_init(0x34,UCBRS_6,UCBRF_0);
   leds_on(LEDS_GREEN);
-
 
   /* Initialize the "process system" (core/sys/process.h)     */
   process_init();
