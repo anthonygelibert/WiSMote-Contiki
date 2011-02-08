@@ -28,7 +28,7 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: csma.c,v 1.24 2010/12/16 22:44:02 adamdunkels Exp $
+ * $Id: csma.c,v 1.27 2011/01/25 14:24:38 adamdunkels Exp $
  */
 
 /**
@@ -67,7 +67,7 @@
 #ifdef CSMA_CONF_MAX_MAC_TRANSMISSIONS
 #define CSMA_MAX_MAC_TRANSMISSIONS CSMA_CONF_MAX_MAC_TRANSMISSIONS
 #else
-#define CSMA_MAX_MAC_TRANSMISSIONS 1
+#define CSMA_MAX_MAC_TRANSMISSIONS 3
 #endif /* CSMA_CONF_MAX_MAC_TRANSMISSIONS */
 #endif /* CSMA_MAX_MAC_TRANSMISSIONS */
 
@@ -91,6 +91,8 @@ MEMB(packet_memb, struct queued_packet, MAX_QUEUED_PACKETS);
 LIST(queued_packet_list);
 
 static struct ctimer transmit_timer;
+
+static uint8_t rdc_is_transmitting;
 
 static void packet_sent(void *ptr, int status, int num_transmissions);
 
@@ -118,6 +120,12 @@ transmit_queued_packet(void *ptr)
   /*  struct queued_packet *q = ptr;*/
   struct queued_packet *q;
 
+  /* Don't transmit a packet if the RDC is still transmitting the
+     previous one. */
+  if(rdc_is_transmitting) {
+    return;
+  }
+  
   //  printf("q %d\n", list_length(queued_packet_list));
 
   q = list_head(queued_packet_list);
@@ -127,6 +135,7 @@ transmit_queued_packet(void *ptr)
     PRINTF("csma: sending number %d %p, queue len %d\n", q->transmissions, q,
            list_length(queued_packet_list));
     //    printf("s %d\n", packetbuf_addr(PACKETBUF_ADDR_RECEIVER)->u8[0]);
+    rdc_is_transmitting = 1;
     NETSTACK_RDC.send(packet_sent, q);
   }
 }
@@ -150,7 +159,7 @@ free_queued_packet(void)
   struct queued_packet *q;
 
   //  printf("q %d\n", list_length(queued_packet_list));
-  
+
   q = list_head(queued_packet_list);
 
   if(q != NULL) {
@@ -175,6 +184,8 @@ packet_sent(void *ptr, int status, int num_transmissions)
   int num_tx;
   int backoff_transmissions;
 
+  rdc_is_transmitting = 0;
+  
   switch(status) {
   case MAC_TX_OK:
   case MAC_TX_NOACK:
@@ -260,14 +271,13 @@ send_packet(mac_callback_t sent, void *ptr)
   /* If the packet is a broadcast, do not allocate a queue
      entry. Instead, just send it out.  */
   if(!rimeaddr_cmp(packetbuf_addr(PACKETBUF_ADDR_RECEIVER),
-                   &rimeaddr_null) &&
-     packetbuf_attr(PACKETBUF_ATTR_MAX_MAC_TRANSMISSIONS) > 0) {
+                   &rimeaddr_null)) {
 
     /* Remember packet for later. */
     q = memb_alloc(&packet_memb);
     if(q != NULL) {
       q->buf = queuebuf_new_from_packetbuf();
-      if(q != NULL) {
+      if(q->buf != NULL) {
         if(packetbuf_attr(PACKETBUF_ATTR_MAX_MAC_TRANSMISSIONS) == 0) {
           /* Use default configuration for max transmissions */
           q->max_transmissions = CSMA_MAX_MAC_TRANSMISSIONS;
@@ -333,6 +343,7 @@ static void
 init(void)
 {
   memb_init(&packet_memb);
+  rdc_is_transmitting = 0;
 }
 /*---------------------------------------------------------------------------*/
 const struct mac_driver csma_driver = {

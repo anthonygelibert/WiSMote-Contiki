@@ -51,19 +51,19 @@ uip_debug_ipaddr_print(const uip_ipaddr_t *addr)
     a = (addr->u8[i] << 8) + addr->u8[i + 1];
     if(a == 0 && f >= 0) {
       if(f++ == 0) {
-        PRINTF("::");
+        printf("::");
       }
     } else {
       if(f > 0) {
         f = -1;
       } else if(i > 0) {
-        PRINTF(":");
+        printf(":");
       }
-      PRINTF("%x", a);
+      printf("%x", a);
     }
   }
 #else /* UIP_CONF_IPV6 */
-  PRINTF("%u.%u.%u.%u", addr->u8[0], addr->u8[1], addr->u8[2], addr->u8[3]);
+  printf("%u.%u.%u.%u", addr->u8[0], addr->u8[1], addr->u8[2], addr->u8[3]);
 #endif /* UIP_CONF_IPV6 */
 }
 /*---------------------------------------------------------------------------*/
@@ -71,11 +71,11 @@ void
 uip_debug_lladdr_print(const uip_lladdr_t *addr)
 {
   int i;
-  for (i = 0; i < sizeof(uip_lladdr_t); i++) {
-    if (i > 0) {
-      PRINTF(":");
+  for(i = 0; i < sizeof(uip_lladdr_t); i++) {
+    if(i > 0) {
+      printf(":");
     }
-    PRINTF("%02x", addr->addr[i]);
+    printf("%02x", addr->addr[i]);
   }
 }
 /*---------------------------------------------------------------------------*/

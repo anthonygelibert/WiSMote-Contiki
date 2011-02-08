@@ -3,3 +3,4 @@ syntax: regexp
 ^examples/.*/.*\.a
 ^examples/.*/.*\.map
 ^examples/.*/.*\.wismote
+^.*\.DS\_Store$

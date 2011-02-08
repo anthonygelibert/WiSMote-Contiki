@@ -33,7 +33,7 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: collect-neighbor.c,v 1.8 2010/10/11 23:38:46 adamdunkels Exp $
+ * $Id: collect-neighbor.c,v 1.10 2011/01/10 15:08:52 adamdunkels Exp $
  */
 
 /**
@@ -63,7 +63,7 @@
 
 MEMB(collect_neighbors_mem, struct collect_neighbor, MAX_COLLECT_NEIGHBORS);
 
-#define MAX_AGE                      60
+#define MAX_AGE                      180
 #define MAX_LE_AGE                   10
 #define PERIODIC_INTERVAL            CLOCK_SECOND * 60
 
@@ -98,6 +98,7 @@ periodic(void *ptr)
       n->le_age = 0;
     }
     if(n->age == MAX_AGE) {
+      memb_free(&collect_neighbors_mem, n);
       list_remove(neighbor_list->list, n);
       n = list_head(neighbor_list->list);
     }
@@ -142,6 +143,11 @@ collect_neighbor_list_add(struct collect_neighbor_list *neighbors_list,
                           const rimeaddr_t *addr, uint16_t nrtmetric)
 {
   struct collect_neighbor *n;
+
+  if(addr == NULL) {
+    PRINTF("collect_neighbor_list_add: attempt to add NULL addr\n");
+    return 0;
+  }
 
   PRINTF("collect_neighbor_add: adding %d.%d\n", addr->u8[0], addr->u8[1]);
 
@@ -194,8 +200,10 @@ collect_neighbor_list_add(struct collect_neighbor_list *neighbors_list,
     if(nrtmetric < worst_rtmetric) {
       n = worst_neighbor;
     }
-    PRINTF("collect_neighbor_add: not on list, not allocated, recycling %d.%d\n",
-           n->addr.u8[0], n->addr.u8[1]);
+    if(n != NULL) {
+      PRINTF("collect_neighbor_add: not on list, not allocated, recycling %d.%d\n",
+             n->addr.u8[0], n->addr.u8[1]);
+    }
   }
 
   if(n != NULL) {

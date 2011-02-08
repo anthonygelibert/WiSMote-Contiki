@@ -30,7 +30,7 @@
  *
  * Author: Joakim Eriksson, Nicolas Tsiftes
  *
- * $Id: rpl.h,v 1.28 2010/12/17 15:24:25 nvt-se Exp $
+ * $Id: rpl.h,v 1.30 2011/01/25 09:54:03 joxe Exp $
  */
 
 #ifndef RPL_H
@@ -52,10 +52,39 @@
 #include "sys/ctimer.h"
 #include "net/uip-ds6.h"
 
+/** \brief Is IPv6 address a the link local all rpl nodes multicast address */
+#define uip_is_addr_linklocal_rplnodes_mcast(a)     \
+  ((((a)->u8[0]) == 0xff) &&                        \
+   (((a)->u8[1]) == 0x02) &&                        \
+   (((a)->u16[1]) == 0) &&                          \
+   (((a)->u16[2]) == 0) &&                          \
+   (((a)->u16[3]) == 0) &&                          \
+   (((a)->u16[4]) == 0) &&                          \
+   (((a)->u16[5]) == 0) &&                          \
+   (((a)->u16[6]) == 0) &&                          \
+   (((a)->u8[14]) == 0) &&                          \
+   (((a)->u8[15]) == 0x1a))
+
+/** \brief set IP address a to the link local all-rpl nodes multicast address */
+#define uip_create_linklocal_rplnodes_mcast(a) uip_ip6addr(a, 0xff02, 0, 0, 0, 0, 0, 0, 0x001a)
+
+
 /* set to 1 for some statistics on trickle / DIO */
 #ifndef RPL_CONF_STATS
 #define RPL_CONF_STATS 0
 #endif /* RPL_CONF_STATS */
+
+/*
+ * The objective function used by RPL is configurable through the 
+ * RPL_CONF_OF parameter. This should be defined to be the name of an 
+ * rpl_of_t object linked into the system image, e.g., rpl_of0.
+ */
+#ifdef RPL_CONF_OF
+#define RPL_OF RPL_CONF_OF
+#else
+/* ETX is the default objective function. */
+#define RPL_OF rpl_of_etx
+#endif /* RPL_CONF_OF */
 
 /* The RPL Codes for the message types */
 #define RPL_CODE_DIS                     0   /* DIS message */
@@ -115,8 +144,6 @@
 
 #define RPL_DEFAULT_INSTANCE            0
 #define RPL_ANY_INSTANCE               -1
-
-#define RPL_DEFAULT_OCP                 1
 
 /* Represents 2^n ms. */
 /* Default alue according to the specification is 3 which
