@@ -34,8 +34,23 @@
  */
 
 #include "contiki-conf.h"
+#include "dev/watchdog.h"
 #include "sys/clock.h"
+#include "sys/energest.h"
+#include "sys/etimer.h"
 #include "signal.h"
+#include "rtimer-arch.h"
+
+/** NOT_YET_DOCUMENTED_PTV */
+#define INTERVAL (RTIMER_ARCH_SECOND / CLOCK_SECOND)
+/** NOT_YET_DOCUMENTED_PTV */
+#define MAX_TICKS (~((clock_time_t)0) / 2)
+/** NOT_YET_DOCUMENTED_PTV */
+static volatile unsigned long seconds;
+/** NOT_YET_DOCUMENTED_PTV */
+static volatile clock_time_t count = 0;
+/** Used for calculating clock_fine. */
+static volatile uint16_t last_tar = 0;
 
 /** NOT_YET_DOCUMENTED_PTV */
 extern void
@@ -48,6 +63,134 @@ initXT1(void);
 /** NOT_YET_DOCUMENTED_PTV */
 static void
 initClockModule(void);
+
+/**
+ * Wait for a multiple of 10 ms.
+ *
+ */
+void
+clock_wait(int i)
+{
+  clock_time_t start;
+
+  start = clock_time();
+  while (clock_time() - start < (clock_time_t) i) {
+  }
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+interrupt(TIMERA1_VECTOR) timera1 (void) {
+  ENERGEST_ON(ENERGEST_TYPE_IRQ);
+
+  watchdog_start();
+
+  if(TAIV == 2) {
+
+    /* HW timer bug fix: Interrupt handler called before TR==CCR.
+     * Occurrs when timer state is toggled between STOP and CONT. */
+    while(TACTL & MC1 && TACCR1 - TAR == 1);
+
+    /* Make sure interrupt time is future */
+    do {
+      TACCR1 += INTERVAL;
+      ++count;
+
+      /* Make sure the CLOCK_CONF_SECOND is a power of two, to ensure
+         that the modulo operation below becomes a logical and and not
+         an expensive divide. Algorithm from Wikipedia:
+         http://en.wikipedia.org/wiki/Power_of_two */
+#if (CLOCK_CONF_SECOND & (CLOCK_CONF_SECOND - 1)) != 0
+#error CLOCK_CONF_SECOND must be a power of two (i.e., 1, 2, 4, 8, 16, 32, 64, ...).
+#error Change CLOCK_CONF_SECOND in contiki-conf.h.
+#endif
+      if(count % CLOCK_CONF_SECOND == 0) {
+        ++seconds;
+        energest_flush();
+      }
+    } while((TACCR1 - TAR) > INTERVAL);
+
+    last_tar = TAR;
+
+    if(etimer_pending() &&
+       (etimer_next_expiration_time() - count - 1) > MAX_TICKS) {
+      etimer_request_poll();
+      LPM4_EXIT;
+    }
+
+  }
+  /*  if(process_nevents() >= 0) {
+    LPM4_EXIT;
+    }*/
+
+  watchdog_stop();
+
+  ENERGEST_OFF(ENERGEST_TYPE_IRQ);
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+clock_time_t
+clock_time(void)
+{
+  clock_time_t t1, t2;
+  do {
+    t1 = count;
+    t2 = count;
+  } while(t1 != t2);
+  return t1;
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+void
+clock_set(clock_time_t clock, clock_time_t fclock)
+{
+  TAR = fclock;
+  TACCR1 = fclock + INTERVAL;
+  count = clock;
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+int
+clock_fine_max(void)
+{
+  return INTERVAL;
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+unsigned short
+clock_fine(void)
+{
+  unsigned short t;
+  /* Assign last_tar to local variable that can not be changed by interrupt */
+  t = last_tar;
+  /* perform calculation based on t, TAR will not be changed during interrupt */
+  return (unsigned short) (T1AR - t);
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+void
+clock_set_seconds(unsigned long sec)
+{
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+unsigned long
+clock_seconds(void)
+{
+  unsigned long t1, t2;
+  do {
+    t1 = seconds;
+    t2 = seconds;
+  }
+  while (t1 != t2);
+  return t1;
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+rtimer_clock_t
+clock_counter(void)
+{
+  return TA1R;
+}
 
 /** NOT_YET_DOCUMENTED_PTV */
 void
@@ -96,5 +239,5 @@ initXT1(void)
 static void
 initClockModule(void)
 {
-   // TODO_PTV
+  // TODO_PTV
 }
