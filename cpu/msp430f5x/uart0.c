@@ -44,17 +44,28 @@
 #include "lib/ringbuf.h"
 
 #ifdef UART0_CONF_TX_WITH_INTERRUPT
+/** Enable the interruptions for the UART0 TX. */
 #define TX_WITH_INTERRUPT UART0_CONF_TX_WITH_INTERRUPT
 #else
+/** Disable the interruptions for the UART0 TX. */
 #define TX_WITH_INTERRUPT 0
 #endif /* UART0_CONF_TX_WITH_INTERRUPT */
 
 #if TX_WITH_INTERRUPT
+/** Size of the TX buffer. */
 #define TXBUFSIZE 64
+/** The ring buffer used for the TX */
 static struct ringbuf txbuf;
+/** The buffer in the ring buffer. */
 static uint8_t txbuf_data[TXBUFSIZE];
 #endif /* TX_WITH_INTERRUPT */
 
+/**
+ * \brief RX handler.
+ *
+ * @param c The received character.
+ * @return
+ */
 static int
 (* uart0_input_handler)(const u8_t c);
 
