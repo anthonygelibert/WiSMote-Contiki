@@ -38,6 +38,7 @@
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/watchdog.h"
+#include "dev/button-sensor.h"
 #include "uart0.h"
 
 /** Display the list of auto-processes before executing them */
@@ -61,6 +62,8 @@ print_processes(struct process * const processes[])
 }
 #endif /* DEBUG_PROCESS */
 
+SENSORS(&button_sensor);
+
 /**
  * Make all the initializations and start the auto-processes.
  *
@@ -76,6 +79,7 @@ main(void)
   /* Initialize the leds */
   leds_init();
   leds_on(LEDS_RED);
+
   /* Initialize the uart */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
@@ -84,6 +88,7 @@ main(void)
 
   /* Initialize the "process system" (core/sys/process.h)     */
   process_init();
+  process_start(&sensors_process, NULL);
 
   /* SETUP : END */
 
