@@ -15,13 +15,12 @@ CONTIKI_CPU=$(CONTIKI)/cpu/msp430f5x
 #   - UIPDRIVERS = me.c me_tabs.c slip.c crc16.c
 #   - ELFLOADER  = elfloader.c elfloader-msp430.c symtab.c
 
-CONTIKI_CPU_DIRS = . 
-MSP430     =  msp430.c uart0.c clock.c leds.c  watchdog.c mtarch.c rtimer-arch.c   
-UIPDRIVERS = 
-ELFLOADER  = 
+CONTIKI_CPU_DIRS = .
+MSP430     =  msp430.c uart0.c clock.c watchdog.c mtarch.c rtimer-arch.c
+UIPDRIVERS =
+ELFLOADER  =
 
-CONTIKI_TARGET_SOURCEFILES += $(MSP430) $(SYSAPPS) $(ELFLOADER) $(UIPDRIVERS)
-CONTIKI_SOURCEFILES        += $(CONTIKI_TARGET_SOURCEFILES)
+CONTIKI_SOURCEFILES        += $(MSP430) $(SYSAPPS) $(ELFLOADER) $(UIPDRIVERS)
 
 
 ### COMPILER DEFINITIONS
@@ -44,12 +43,12 @@ BSL      = $(MSPGCCPATH)/msp430-bsl
 
 MMCU = -mmcu=$(MCU)
 DIAGNOSTIC += -fmessage-length=0
-WARNING += -Wall 
-#WARNING_EXTRA += -Wextra -Wno-unused -Wshadow 
+WARNING += -Wall
+#WARNING_EXTRA += -Wextra -Wno-unused -Wshadow
 
 ifdef DEBUG_FLAGS
 OPTIM += -O0
-DEBUG += -ggdb3 -dA 
+DEBUG += -ggdb3 -dA
 else
 OPTIM += -Os
 endif
@@ -61,12 +60,12 @@ LDFLAGS += -Wl,--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVe
 endif
 
 
-CFLAGS += $(DEBUG) $(OPTIM) $(DIAGNOSTIC) $(WARNING) $(WARNING_EXTRA) $(MMCU) 
+CFLAGS += $(DEBUG) $(OPTIM) $(DIAGNOSTIC) $(WARNING) $(WARNING_EXTRA) $(MMCU)
 LDFLAGS += $(MMCU) -Wl,-Map=contiki-$(TARGET).map
 PROJECT_OBJECTFILES += ${addprefix $(OBJECTDIR)/,$(CONTIKI_TARGET_MAIN:.c=.o)}
 
 ### COMPILATION RULES
 
-%.ihex: %.$(TARGET)
+%.hex: %.$(TARGET)
 	$(OBJCOPY) $^ -O ihex $@
 
