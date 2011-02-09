@@ -1,6 +1,7 @@
 syntax: regexp
 ^examples/.*/obj_.*$
-^examples/.*/.*\.a
-^examples/.*/.*\.map
-^examples/.*/.*\.wismote
+^examples/.*/.*\.a$
+^examples/.*/.*\.map$
+^examples/.*/.*\.wismote$
+^examples/.*/.*\.hex$
 ^.*\.DS\_Store$
