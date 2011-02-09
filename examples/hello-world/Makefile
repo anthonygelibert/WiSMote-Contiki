@@ -1,7 +1,8 @@
 CONTIKI_PROJECT = hello-world
 all: $(CONTIKI_PROJECT)
 
-UIP_CONF_IPV6=1
+CONTIKI_NO_NET=1
 
+CLEAN += $(CONTIKI_PROJECT).$(TARGET) $(CONTIKI_PROJECT).hex
 CONTIKI = ../..
 include $(CONTIKI)/Makefile.include
