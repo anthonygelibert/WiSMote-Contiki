@@ -37,15 +37,37 @@
 #include "sys/clock.h"
 #include "signal.h"
 
-/* NOT_YET_DOCUMENTED_PTV */
+/** NOT_YET_DOCUMENTED_PTV */
 extern void
 clock_platform_init(void);
 
-/* TODO_PTV msp430/clock.c (interrupt) */
+/** NOT_YET_DOCUMENTED_PTV */
+static void
+initXT1(void);
 
-/* NOT_YET_DOCUMENTED_PTV */
+/** NOT_YET_DOCUMENTED_PTV */
+static void
+initClockModule(void);
+
+/** NOT_YET_DOCUMENTED_PTV */
 void
 clock_init(void)
+{
+  initXT1();
+  initClockModule();
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+void
+clock_delay(unsigned int i)
+{
+  asm("add #-1, r15");
+  asm("jnz $-2");
+}
+
+/** NOT_YET_DOCUMENTED_PTV */
+static void
+initXT1(void)
 {
   dint();
   clock_platform_init();
@@ -70,10 +92,10 @@ clock_init(void)
   eint();
 }
 
-/* NOT_YET_DOCUMENTED_PTV */
-void
-clock_delay(unsigned int i)
+/** NOT_YET_DOCUMENTED_PTV */
+static void
+initClockModule(void)
 {
-  asm("add #-1, r15");
-  asm("jnz $-2");
+   // TODO_PTV
+}
 }
