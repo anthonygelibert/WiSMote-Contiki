@@ -1,15 +1,16 @@
-# Enable IPv6
-CFLAGS += -DWITH_UIP6=1
-
 ### The parameters for our own target (our platform)
 # Code of the platform.
+FROM_CONTIKI = leds.c
 ARCH = leds-arch.c clock-arch.c uart-arch.c
+
 # All the directories containing code for our platform (relative path from /platform/wismote).
-CONTIKI_TARGET_DIRS += . hard
-# File containing the "main" symbol of our platform. 
+CONTIKI_TARGET_DIRS = . hard
+# File containing the "main" symbol of our platform.
 CONTIKI_TARGET_MAIN = contiki-main.c
 # All the files of our platform.
-CONTIKI_TARGET_SOURCEFILES += $(ARCH) $(CONTIKI_TARGET_MAIN)
+CONTIKI_SOURCEFILES += $(FROM_CONTIKI) $(ARCH) $(CONTIKI_TARGET_MAIN)
+
+.SUFFIXES:
 
 ### The parameters for our own cpu (the CPU of our platform)
 ## Macros
