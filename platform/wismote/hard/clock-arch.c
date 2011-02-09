@@ -38,7 +38,10 @@
 #define DEBUG_CLOCK
 
 /**
- * NOT_YET_DOCUMENTED_PTV
+ * \brief Initialize the clock for our platform.
+ *
+ * Set the port for the XT1 clock and if DEBUG_CLOCK is defined, redirect the
+ * SMCLOCK on a port of the platform.
  */
 void clock_platform_init(void)
 {

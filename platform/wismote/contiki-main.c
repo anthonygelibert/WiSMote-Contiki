@@ -29,8 +29,8 @@
 
 /**
  * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
- * \version 0.0.1
+ * \date Feb 09, 2010
+ * \version 0.0.2
  */
 
 #include <stdio.h>
@@ -40,9 +40,15 @@
 #include "dev/watchdog.h"
 #include "uart0.h"
 
+/** Display the list of auto-processes before executing them */
 #define DEBUG_PROCESS
 
 #ifdef DEBUG_PROCESS
+/**
+ * \brief Display a list of processes.
+ *
+ * \param processes An array of processes
+ */
 static void
 print_processes(struct process * const processes[])
 {
@@ -55,12 +61,17 @@ print_processes(struct process * const processes[])
 }
 #endif /* DEBUG_PROCESS */
 
+/**
+ * Make all the initializations and start the auto-processes.
+ *
+ * @return Always 0
+ */
 int
 main(void)
 {
-  /* SETUP : BEGIN */
   /* Initialize the msp430 */
   cpu_init();
+  /* Initialize the clock of the card and the clock module */
   clock_init();
   /* Initialize the leds */
   leds_init();

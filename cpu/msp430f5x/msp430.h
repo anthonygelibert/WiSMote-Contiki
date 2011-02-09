@@ -38,9 +38,7 @@
 #include "contiki-conf.h"
 #include "types.h"
 
-/*
- * <errno.h> doesn't define this symbol.
- */
+/* <errno.h> doesn't define this symbol. */
 #ifndef EINVAL
 /** Invalid argument */
 #define EINVAL 22
@@ -49,13 +47,12 @@
 /** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()
 
-/** Initialize the MSP430 CPU.
+/** \brief Initialize the MSP430 CPU.
  *
  *  This function initializes :
  *  <ol>
  *      <li>WatchDog</li>
  *      <li>Ports</li>
- *      <li>DCO</li>
  *  </ol>
  */
 void

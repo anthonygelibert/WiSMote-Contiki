@@ -29,8 +29,8 @@
 
 /**
  * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
- * \version 0.0.3
+ * \date Feb 09, 2010
+ * \version 0.0.4
  *
  * This file defines the "include", "typedef", "define", etc... required by the
  * platform.
@@ -38,7 +38,7 @@
 #ifndef __CONTIKI_CONF_H__
 #define __CONTIKI_CONF_H__
 
-
+/* ----- Compiler macros ----- */
 /* For the CC_CONF_* macros, see : /core/sys/cc.h */
 /** Support of register keyword. */
 #define CC_CONF_REGISTER_ARGS 1
@@ -49,14 +49,18 @@
 /** Suppress the MACRO CLIF when encountered in code. */
 #define CLIF
 
+/* ----- Clock module ----- */
 /** Our clock resolution, this is the same as Unix HZ. */
 #define CLOCK_CONF_SECOND 128UL
 
-/** Type for uip_stats. */
-typedef unsigned short uip_stats_t;
 /** Type for clock_time. */
 typedef unsigned long clock_time_t;
 
+/* ----- UIP module ----- */
+/** Type for uip_stats. */
+typedef unsigned short uip_stats_t;
+
+/* ----- UART module ----- */
 /** Enable the interruptions for the UART0 TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 
