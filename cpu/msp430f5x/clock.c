@@ -98,4 +98,3 @@ initClockModule(void)
 {
    // TODO_PTV
 }
-}
