@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2005, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,57 +25,48 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- */
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
- * \version 0.0.1
+ *
+ * This file is part of the Contiki operating system.
+ *
+ * @(#)$Id: mtarch.c,v 1.6 2008/11/21 10:28:32 fros4943 Exp $
  */
 
-#define __C_MTARCH_H_
-#include "mtarch.h"
+#include <stdio.h>
 #include "sys/mt.h"
 
-/** NOT_YET_DOCUMENTED_PTV */
 static unsigned short *sptmp;
-/** NOT_YET_DOCUMENTED_PTV */
 static struct mtarch_thread *running;
 
-/** NOT_YET_DOCUMENTED_PTV */
-static void
-mtarch_wrapper(void);
-
-/** NOT_YET_DOCUMENTED_PTV */
-static void
-sw(void);
-
-/** NOT_YET_DOCUMENTED_PTV */
+/*--------------------------------------------------------------------------*/
 void
 mtarch_init(void)
 {
-}
 
-/** NOT_YET_DOCUMENTED_PTV
- *
- * \param t NOT_YET_DOCUMENTED_PTV
- * \param function NOT_YET_DOCUMENTED_PTV
- * \param data NOT_YET_DOCUMENTED_PTV
- */
+}
+/*--------------------------------------------------------------------------*/
+static void
+mtarch_wrapper(void)
+{
+  /* Call thread function with argument */
+  ((void (*)(void *))running->function)((void*)running->data);
+}
+/*--------------------------------------------------------------------------*/
 void
-mtarch_start(struct mtarch_thread *t, void
-(*function)(void *), void *data)
+mtarch_start(struct mtarch_thread *t,
+	     void (*function)(void *), void *data)
 {
   int i;
-  for (i = 0; i < MTARCH_STACKSIZE; ++i) {
+
+  for(i = 0; i < MTARCH_STACKSIZE; ++i) {
     t->stack[i] = i;
   }
 
   t->sp = &t->stack[MTARCH_STACKSIZE - 1];
 
-  *t->sp = (unsigned short) mt_exit;
+  *t->sp = (unsigned short)mt_exit;
   --t->sp;
 
-  *t->sp = (unsigned short) mtarch_wrapper;
+  *t->sp = (unsigned short)mtarch_wrapper;
   --t->sp;
 
   /* Space for registers. */
@@ -85,81 +76,8 @@ mtarch_start(struct mtarch_thread *t, void
   t->data = data;
   t->function = function;
 }
+/*--------------------------------------------------------------------------*/
 
-/** NOT_YET_DOCUMENTED_PTV
- *
- * \param t NOT_YET_DOCUMENTED_PTV
- */
-void
-mtarch_exec(struct mtarch_thread *t)
-{
-  running = t;
-  sw();
-  running = NULL;
-}
-
-/** NOT_YET_DOCUMENTED_PTV */
-void
-mtarch_remove(void)
-{
-}
-
-/** NOT_YET_DOCUMENTED_PTV */
-void
-mtarch_yield(void)
-{
-  sw();
-}
-
-/** NOT_YET_DOCUMENTED_PTV */
-void
-mtarch_pstop(void)
-{
-}
-
-/** NOT_YET_DOCUMENTED_PTV */
-void
-mtarch_pstart(void)
-{
-}
-
-/** NOT_YET_DOCUMENTED_PTV
- *
- *  \param thread NOT_YET_DOCUMENTED_PTV
- */
-void
-mtarch_stop(struct mtarch_thread *thread)
-{
-}
-
-/** NOT_YET_DOCUMENTED_PTV
- *
- * \param t NOT_YET_DOCUMENTED_PTV
- * \return NOT_YET_DOCUMENTED_PTV
- */
-int
-mtarch_stack_usage(const struct mt_thread * const t)
-{
-  int i;
-
-  for (i = 0; i < MTARCH_STACKSIZE; ++i) {
-    if (t->thread.stack[i] != (unsigned short) i) {
-      return MTARCH_STACKSIZE - i;
-    }
-  }
-  return MTARCH_STACKSIZE;
-}
-
-/** NOT_YET_DOCUMENTED_PTV */
-static void
-mtarch_wrapper(void)
-{
-  /* Call thread function with argument */
-  ((void
-  (*)(void *)) running->function)((void*) running->data);
-}
-
-/** NOT_YET_DOCUMENTED_PTV */
 static void
 sw(void)
 {
@@ -195,3 +113,56 @@ sw(void)
   __asm__("pop r5");
   __asm__("pop r4");
 }
+/*--------------------------------------------------------------------------*/
+void
+mtarch_exec(struct mtarch_thread *t)
+{
+  running = t;
+  sw();
+  running = NULL;
+}
+/*--------------------------------------------------------------------------*/
+void
+mtarch_remove(void)
+{
+
+}
+/*--------------------------------------------------------------------------*/
+void
+mtarch_yield(void)
+{
+  sw();
+}
+/*--------------------------------------------------------------------------*/
+void
+mtarch_pstop(void)
+{
+
+}
+/*--------------------------------------------------------------------------*/
+void
+mtarch_pstart(void)
+{
+
+}
+/*--------------------------------------------------------------------------*/
+void
+mtarch_stop(struct mtarch_thread *thread)
+{
+
+}
+/*--------------------------------------------------------------------------*/
+int
+mtarch_stack_usage(struct mt_thread *t)
+{
+  int i;
+
+  for(i = 0; i < MTARCH_STACKSIZE; ++i) {
+    if(t->thread.stack[i] != (unsigned short)i) {
+      return MTARCH_STACKSIZE - i;
+    }
+  }
+
+  return MTARCH_STACKSIZE;
+}
+/*--------------------------------------------------------------------------*/

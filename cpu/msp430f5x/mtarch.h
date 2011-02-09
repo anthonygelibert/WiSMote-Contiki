@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2005, Swedish Institute of Computer Science
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,43 +25,27 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
+ *
+ * This file is part of the Contiki operating system.
+ *
+ * @(#)$Id: mtarch.h,v 1.3 2008/11/21 10:28:32 fros4943 Exp $
  */
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
- * \version 0.0.1
- */
-
 #ifndef __MTARCH_H__
 #define __MTARCH_H__
 
-/** Size of the stack. */
 #define MTARCH_STACKSIZE 128
 
-/** NOT_YET_DOCUMENTED_PTV */
-struct mtarch_thread
-{
-  /** NOT_YET_DOCUMENTED_PTV */
+struct mtarch_thread {
   unsigned short stack[MTARCH_STACKSIZE];
-  /** NOT_YET_DOCUMENTED_PTV */
   unsigned short *sp;
-  /** NOT_YET_DOCUMENTED_PTV */
   void *data;
-  /** NOT_YET_DOCUMENTED_PTV */
   void *function;
 };
 
-/** NOT_YET_DOCUMENTED_PTV */
 struct mt_thread;
 
-/**
- * NOT_YET_DOCUMENTED_PTV
- *
- * \param t NOT_YET_DOCUMENTED_PTV
- * \return NOT_YET_DOCUMENTED_PTV
- */
-int
-mtarch_stack_usage(const struct mt_thread * const t);
+int mtarch_stack_usage(struct mt_thread *t);
+
 
 #endif /* __MTARCH_H__ */
 
