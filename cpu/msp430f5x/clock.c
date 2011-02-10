@@ -79,23 +79,17 @@ clock_wait(int i)
 }
 
 /** NOT_YET_DOCUMENTED_PTV */
-interrupt(TIMERA1_VECTOR)
+interrupt(TIMER1_A1_VECTOR)
 timera1(void)
 {
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
-
   watchdog_start();
 
-  if (TAIV == 2) {
-
-    /* HW timer bug fix: Interrupt handler called before TR==CCR.
-     * Occurrs when timer state is toggled between STOP and CONT. */
-    while (TACTL & MC1 && TACCR1 - TAR == 1)
-      ;
+  if (TA1IV == 2) {
 
     /* Make sure interrupt time is future */
     do {
-      TACCR1 += INTERVAL;
+      TA1CCR1 += INTERVAL;
       ++count;
 
       /* Make sure the CLOCK_CONF_SECOND is a power of two, to ensure
@@ -111,21 +105,16 @@ timera1(void)
         energest_flush();
       }
     }
-    while ((TACCR1 - TAR) > INTERVAL);
+    while ((TA1CCR1 - TA1R) > INTERVAL);
 
-    last_tar = TAR;
+    last_tar = TA1R;
 
     if (etimer_pending() && (etimer_next_expiration_time() - count - 1)
         > MAX_TICKS) {
       etimer_request_poll();
       LPM4_EXIT;
     }
-
   }
-  /*  if(process_nevents() >= 0) {
-   LPM4_EXIT;
-   }*/
-
   watchdog_stop();
 
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
@@ -148,8 +137,8 @@ clock_time(void)
 void
 clock_set(clock_time_t clock, clock_time_t fclock)
 {
-  TAR = fclock;
-  TACCR1 = fclock + INTERVAL;
+  TA1R = fclock;
+  TA1CCR1 = fclock + INTERVAL;
   count = clock;
 }
 
@@ -168,7 +157,7 @@ clock_fine(void)
   /* Assign last_tar to local variable that can not be changed by interrupt */
   t = last_tar;
   /* perform calculation based on t, TAR will not be changed during interrupt */
-  return (unsigned short) (T1AR - t);
+  return (unsigned short) (TA1R - t);
 }
 
 /** NOT_YET_DOCUMENTED_PTV */
@@ -236,7 +225,8 @@ initXT1(void)
   /* MCLCK = XT1 , SMCLK = XT1 , ACLK = XT1 */
   UCSCTL4 = SELA__XT1CLK | SELS__XT1CLK | SELM__XT1CLK;
   /* Set Clock divider 4 -> Clock = 4MHz */
-  UCSCTL5 |= DIVA__4 | DIVS__4 | DIVM__4;
+  /* Set Clock divider 2 -> Clock = 2 MHz (ACLK = 2 MHz) */
+  UCSCTL5 |= DIVA__8 | DIVS__4 | DIVM__4;
   eint();
 }
 
@@ -244,5 +234,22 @@ initXT1(void)
 static void
 initClockModule(void)
 {
-  // TODO_PTV
+  dint();
+
+  //TA1CTL = TASSEL__SMCLK | TACLR | ID__2;
+  TA1EX0 |= TAIDEX_7;
+  TA1CTL = TASSEL__ACLK | TACLR | ID__8;
+
+  /* Initialize ccr1 to create the X ms interval. */
+  /* CCR1 interrupt enabled, interrupt occurs when timer equals CCR1. */
+  TA1CCTL1 |= CCIE;
+
+  /* Interrupt after X ms. */
+  TA1CCR1 = INTERVAL;
+
+  /* Start Timer_A in continuous mode. */
+  TA1CTL |= MC__CONTINOUS;
+  count = 0;
+  /* Enable interrupts. */
+  eint();
 }

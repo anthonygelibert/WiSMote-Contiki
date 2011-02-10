@@ -39,6 +39,7 @@
 #include "dev/leds.h"
 #include "dev/watchdog.h"
 #include "dev/button-sensor.h"
+#include "sys/energest.h"
 #include "uart0.h"
 #include "msp430.h"
 
@@ -66,7 +67,8 @@ print_processes(struct process * const processes[])
 SENSORS(&button_sensor);
 
 /**
- * Make all the initializations and start the auto-processes.
+ * \brief Make all the initializations and start the auto-processes.
+ *
  *
  * @return Always 0
  */
@@ -87,11 +89,24 @@ main(void)
   leds_on(LEDS_GREEN);
   leds_off(LEDS_RED);
 
+  /* Initialize the RTimer */
+  rtimer_init();
+
   /* Initialize the "process system" (core/sys/process.h)     */
   process_init();
+  /* Initialize the ETimer module */
+  process_start(&etimer_process, NULL);
+  /* Initialize the CTimer mocule */
+  ctimer_init();
+  /* Initialize the sensors */
   process_start(&sensors_process, NULL);
 
+  /* Initialize the EnerGest module */
+  energest_init();
   /* SETUP : END */
+
+  ENERGEST_ON(ENERGEST_TYPE_CPU);
+  watchdog_start();
 
   printf(CONTIKI_VERSION_STRING " started. ");
 #ifdef DEBUG_PROCESS
@@ -108,6 +123,7 @@ main(void)
     }
     while (r > 0);
 
+    /* Idle processing */
     /* TODO_PTV: implement idle processing. */
   }
   return 0;
