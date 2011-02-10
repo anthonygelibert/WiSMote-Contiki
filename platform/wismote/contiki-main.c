@@ -34,17 +34,20 @@
  */
 
 #include <stdio.h>
+#include <signal.h>
 
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/watchdog.h"
-#include "dev/button-sensor.h"
 #include "sys/energest.h"
 #include "uart0.h"
+#include "spl.h"
 #include "msp430.h"
 
-/** Display the list of auto-processes before executing them */
-#define DEBUG_PROCESS
+/** Display the list of auto-processes before executing them. */
+#define DEBUG_PROCESS 1
+/** Doesn't display the list of sensors before starting them. */
+#define DEBUG_SENSORS 0
 
 #ifdef DEBUG_PROCESS
 /**
@@ -64,11 +67,23 @@ print_processes(struct process * const processes[])
 }
 #endif /* DEBUG_PROCESS */
 
-SENSORS(&button_sensor);
+#if DEBUG_SENSORS
+static void
+print_sensors(void)
+{
+  struct sensors_sensor * sensor = sensors_first();
+
+  printf("Sensors");
+  while (sensor) {
+    printf(" '%s' ", sensor->type);
+    sensor = sensors_next(sensor);
+  }
+  putchar('\n');
+}
+#endif /* DEBUG_SENSORS */
 
 /**
  * \brief Make all the initializations and start the auto-processes.
- *
  *
  * @return Always 0
  */
@@ -98,9 +113,6 @@ main(void)
   process_start(&etimer_process, NULL);
   /* Initialize the CTimer mocule */
   ctimer_init();
-  /* Initialize the sensors */
-  process_start(&sensors_process, NULL);
-
   /* Initialize the EnerGest module */
   energest_init();
   /* SETUP : END */
@@ -108,7 +120,17 @@ main(void)
   ENERGEST_ON(ENERGEST_TYPE_CPU);
   watchdog_start();
 
-  printf(CONTIKI_VERSION_STRING " started. ");
+  printf(CONTIKI_VERSION_STRING " started.\n");
+
+  /* Initialize the sensors
+  leds_on(LEDS_BLUE);
+#ifdef DEBUG_SENSORS
+  print_sensors();
+#endif
+  process_start(&sensors_process, NULL);
+  leds_off(LEDS_BLUE); */
+
+  /* Start the processes */
 #ifdef DEBUG_PROCESS
   print_processes(autostart_processes);
 #endif /* DEBUG_PROCESS */
@@ -124,7 +146,32 @@ main(void)
     while (r > 0);
 
     /* Idle processing */
-    /* TODO_PTV: implement idle processing. */
+    int s = splhigh(); /* Disable interrupts. */
+    /* uart1_active is for avoiding LPM3 when still sending or receiving */
+    if (process_nevents() != 0 || uart0_active()) {
+      /* Re-enable interrupts. */
+      splx(s);
+    } else {
+      static unsigned long irq_energest = 0;
+      /* Re-enable interrupts and go to sleep atomically. */
+      ENERGEST_OFF(ENERGEST_TYPE_CPU);
+      ENERGEST_ON(ENERGEST_TYPE_LPM);
+      /* We only want to measure the processing done in IRQs when we
+       are asleep, so we discard the processing time done when we
+       were awake. */
+      energest_type_set(ENERGEST_TYPE_IRQ, irq_energest);
+      watchdog_stop();
+      /* XXX_PTV Ici, il faut ajouter une mise en veille dans certain cas.
+       * Voir la plateforme Sky.
+       * _BIS_SR(LPM3_bits);
+       */
+      dint();
+      irq_energest = energest_type_time(ENERGEST_TYPE_IRQ);
+      eint();
+      watchdog_start();
+      ENERGEST_OFF(ENERGEST_TYPE_LPM);
+      ENERGEST_ON(ENERGEST_TYPE_CPU);
+    }
   }
   return 0;
 }
