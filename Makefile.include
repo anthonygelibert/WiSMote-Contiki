@@ -156,7 +156,6 @@ rm -f $(@:.o=.$$$$)
 endef
 
 clean:
-	echo "$(CONTIKI_SOURCEFILES)"
 	rm -f *~ *core core *.srec \
 	*.lst *.map \
         *.cprg *.bin *.data contiki*.a *.firmware core-labels.S *.ihex *.ini \
