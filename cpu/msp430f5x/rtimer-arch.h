@@ -36,9 +36,7 @@
 #include <io.h>
 #include "sys/rtimer.h"
 
-/** NOT_YET_DOCUMENTED_PTV
- *  \note Ask to NICOLAS.
- */
+/** NOT_YET_DOCUMENTED_PTV */
 #define RTIMER_ARCH_SECOND (4096U*8)
 
 /**

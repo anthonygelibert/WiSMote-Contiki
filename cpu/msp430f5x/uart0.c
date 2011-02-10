@@ -29,8 +29,8 @@
 
 /**
  * \author Anthony Gelibert
- * \date Feb 8, 2011
- * \version 0.1.0
+ * \date Feb 10, 2011
+ * \version 0.2.0
  */
 
 #include <stdio.h>

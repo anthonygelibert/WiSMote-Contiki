@@ -28,9 +28,9 @@
  */
 
 /**
- * \author Anthony Gelibert and Fabien Rey
- * \date Feb 3, 2011
- * \version 0.0.2
+ * \author Anthony Gelibert
+ * \date Feb 10, 2011
+ * \version 0.1.0
  */
 
 #include "contiki-conf.h"

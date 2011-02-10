@@ -28,9 +28,9 @@
  */
 
 /**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2011
- * \version 0.0.1
+ * \author Anthony Gelibert
+ * \date Feb 10, 2011
+ * \version 0.1.0
  */
 #include <io.h>
 #include <signal.h>
