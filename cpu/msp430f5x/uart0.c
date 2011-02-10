@@ -191,6 +191,8 @@ uart0_interrupt(void)
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   leds_toggle(LEDS_RED);
 
+  watchdog_start();
+
   if (UCA1IFG & UCRXIFG) {
     if (UCA1STAT & UCRXERR) {
       /* Clear error flags by forcing a dummy read. */
@@ -219,6 +221,6 @@ uart0_interrupt(void)
     }
   }
 #endif /* TX_WITH_INTERRUPT */
-
+  watchdog_stop();
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
