@@ -1,27 +1,18 @@
-ifdef nodeid
-    CFLAGS += -DNODEID=$(nodeid)
+ifndef CONTIKI
+    $(error CONTIKI not defined! You must specify where contiki resides!)
 endif
-
-.SUFFIXES:
 
 ### SOURCE FILES
 ## Define the CPU directory
 CONTIKI_CPU=$(CONTIKI)/cpu/msp430f5x
 ## Define the source files we have in the MSP430 port
 
-# Previous values:
-#   - CONTIKI_CPU_DIRS = . dev
-#   - MSP430     = msp430.c flash.c clock.c leds.c leds-arch.c watchdog.c lpm.c mtarch.c rtimer-arch.c
-#   - UIPDRIVERS = me.c me_tabs.c slip.c crc16.c
-#   - ELFLOADER  = elfloader.c elfloader-msp430.c symtab.c
-
 CONTIKI_CPU_DIRS = .
 MSP430     =  msp430.c uart0.c clock.c watchdog.c mtarch.c rtimer-arch.c
 UIPDRIVERS =
 ELFLOADER  =
 
-CONTIKI_SOURCEFILES        += $(MSP430) $(SYSAPPS) $(ELFLOADER) $(UIPDRIVERS)
-
+CONTIKI_SOURCEFILES += $(MSP430) $(UIPDRIVERS) $(ELFLOADER) 
 
 ### COMPILER DEFINITIONS
 
@@ -40,7 +31,9 @@ STRIP    = $(MSPGCCPATH)/msp430-strip
 BSL      = $(MSPGCCPATH)/msp430-bsl
 
 ## Flags
-
+ifndef MCU
+	$(error MCU not defined! You must specify your MCU!)
+endif
 MMCU = -mmcu=$(MCU)
 DIAGNOSTIC += -fmessage-length=0
 WARNING += -Wall
@@ -59,13 +52,10 @@ CFLAGS += -ffunction-sections
 LDFLAGS += -Wl,--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__
 endif
 
-
 CFLAGS += $(DEBUG) $(OPTIM) $(DIAGNOSTIC) $(WARNING) $(WARNING_EXTRA) $(MMCU)
 LDFLAGS += $(MMCU) -Wl,-Map=contiki-$(TARGET).map
 PROJECT_OBJECTFILES += ${addprefix $(OBJECTDIR)/,$(CONTIKI_TARGET_MAIN:.c=.o)}
 
 ### COMPILATION RULES
-
 %.hex: %.$(TARGET)
 	$(OBJCOPY) $^ -O ihex $@
-
