@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, Swedish Institute of Computer Science.
+ * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,29 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * This file is part of the Contiki operating system.
- *
- * $Id: hello-world.c,v 1.1 2006/10/02 21:46:46 adamdunkels Exp $
  */
 
 /**
- * \file
- *         A very simple Contiki application showing how Contiki programs look
- * \author
- *         Adam Dunkels <adam@sics.se>
+ * \author Anthony Gelibert
+ * \date Feb 08, 2011
+ * \version 0.0.1
  */
 
 #include "contiki.h"
 #include "uart0.h"
-
-#include <stdio.h> /* For printf() */
+#include <stdio.h>
 
 int
 echo_rx(const unsigned char c)
 {
-  char string[2] = {c,0x0};
-  printf(string);
+  putchar(c);
   return 0;
 }
 
-/*---------------------------------------------------------------------------*/
-PROCESS(hello_world_process, "Hello world process");
-AUTOSTART_PROCESSES(&hello_world_process);
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(hello_world_process, ev, data)
+PROCESS(echo_process, "Echo process");
+AUTOSTART_PROCESSES(&echo_process);
+
+PROCESS_THREAD(echo_process, ev, data)
 {
   PROCESS_BEGIN();
 
@@ -63,4 +55,3 @@ PROCESS_THREAD(hello_world_process, ev, data)
 
   PROCESS_END();
 }
-/*---------------------------------------------------------------------------*/
