@@ -29,7 +29,7 @@
 
 /**
  * \author Anthony Gelibert and Fabien Rey
- * \date Feb 09, 2010
+ * \date Feb 09, 2011
  * \version 0.0.2
  */
 
@@ -40,6 +40,7 @@
 #include "dev/watchdog.h"
 #include "dev/button-sensor.h"
 #include "uart0.h"
+#include "msp430.h"
 
 /** Display the list of auto-processes before executing them */
 #define DEBUG_PROCESS

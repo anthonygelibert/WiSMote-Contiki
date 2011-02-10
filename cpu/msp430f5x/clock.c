@@ -79,16 +79,19 @@ clock_wait(int i)
 }
 
 /** NOT_YET_DOCUMENTED_PTV */
-interrupt(TIMERA1_VECTOR) timera1 (void) {
+interrupt(TIMERA1_VECTOR)
+timera1(void)
+{
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
 
   watchdog_start();
 
-  if(TAIV == 2) {
+  if (TAIV == 2) {
 
     /* HW timer bug fix: Interrupt handler called before TR==CCR.
      * Occurrs when timer state is toggled between STOP and CONT. */
-    while(TACTL & MC1 && TACCR1 - TAR == 1);
+    while (TACTL & MC1 && TACCR1 - TAR == 1)
+      ;
 
     /* Make sure interrupt time is future */
     do {
@@ -96,31 +99,32 @@ interrupt(TIMERA1_VECTOR) timera1 (void) {
       ++count;
 
       /* Make sure the CLOCK_CONF_SECOND is a power of two, to ensure
-         that the modulo operation below becomes a logical and and not
-         an expensive divide. Algorithm from Wikipedia:
-         http://en.wikipedia.org/wiki/Power_of_two */
+       that the modulo operation below becomes a logical and and not
+       an expensive divide. Algorithm from Wikipedia:
+       http://en.wikipedia.org/wiki/Power_of_two */
 #if (CLOCK_CONF_SECOND & (CLOCK_CONF_SECOND - 1)) != 0
 #error CLOCK_CONF_SECOND must be a power of two (i.e., 1, 2, 4, 8, 16, 32, 64, ...).
 #error Change CLOCK_CONF_SECOND in contiki-conf.h.
 #endif
-      if(count % CLOCK_CONF_SECOND == 0) {
+      if (count % CLOCK_CONF_SECOND == 0) {
         ++seconds;
         energest_flush();
       }
-    } while((TACCR1 - TAR) > INTERVAL);
+    }
+    while ((TACCR1 - TAR) > INTERVAL);
 
     last_tar = TAR;
 
-    if(etimer_pending() &&
-       (etimer_next_expiration_time() - count - 1) > MAX_TICKS) {
+    if (etimer_pending() && (etimer_next_expiration_time() - count - 1)
+        > MAX_TICKS) {
       etimer_request_poll();
       LPM4_EXIT;
     }
 
   }
   /*  if(process_nevents() >= 0) {
-    LPM4_EXIT;
-    }*/
+   LPM4_EXIT;
+   }*/
 
   watchdog_stop();
 
@@ -135,7 +139,8 @@ clock_time(void)
   do {
     t1 = count;
     t2 = count;
-  } while(t1 != t2);
+  }
+  while (t1 != t2);
   return t1;
 }
 

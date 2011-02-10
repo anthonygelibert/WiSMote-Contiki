@@ -36,6 +36,8 @@
 #ifndef __UART0_H__
 #define __UART0_H__
 
+#include "types.h"
+
 /** NOT_YET_DOCUMENTED_PTV
  *
  *  \param br NOT_YET_DOCUMENTED_PTV
@@ -61,6 +63,7 @@ uart0_active(void);
  * @param input The handler
  */
 void
-uart0_set_input(int (* input)(const u8_t c));
+uart0_set_input(int
+(* input)(const u8_t c));
 
 #endif /* __UART0_H__ */

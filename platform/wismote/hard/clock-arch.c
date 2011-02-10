@@ -29,13 +29,14 @@
 
 /**
  * \author Anthony Gelibert
- * \date Feb 07, 2010
+ * \date Feb 07, 2011
  * \version 0.0.1
  */
 
 #include <contiki-conf.h>
 
-#define DEBUG_CLOCK
+/** Disable the output of the SMCLOCK on a port of the CPU */
+#define DEBUG_CLOCK 0
 
 /**
  * \brief Initialize the clock for our platform.
@@ -45,7 +46,7 @@
  */
 void clock_platform_init(void)
 {
-#ifdef DEBUG_CLOCK
+#if DEBUG_CLOCK
   P4DIR |= 0x80;
   P4SEL |= 0x80;
 #endif

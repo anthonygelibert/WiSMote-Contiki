@@ -28,15 +28,12 @@
  */
 /**
  * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
+ * \date Jan 24, 2011
  * \version 0.0.2
  */
 
 #ifndef __MSP430_H__
 #define __MSP430_H__
-
-#include "contiki-conf.h"
-#include "types.h"
 
 /* <errno.h> doesn't define this symbol. */
 #ifndef EINVAL

@@ -29,7 +29,7 @@
 
 /**
  * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
+ * \date Jan 24, 2011
  * \version 0.0.1
  */
 
@@ -120,8 +120,13 @@ init_ports(void)
 #endif
 }
 
-/**
- * NOT_YET_DOCUMENTED_PTV
+/** \brief Initialize the MSP430 CPU.
+ *
+ *  This function initializes :
+ *  <ol>
+ *      <li>WatchDog</li>
+ *      <li>Ports</li>
+ *  </ol>
  */
 void
 msp430_cpu_init(void)

@@ -29,7 +29,7 @@
 
 /**
  * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2010
+ * \date Jan 24, 2011
  * \version 0.0.1
  */
 #include <io.h>

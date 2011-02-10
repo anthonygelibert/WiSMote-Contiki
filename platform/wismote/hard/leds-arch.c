@@ -29,7 +29,7 @@
 
 /**
  * \author Anthony Gelibert
- * \date Feb 03, 2010
+ * \date Feb 03, 2011
  * \version 0.0.3
  */
 
