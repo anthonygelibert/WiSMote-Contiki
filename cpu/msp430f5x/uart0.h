@@ -36,14 +36,14 @@
 #ifndef __UART0_H__
 #define __UART0_H__
 
-#include "types.h"
+#include <stdint.h>
 
 /** NOT_YET_DOCUMENTED_PTV
  *
  *  \param br NOT_YET_DOCUMENTED_PTV
  */
 void
-uart0_init(const u16_t br, const u8_t brs, const u8_t brf);
+uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf);
 
 /** NOT_YET_DOCUMENTED_PTV
  *
@@ -51,7 +51,7 @@ uart0_init(const u16_t br, const u8_t brs, const u8_t brf);
  * \return
  */
 int
-uart0_writeb(const u8_t c);
+uart0_writeb(const uint8_t c);
 
 /** NOT_YET_DOCUMENTED_PTV */
 uint8_t
@@ -64,6 +64,6 @@ uart0_active(void);
  */
 void
 uart0_set_input(int
-(* input)(const u8_t c));
+(* input)(const uint8_t c));
 
 #endif /* __UART0_H__ */

@@ -67,7 +67,7 @@ static uint8_t txbuf_data[TXBUFSIZE];
  * @return
  */
 static int
-(* uart0_input_handler)(const u8_t c);
+(* uart0_input_handler)(const uint8_t c);
 
 static volatile uint8_t transmitting;
 
@@ -77,7 +77,7 @@ uart0_arch_init();
 /** NOT_YET_DOCUMENTED_PTV
  */
 void
-uart0_init(const u16_t br, const u8_t brs, const u8_t brf)
+uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
 {
   /* See MSP430x5xx/6xx Family User's Guide p. 577 */
 
@@ -113,7 +113,7 @@ uart0_init(const u16_t br, const u8_t brs, const u8_t brf)
 
 /** NOT_YET_DOCUMENTED_PTV */
 int
-uart0_writeb(const u8_t c)
+uart0_writeb(const uint8_t c)
 {
   watchdog_periodic();
 
@@ -155,7 +155,7 @@ uart0_active(void)
  */
 void
 uart0_set_input(int
-(* input)(const u8_t c))
+(* input)(const uint8_t c))
 {
   uart0_input_handler = input;
 }
