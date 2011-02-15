@@ -52,21 +52,22 @@ static volatile clock_time_t count = 0;
 /** Used for calculating clock_fine. */
 static volatile uint16_t last_tar = 0;
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Platform-dependent initializations. */
 extern void
 clock_platform_init(void);
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Initialize the XT1 clock. */
 static void
 initXT1(void);
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Initialize the timer for the logical clock module. */
 static void
 initClockModule(void);
 
 /**
  * Wait for a multiple of 10 ms.
  *
+ * \param i Delay
  */
 void
 clock_wait(int i)
@@ -78,7 +79,6 @@ clock_wait(int i)
   }
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
 interrupt(TIMER1_A1_VECTOR)
 timera1(void)
 {
@@ -142,7 +142,7 @@ clock_set(clock_time_t clock, clock_time_t fclock)
   count = clock;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Get the finest interval of the clock. */
 int
 clock_fine_max(void)
 {
@@ -179,14 +179,22 @@ clock_seconds(void)
   return t1;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Get the current timer counter.
+ *
+ *  \return Timer A1 counter.
+ */
 rtimer_clock_t
 clock_counter(void)
 {
   return TA1R;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Initialize the clocks:
+ *  <ol>
+ *  <li>XT1 clock.</li>
+ *  <li>Timer for the clock module.</li>
+ *  </ol>
+ */
 void
 clock_init(void)
 {
@@ -202,7 +210,7 @@ clock_delay(unsigned int i)
   asm("jnz $-2");
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Initialize the XT1 clock. */
 static void
 initXT1(void)
 {
@@ -230,7 +238,7 @@ initXT1(void)
   eint();
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Initialize the timer for the logical clock module. */
 static void
 initClockModule(void)
 {

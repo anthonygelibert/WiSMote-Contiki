@@ -38,22 +38,27 @@
 
 #include <stdint.h>
 
-/** NOT_YET_DOCUMENTED_PTV
+/** Initialize the UART0.
  *
- *  \param br NOT_YET_DOCUMENTED_PTV
+ * \param br The UCA1BRW value.
+ * \param brs The UCBRSx value.
+ * \param brf The UCBRFx value.
  */
 void
 uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf);
 
-/** NOT_YET_DOCUMENTED_PTV
+/** Write a byte on the UART0.
  *
- * \param c NOT_YET_DOCUMENTED_PTV
- * \return
+ * \param c The byte to send.
+ * \return c
  */
 int
 uart0_writeb(const uint8_t c);
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Test the activity of UART0
+ *
+ * \return Result of the test
+ */
 uint8_t
 uart0_active(void);
 

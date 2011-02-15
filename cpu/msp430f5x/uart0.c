@@ -74,7 +74,11 @@ static volatile uint8_t transmitting;
 extern void
 uart0_arch_init();
 
-/** NOT_YET_DOCUMENTED_PTV
+/** Initialize the UART0.
+ *
+ * \param br The UCA1BRW value.
+ * \param brs The UCBRSx value.
+ * \param brf The UCBRFx value.
  */
 void
 uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
@@ -111,7 +115,11 @@ uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
 #endif /* TX_WITH_INTERRUPT */
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Write a byte on the UART0.
+ *
+ * \param c The byte to send.
+ * \return c
+ */
 int
 uart0_writeb(const uint8_t c)
 {
@@ -141,7 +149,10 @@ uart0_writeb(const uint8_t c)
   return c;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/** Test the activity of UART0
+ *
+ * \return Result of the test
+ */
 uint8_t
 uart0_active(void)
 {
@@ -182,7 +193,6 @@ putchar(int c)
   return uart0_writeb(c);
 }
 
-/** NOT_YET_DOCUMENTED_PTV*/
 interrupt(USCI_A1_VECTOR)
 uart0_interrupt(void)
 {
