@@ -37,11 +37,13 @@
 #include <signal.h>
 
 #include "contiki.h"
-#include "dev/serial-line.h"
 #include "dev/leds.h"
 #include "dev/serial-line.h"
+#include "dev/button-sensor.h"
 #include "dev/watchdog.h"
+#include "lib/sensors.h"
 #include "sys/energest.h"
+
 #include "uart0.h"
 #include "spl.h"
 #include "msp430.h"
@@ -49,7 +51,7 @@
 /** Display the list of auto-processes before executing them. */
 #define DEBUG_PROCESS 1
 /** Doesn't display the list of sensors before starting them. */
-#define DEBUG_SENSORS 0
+#define DEBUG_SENSORS 1
 
 #if DEBUG_PROCESS
 /**
@@ -83,6 +85,8 @@ print_sensors(void)
   putchar('\n');
 }
 #endif /* DEBUG_SENSORS */
+
+SENSORS(&button_sensor);
 
 /**
  * \brief Make all the initializations and start the auto-processes.
@@ -118,7 +122,6 @@ main(void)
 #if CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6)
   uart0_set_input(serial_line_input_byte);
   serial_line_init();
-  leds_on(LEDS_BLUE);
 #endif
   /* Initialize the EnerGest module */
   energest_init();
@@ -129,13 +132,12 @@ main(void)
 
   printf(CONTIKI_VERSION_STRING " started.\n");
 
-  /* Initialize the sensors
+  /* Initialize the sensors */
   leds_on(LEDS_BLUE);
 #ifdef DEBUG_SENSORS
   print_sensors();
 #endif
   process_start(&sensors_process, NULL);
-  leds_off(LEDS_BLUE); */
 
   /* Start the processes */
 #if DEBUG_PROCESS
