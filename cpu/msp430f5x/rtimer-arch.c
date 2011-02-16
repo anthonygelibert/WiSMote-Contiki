@@ -28,6 +28,8 @@
  */
 
 /**
+ * XXX_PTV Timer -> RTC
+ *
  * \author Anthony Gelibert
  * \date Feb 10, 2011
  * \version 0.1.0
