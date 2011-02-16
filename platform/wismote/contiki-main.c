@@ -37,6 +37,7 @@
 #include <signal.h>
 
 #include "contiki.h"
+#include "dev/serial-line.h"
 #include "dev/leds.h"
 #include "dev/watchdog.h"
 #include "sys/energest.h"
@@ -101,6 +102,11 @@ main(void)
   /* Initialize the uart */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
+#if CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6)
+  serial_line_init();
+  uart0_set_input(serial_line_input_byte);
+#endif
+
   leds_on(LEDS_GREEN);
   leds_off(LEDS_RED);
 
