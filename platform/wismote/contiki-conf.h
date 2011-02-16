@@ -63,6 +63,9 @@ typedef unsigned short uip_stats_t;
 /** Enable the interruptions for the UART0 TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 
+/* ----- Serial Line module ----- */
+#define SERIAL_LINE_CONF_BUFSIZE 2
+
 /* ----- Includes ----- */
 #include "types.h"
 #include <msp430f5437.h>
