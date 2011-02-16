@@ -103,8 +103,9 @@ main(void)
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
 #if CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6)
-  serial_line_init();
   uart0_set_input(serial_line_input_byte);
+  serial_line_init();
+  leds_on(LEDS_BLUE);
 #endif
 
   leds_on(LEDS_GREEN);
