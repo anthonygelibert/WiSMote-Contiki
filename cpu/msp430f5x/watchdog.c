@@ -29,10 +29,9 @@
 /**
  * \author Anthony Gelibert and Fabien Rey
  * \date Jan 24, 2011
- * \version 0.0.3
- *
- * XXX_PTV: Check the usage of the counter...
+ * \version 0.0.4
  */
+
 #include <io.h>
 #include <signal.h>
 #include "dev/watchdog.h"
@@ -75,7 +74,7 @@ void
 watchdog_start(void)
 {
   if ((--s_counter) == 0) {
-    WDTCTL = WDTPW | WDTCNTCL | WDT_ARST_1000 | WDTTMSEL;
+    WDTCTL = WDTPW | WDTCNTCL | WDTIS1 | WDTTMSEL;
   }
 }
 
@@ -86,9 +85,7 @@ watchdog_start(void)
 void
 watchdog_periodic(void)
 {
-  /*  if(counter < 0) {*/
   WDTCTL = (WDTCTL & 0xff) | WDTPW | WDTCNTCL | WDTTMSEL;
-  /*  }*/
 }
 
 /** Stop the counter */
