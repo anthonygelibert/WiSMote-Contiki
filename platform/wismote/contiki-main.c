@@ -29,8 +29,8 @@
 
 /**
  * \author Anthony Gelibert and Fabien Rey
- * \date Feb 09, 2011
- * \version 0.0.2
+ * \date Feb 16, 2011
+ * \version 0.0.3
  */
 
 #include <stdio.h>
@@ -51,7 +51,7 @@
 /** Doesn't display the list of sensors before starting them. */
 #define DEBUG_SENSORS 0
 
-#ifdef DEBUG_PROCESS
+#if DEBUG_PROCESS
 /**
  * \brief Display a list of processes.
  *
@@ -103,26 +103,23 @@ main(void)
   /* Initialize the uart */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
-#if CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6)
-  uart0_set_input(serial_line_input_byte);
-  serial_line_init();
-  leds_on(LEDS_BLUE);
-#endif
-
   leds_on(LEDS_GREEN);
   leds_off(LEDS_RED);
 
   /* Initialize the RTimer */
   rtimer_init();
-
   /* Initialize the "process system" (core/sys/process.h)     */
   process_init();
   /* Initialize the ETimer module */
   process_start(&etimer_process, NULL);
-  /* Initialize the CTimer mocule */
+  /* Initialize the CTimer module */
   ctimer_init();
-
-
+  /* Initialize the Serial Line module */
+#if CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6)
+  uart0_set_input(serial_line_input_byte);
+  serial_line_init();
+  leds_on(LEDS_BLUE);
+#endif
   /* Initialize the EnerGest module */
   energest_init();
   /* SETUP : END */
@@ -141,7 +138,7 @@ main(void)
   leds_off(LEDS_BLUE); */
 
   /* Start the processes */
-#ifdef DEBUG_PROCESS
+#if DEBUG_PROCESS
   print_processes(autostart_processes);
 #endif /* DEBUG_PROCESS */
   autostart_start(autostart_processes);
