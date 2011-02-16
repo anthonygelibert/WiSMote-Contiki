@@ -38,6 +38,7 @@
 #include "sys/autostart.h"
 #include "watchdog.h"
 #include "leds.h"
+#include "signal.h"
 
 #include <stdint.h>
 
@@ -45,28 +46,51 @@ void
 delay(void)
 {
   volatile uint16_t i;
-  for (i = 0; i < 64000; i++) {
+  for (i = 0; i < 64000; i++)
+  {
     asm volatile("nop");
   }
 }
 
+/** NOT_YET_DOCUMENTED_PTV */
+interrupt(PORT1_VECTOR)
+port1ITHandler(void)
+{
+  // User Int is P1.4
+  if (P1IFG & BIT4)
+  {
+    // Toogle Green led
+    leds_toggle(LEDS_GREEN);
+
+    // Clear IFG
+    P1IFG &= ~BIT4;
+  }
+}
+
 /*---------------------------------------------------------------------------*/
-PROCESS(leds_process, "LEDs process");
-AUTOSTART_PROCESSES(&leds_process);
+PROCESS(button_process, "Button process");
+AUTOSTART_PROCESSES(&button_process);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(leds_process, ev, data)
+PROCESS_THREAD(button_process, ev, data)
 {
   PROCESS_BEGIN();
 
-  watchdog_stop();
+    // IT sur front descendant
+    P1IES |= BIT4;
+    // ack si IT
+    P1IFG &= ~BIT4;
+    // IT activee sur P1.4
+    P1IE |= BIT4;
 
-  while (1) {
-    leds_off(LEDS_BLUE | LEDS_RED | LEDS_GREEN);
-    delay();
-    leds_on(LEDS_BLUE | LEDS_RED | LEDS_GREEN);
-    delay();
+    while (1)
+    {
+      leds_on(LEDS_BLUE);
+      delay();
+      leds_off(LEDS_BLUE);
+      delay();
+      PROCESS_YIELD();
+    }
+
+    PROCESS_END();
   }
-
-  PROCESS_END();
-}
-/*---------------------------------------------------------------------------*/
+  /*---------------------------------------------------------------------------*/
