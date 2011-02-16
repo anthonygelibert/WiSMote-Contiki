@@ -45,9 +45,8 @@ PROCESS_THREAD(echo_process, ev, data)
   PROCESS_BEGIN();
   while(1)
   {
-    printf("Wait a new message...\n");
     PROCESS_WAIT_EVENT_UNTIL(ev == serial_line_event_message && data != NULL);
-    printf("%s.",(char *)data);
+    printf("%s",(char *)data);
   }
   PROCESS_END();
 }
