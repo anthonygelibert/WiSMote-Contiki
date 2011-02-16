@@ -34,12 +34,13 @@
  */
 
 #include "contiki.h"
+#include "contiki-lib.h"
 #include "sys/process.h"
 #include "sys/autostart.h"
 #include "watchdog.h"
 #include "leds.h"
 #include "signal.h"
-
+#include <stdio.h>
 #include <stdint.h>
 
 void
@@ -68,10 +69,10 @@ port1ITHandler(void)
 }
 
 /*---------------------------------------------------------------------------*/
-PROCESS(button_process, "Button process");
-AUTOSTART_PROCESSES(&button_process);
+PROCESS(buttonTest_process, "Button process");
+AUTOSTART_PROCESSES(&buttonTest_process);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(button_process, ev, data)
+PROCESS_THREAD(buttonTest_process, ev, data)
 {
   PROCESS_BEGIN();
 
@@ -84,11 +85,11 @@ PROCESS_THREAD(button_process, ev, data)
 
     while (1)
     {
+      PROCESS_PAUSE();
       leds_on(LEDS_BLUE);
       delay();
       leds_off(LEDS_BLUE);
       delay();
-      PROCESS_YIELD();
     }
 
     PROCESS_END();
