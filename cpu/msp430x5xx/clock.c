@@ -244,7 +244,6 @@ initClockModule(void)
 {
   dint();
 
-  //TA1CTL = TASSEL__SMCLK | TACLR | ID__2;
   TA1EX0 |= TAIDEX_7;
   TA1CTL = TASSEL__ACLK | TACLR | ID__8;
 
