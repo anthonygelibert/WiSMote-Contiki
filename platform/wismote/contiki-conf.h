@@ -64,7 +64,7 @@ typedef unsigned short uip_stats_t;
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 
 /* ----- Serial Line module ----- */
-#define SERIAL_LINE_CONF_BUFSIZE 2
+#define SERIAL_LINE_CONF_BUFSIZE 64
 
 /* ----- Includes ----- */
 #include "types.h"
