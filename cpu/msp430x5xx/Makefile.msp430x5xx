@@ -4,7 +4,7 @@ endif
 
 ### SOURCE FILES
 ## Define the CPU directory
-CONTIKI_CPU=$(CONTIKI)/cpu/msp430f5x
+CONTIKI_CPU=$(CONTIKI)/cpu/msp430x5xx
 ## Define the source files we have in the MSP430 port
 
 CONTIKI_CPU_DIRS = .

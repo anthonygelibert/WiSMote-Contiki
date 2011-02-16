@@ -23,5 +23,5 @@ SMALL=1
 # MCU of our platform
 MCU=msp430x5437
 ## CPU
-CONTIKI_CPU=$(CONTIKI)/cpu/msp430f5x
-include $(CONTIKI)/cpu/msp430f5x/Makefile.msp430f5x
+CONTIKI_CPU=$(CONTIKI)/cpu/msp430x5xx
+include $(CONTIKI)/cpu/msp430x5xx/Makefile.msp430x5xx
