@@ -39,6 +39,7 @@
 #include "contiki.h"
 #include "dev/serial-line.h"
 #include "dev/leds.h"
+#include "dev/serial-line.h"
 #include "dev/watchdog.h"
 #include "sys/energest.h"
 #include "uart0.h"
@@ -120,6 +121,8 @@ main(void)
   process_start(&etimer_process, NULL);
   /* Initialize the CTimer mocule */
   ctimer_init();
+
+
   /* Initialize the EnerGest module */
   energest_init();
   /* SETUP : END */
