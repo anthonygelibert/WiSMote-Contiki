@@ -51,21 +51,6 @@ delay(void)
   }
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
-interrupt(PORT1_VECTOR)
-port1ITHandler(void)
-{
-  // User Int is P1.4
-  if (P1IFG & BIT4)
-  {
-      // Toogle Green led
-      leds_toggle(LEDS_GREEN);
-
-      // Clear IFG
-    //P1IFG &= ~BIT4;
-  }
-}
-
 /*---------------------------------------------------------------------------*/
 PROCESS(leds_process, "LEDs process");
 AUTOSTART_PROCESSES(&leds_process);
@@ -74,17 +59,10 @@ PROCESS_THREAD(leds_process, ev, data)
 {
   PROCESS_BEGIN();
 
-  //watchdog_stop();
-  //watchdog_start();
-  //leds_off(LEDS_BLUE | LEDS_RED | LEDS_GREEN);
   while (1) {
     leds_on(LEDS_BLUE);
     delay();
     leds_off(LEDS_BLUE);
-    delay();
-
-    PROCESS_YIELD();
-    leds_on(LEDS_BLUE);
     delay();
   }
 
