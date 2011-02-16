@@ -32,7 +32,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: rpl-dag.c,v 1.43 2011/01/04 20:43:28 nvt-se Exp $
  */
 /**
  * \file
@@ -41,9 +40,9 @@
  * \author Joakim Eriksson <joakime@sics.se>, Nicolas Tsiftes <nvt@sics.se>
  */
 
-#include "net/rpl/rpl.h"
 
 #include "contiki.h"
+#include "net/rpl/rpl-private.h"
 #include "net/uip.h"
 #include "net/uip-nd6.h"
 #include "lib/list.h"
@@ -55,6 +54,8 @@
 
 #define DEBUG DEBUG_NONE
 #include "net/uip-debug.h"
+
+#include "net/neighbor-info.h"
 
 /************************************************************************/
 extern rpl_of_t RPL_OF;
@@ -92,6 +93,9 @@ static rpl_of_t * const objective_functions[] = {&RPL_OF};
 #else
 #define RPL_DIO_INTERVAL_DOUBLINGS      RPL_CONF_DIO_INTERVAL_DOUBLINGS
 #endif /* !RPL_CONF_DIO_INTERVAL_DOUBLINGS */
+
+#define INITIAL_ETX  NEIGHBOR_INFO_ETX_DIVISOR * 5
+
 /************************************************************************/
 /* Allocate parents from the same static MEMB chunk to reduce memory waste. */
 MEMB(parent_memb, struct rpl_parent, RPL_MAX_PARENTS);
@@ -112,6 +116,28 @@ remove_parents(rpl_dag_t *dag, rpl_rank_t minimum_rank)
     if(p->rank >= minimum_rank) {
       rpl_remove_parent(dag, p);
     }
+  }
+}
+/************************************************************************/
+static void
+remove_worst_parent(rpl_dag_t *dag, rpl_rank_t min_worst_rank)
+{
+  rpl_parent_t *p, *worst;
+
+  PRINTF("RPL: Removing the worst parent\n");
+
+  /* Find the parent with the highest rank. */
+  worst = NULL;
+  for(p = list_head(dag->parents); p != NULL; p = list_item_next(p)) {
+    if(p != dag->preferred_parent &&
+       (worst == NULL || p->rank > worst->rank)) {
+      worst = p;
+    }
+  }
+  /* Remove the neighbor if its rank is worse than the minimum worst
+     rank. */
+  if(worst != NULL && worst->rank > min_worst_rank) {
+    rpl_remove_parent(dag, worst);
   }
 }
 /************************************************************************/
@@ -168,6 +194,8 @@ rpl_set_root(uip_ipaddr_t *dag_id)
 
   dag->default_lifetime = DEFAULT_RPL_DEF_LIFETIME;
   dag->lifetime_unit = DEFAULT_RPL_LIFETIME_UNIT;
+
+  dag->of->update_metric_container(dag);
 
   PRINTF("RPL: Node set to be a DAG root with DAG ID ");
   PRINT6ADDR(&dag->dag_id);
@@ -277,8 +305,10 @@ rpl_add_parent(rpl_dag_t *dag, rpl_dio_t *dio, uip_ipaddr_t *addr)
   memcpy(&p->addr, addr, sizeof(p->addr));
   p->dag = dag;
   p->rank = dio->rank;
-  p->local_confidence = 0;
+  p->etx = INITIAL_ETX;
   p->dtsn = 0;
+
+  memcpy(&p->mc, &dio->mc, sizeof(p->mc));
 
   list_add(dag->parents, p);
 
@@ -317,6 +347,7 @@ rpl_select_parent(rpl_dag_t *dag)
 
   if(dag->preferred_parent != best) {
     dag->preferred_parent = best; /* Cache the value. */
+    dag->of->update_metric_container(dag);
     rpl_set_default_route(dag, &best->addr);
     /* The DAO parent set changed - schedule a DAO transmission. */
     rpl_schedule_dao(dag);
@@ -423,7 +454,7 @@ join_dag(uip_ipaddr_t *from, rpl_dio_t *dio)
   }
   PRINTF("succeeded\n");
 
-  p->local_confidence = 0;	/* The lowest confidence for new parents. */
+  p->etx = INITIAL_ETX; /* The lowest confidence for new parents. */
 
   /* Determine the objective function by using the
      objective code point of the DIO. */
@@ -462,6 +493,7 @@ join_dag(uip_ipaddr_t *from, rpl_dio_t *dio)
 
   dag->version = dio->version;
   dag->preferred_parent = p;
+  dag->of->update_metric_container(dag);
 
   dag->dio_intdoubl = dio->dag_intdoubl;
   dag->dio_intmin = dio->dag_intmin;
@@ -677,10 +709,10 @@ rpl_process_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
   p = rpl_find_parent(dag, from);
   if(p == NULL) {
     if(RPL_PARENT_COUNT(dag) == RPL_MAX_PARENTS) {
-      /* Try to make room for a new parent. */
-      remove_parents(dag, dio->rank);
+      /* Make room for a new parent. */
+      remove_worst_parent(dag, dio->rank);
     }
-
+    
     /* Add the DIO sender as a candidate parent. */
     p = rpl_add_parent(dag, dio, from);
     if(p == NULL) {
@@ -689,7 +721,7 @@ rpl_process_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
       PRINTF(")\n");
       return;
     }
-
+    
     PRINTF("RPL: New candidate parent with rank %u: ", (unsigned)p->rank);
     PRINT6ADDR(from);
     PRINTF("\n");
@@ -697,19 +729,19 @@ rpl_process_dio(uip_ipaddr_t *from, rpl_dio_t *dio)
     PRINTF("RPL: Received consistent DIO\n");
     dag->dio_counter++;
   }
-
+  
   /* We have allocated a candidate parent; process the DIO further. */
-
+  
   p->rank = dio->rank;
   if(rpl_process_parent_event(dag, p) == 0) {
     /* The candidate parent no longer exists. */
     return;
   }
-
+  
   if(should_send_dao(dag, dio, p)) {
     rpl_schedule_dao(dag);
   }
-
+  
   p->dtsn = dio->dtsn;
 }
 /************************************************************************/

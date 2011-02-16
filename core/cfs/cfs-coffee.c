@@ -333,7 +333,7 @@ get_sector_status(uint16_t sector, struct sector_status *stats)
 
   /*
    * To avoid unnecessary page isolation, we notify the callee that 
-   * "skip_pages" pages should be isolated only the current file extent 
+   * "skip_pages" pages should be isolated only if the current file extent 
    * ends in the next sector. If the file extent ends in a more distant 
    * sector, however, the garbage collection can free the next sector 
    * immediately without requiring page isolation. 
@@ -1159,6 +1159,7 @@ cfs_write(int fd, const void *buf, unsigned size)
   cfs_offset_t bytes_left;
   const char dummy[1] = { 0xff };
 #endif
+
   if(!(FD_VALID(fd) && FD_WRITABLE(fd))) {
     return -1;
   }
@@ -1167,7 +1168,7 @@ cfs_write(int fd, const void *buf, unsigned size)
   file = fdp->file;
 
   /* Attempt to extend the file if we try to write past the end. */
-#ifdef COFFEE_IO_SEMANTICS
+#if COFFEE_IO_SEMANTICS
   if(!(fdp->io_flags & CFS_COFFEE_IO_FIRM_SIZE)) {
 #endif
   while(size + fdp->offset + sizeof(struct file_header) >
@@ -1178,7 +1179,7 @@ cfs_write(int fd, const void *buf, unsigned size)
     file = fdp->file;
     PRINTF("Extended the file at page %u\n", (unsigned)file->page);
   }
-#ifdef COFFEE_IO_SEMANTICS
+#if COFFEE_IO_SEMANTICS
   }
 #endif
 

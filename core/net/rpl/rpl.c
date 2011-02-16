@@ -31,8 +31,6 @@
  * SUCH DAMAGE.
  *
  * This file is part of the Contiki operating system.
- *
- * $Id: rpl.c,v 1.15 2011/01/25 22:41:30 joxe Exp $
  */
 /**
  * \file
@@ -44,7 +42,7 @@
 #include "net/uip.h"
 #include "net/tcpip.h"
 #include "net/uip-ds6.h"
-#include "net/rpl/rpl.h"
+#include "net/rpl/rpl-private.h"
 #include "net/neighbor-info.h"
 
 #define DEBUG DEBUG_NONE
@@ -150,11 +148,11 @@ rpl_link_neighbor_callback(const rimeaddr_t *addr, int known, int etx)
     return;
   }
 
-  if(etx != parent->local_confidence) {
+  if(etx != parent->etx) {
     /* Trigger DAG rank recalculation. */
     parent->updated = 1;
   }
-  parent->local_confidence = etx;
+  parent->etx = etx;
 
   if(dag->of->parent_state_callback != NULL) {
     dag->of->parent_state_callback(parent, known, etx);

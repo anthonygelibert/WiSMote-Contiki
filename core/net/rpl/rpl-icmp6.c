@@ -32,7 +32,6 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: rpl-icmp6.c,v 1.35 2011/01/25 09:55:12 joxe Exp $
  */
 /**
  * \file
@@ -48,7 +47,7 @@
 #include "net/uip-ds6.h"
 #include "net/uip-nd6.h"
 #include "net/uip-icmp6.h"
-#include "net/rpl/rpl.h"
+#include "net/rpl/rpl-private.h"
 #include "net/packetbuf.h"
 
 #include <limits.h>
@@ -237,12 +236,34 @@ dio_input(void)
       return;
     }
 
+    PRINTF("RPL: DIO suboption %u, length: %u\n", subopt_type, len - 2);
+
     switch(subopt_type) {
-    case RPL_DIO_SUBOPT_DAG_MC:
-      if(len < 7) {
+    case RPL_DIO_SUBOPT_DAG_METRIC_CONTAINER:
+      if(len < 6) {
         PRINTF("RPL: Invalid DAG MC, len = %d\n", len);
 	RPL_STAT(rpl_stats.malformed_msgs++);
         return;
+      }
+      dio.mc.type = buffer[i + 2];
+      dio.mc.flags = buffer[i + 3];
+      dio.mc.aggr = buffer[i + 4] >> 4;
+      dio.mc.prec = buffer[i + 4] & 0xf;
+      dio.mc.length = buffer[i + 5];
+      if(dio.mc.type == RPL_DAG_MC_ETX) {
+        dio.mc.etx.etx = buffer[i + 6] << 8;
+        dio.mc.etx.etx |= buffer[i + 7];
+
+        PRINTF("RPL: DAG MC: type %u, flags %u, aggr %u, prec %u, length %u, ETX %u\n",
+	       (unsigned)dio.mc.type,  
+	       (unsigned)dio.mc.flags, 
+	       (unsigned)dio.mc.aggr, 
+	       (unsigned)dio.mc.prec, 
+	       (unsigned)dio.mc.length, 
+	       (unsigned)dio.mc.etx.etx);
+      } else {
+       PRINTF("RPL: Unhandled DAG MC type: %u\n", (unsigned)dio.mc.type);
+       return;
       }
       break;
     case RPL_DIO_SUBOPT_ROUTE_INFO:
@@ -251,6 +272,7 @@ dio_input(void)
 	RPL_STAT(rpl_stats.malformed_msgs++);
         return;
       }
+
       /* flags is both preference and flags for now */
       dio.destination_prefix.length = buffer[i + 2];
       dio.destination_prefix.flags = buffer[i + 3];
@@ -269,6 +291,12 @@ dio_input(void)
 
       break;
     case RPL_DIO_SUBOPT_DAG_CONF:
+      if(len != 16) {
+        PRINTF("RPL: Invalid DAG configuration option, len = %d\n", len);
+	RPL_STAT(rpl_stats.malformed_msgs++);
+        return;
+      }
+
       /* Path control field not yet implemented - at i + 2 */
       dio.dag_intdoubl = buffer[i + 3];
       dio.dag_intmin = buffer[i + 4];
@@ -299,6 +327,9 @@ dio_input(void)
       PRINTF("RPL: Copying prefix information\n");
       memcpy(&dio.prefix_info.prefix, &buffer[i + 16], 16);
       break;
+    default:
+      PRINTF("RPL: Unsupported suboption type in DIO: %u\n",
+	(unsigned)subopt_type);
     }
   }
 
@@ -337,6 +368,26 @@ dio_output(rpl_dag_t *dag, uip_ipaddr_t *uc_addr)
 
   memcpy(buffer + pos, &dag->dag_id, sizeof(dag->dag_id));
   pos += 16;
+
+  if(dag->mc.type != RPL_DAG_MC_NONE) {
+    dag->of->update_metric_container(dag);
+
+    buffer[pos++] = RPL_DIO_SUBOPT_DAG_METRIC_CONTAINER;
+    buffer[pos++] = 6;
+    buffer[pos++] = dag->mc.type;
+    buffer[pos++] = dag->mc.flags;
+    buffer[pos] = dag->mc.aggr << 4;
+    buffer[pos++] |= dag->mc.prec;
+    if(dag->mc.type == RPL_DAG_MC_ETX) {
+      buffer[pos++] = 2;
+      buffer[pos++] = dag->mc.etx.etx >> 8;
+      buffer[pos++] = dag->mc.etx.etx & 0xff;
+    } else {
+      PRINTF("RPL: Unable to send DIO because of unhandled DAG MC type %u\n",
+	(unsigned)dag->mc.type);
+      return;
+    }
+  }
 
   /* always add a sub-option for DAG configuration */
   buffer[pos++] = RPL_DIO_SUBOPT_DAG_CONF;
