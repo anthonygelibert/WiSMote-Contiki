@@ -108,7 +108,7 @@ main(void)
   /* Initialize the uart */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
-#if SLIP_ENABLED
+#if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6) && SLIP_ENABLED
   slip_arch_init(0);
 #endif
   leds_on(LEDS_GREEN);
