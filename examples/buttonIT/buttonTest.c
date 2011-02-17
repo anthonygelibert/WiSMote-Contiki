@@ -53,7 +53,6 @@ delay(void)
   }
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
 interrupt(PORT1_VECTOR)
 port1ITHandler(void)
 {
