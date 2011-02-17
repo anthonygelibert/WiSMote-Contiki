@@ -67,6 +67,9 @@ typedef unsigned short uip_stats_t;
 /* ----- Serial Line module ----- */
 #define SERIAL_LINE_CONF_BUFSIZE 64
 
+/* ----- CONTIKI MAIN ----- */
+#define SLIP_ENABLED 1
+
 /* ----- Includes ----- */
 #include "types.h"
 #include <msp430f5437.h>

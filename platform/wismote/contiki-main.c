@@ -41,6 +41,7 @@
 #include "dev/serial-line.h"
 #include "dev/button-sensor.h"
 #include "dev/watchdog.h"
+#include "dev/slip.h"
 #include "lib/sensors.h"
 #include "sys/energest.h"
 
@@ -107,6 +108,9 @@ main(void)
   /* Initialize the uart */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
+#if SLIP_ENABLED
+  slip_arch_init(0);
+#endif
   leds_on(LEDS_GREEN);
   leds_off(LEDS_RED);
 
