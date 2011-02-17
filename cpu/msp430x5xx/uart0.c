@@ -52,8 +52,12 @@
 #endif /* UART0_CONF_TX_WITH_INTERRUPT */
 
 #if TX_WITH_INTERRUPT
+#ifdef UART0_CONF_TX_BUFSIZE
+#define TXBUFSIZE UART0_CONF_TX_BUFSIZE
+#else
 /** Size of the TX buffer. */
 #define TXBUFSIZE 64
+#endif
 /** The ring buffer used for the TX */
 static struct ringbuf txbuf;
 /** The buffer in the ring buffer. */

@@ -62,6 +62,7 @@ typedef unsigned short uip_stats_t;
 /* ----- UART module ----- */
 /** Enable the interruptions for the UART0 TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
+#define UART0_CONF_TX_BUFSIZE 64
 
 /* ----- Serial Line module ----- */
 #define SERIAL_LINE_CONF_BUFSIZE 64
