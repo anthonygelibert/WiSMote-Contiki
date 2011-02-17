@@ -22,6 +22,17 @@ DEBUG_FLAGS=1
 SMALL=1
 # MCU of our platform
 MCU=msp430x5437
+## IP
+ifdef CONTIKI_NO_NET
+CFLAGS+=-DWITH_UIP6=0 -DWITH_UIP=0
+else
+ifdef UIP_CONF_IPV6
+CFLAGS+=-DWITH_UIP6=1 -DWITH_UIP=0
+else
+CFLAGS+=-DWITH_UIP6=0 -DWITH_UIP=1
+endif
+endif
+
 ## CPU
 CONTIKI_CPU=$(CONTIKI)/cpu/msp430x5xx
 include $(CONTIKI)/cpu/msp430x5xx/Makefile.msp430x5xx
