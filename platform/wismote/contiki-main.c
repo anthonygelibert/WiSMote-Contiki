@@ -154,9 +154,6 @@ main(void)
     }
     while (r > 0);
 
-    //! XXX_PTV Ne fonctionne pas pour le moment, bloque l'exécution quelque part.
-    //  Ca n'est pas dû aux fonctions energest.
-#if 0
     /* Idle processing */
     int s = splhigh(); /* Disable interrupts. */
     /* uart1_active is for avoiding LPM3 when still sending or receiving */
@@ -184,8 +181,6 @@ main(void)
       ENERGEST_OFF(ENERGEST_TYPE_LPM);
       ENERGEST_ON(ENERGEST_TYPE_CPU);
     }
-#endif
-
   }
   return 0;
 }
