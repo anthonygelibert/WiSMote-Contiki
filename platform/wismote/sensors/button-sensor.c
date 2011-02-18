@@ -3,7 +3,7 @@
 #include "dev/button-sensor.h"
 #include "dev/watchdog.h"
 #include "lib/sensors.h"
-#include "hwconf.h"
+#include "iohandlers.h"
 
 const struct sensors_sensor button_sensor;
 static struct timer debouncetimer;
@@ -11,25 +11,18 @@ static struct timer debouncetimer;
 static int
 status(int type);
 
-HWCONF_PIN(BUTTON, 1, 4)
-HWCONF_IRQ(BUTTON, 1, 4)
-
-interrupt(PORT1_VECTOR)
-irq_p1(void)
+void
+myHandler(void)
 {
-  ENERGEST_ON(ENERGEST_TYPE_IRQ);
-  watchdog_start();
-  if (BUTTON_CHECK_IRQ()) {
-    if (timer_expired(&debouncetimer)) {
-      timer_set(&debouncetimer, CLOCK_SECOND / 3);
-      sensors_changed(&button_sensor);
-      LPM4_EXIT;
-    }
+  if (timer_expired(&debouncetimer)) {
+    timer_set(&debouncetimer, CLOCK_SECOND / 4);
+    sensors_changed(&button_sensor);
+    LPM4_EXIT;
   }
-  BUTTON_ACK_IRQ();
-  watchdog_stop();
-  ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
+
+HWCONF_PIN(BUTTON, 1, 4)
+HWCONF_IRQ(BUTTON, 1, 4, myHandler)
 
 static int
 value(int type)
@@ -48,9 +41,13 @@ configure(int type, int c)
       BUTTON_MAKE_INPUT();
       return 1;
     case SENSORS_ACTIVE:
-      if (c)
+      if (c) {
+        BUTTON_SET_HANDLER();
         BUTTON_ENABLE_IRQ();
-      else BUTTON_DISABLE_IRQ();
+      } else {
+        BUTTON_RESET_HANDLER();
+        BUTTON_DISABLE_IRQ();
+      }
       return 1;
   }
   return 0;
@@ -66,6 +63,4 @@ status(int type)
   }
   return 0;
 }
-
-SENSORS_SENSOR(button_sensor, BUTTON_SENSOR,
-    value, configure, status);
+SENSORS_SENSOR(button_sensor, BUTTON_SENSOR, value, configure, status);
