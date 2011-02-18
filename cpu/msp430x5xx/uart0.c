@@ -203,10 +203,9 @@ uart0_interrupt(void)
   uint8_t c;
 
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
-  leds_toggle(LEDS_RED);
-
   watchdog_start();
 
+  leds_toggle(LEDS_RED);
   if (UCA1IFG & UCRXIFG) {
     if (UCA1STAT & UCRXERR) {
       /* Clear error flags by forcing a dummy read. */
