@@ -1,3 +1,12 @@
+/**
+ * \file
+ *         Button with event example.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,31 +36,63 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 08, 2011
- * \version 0.0.1
- */
-
 #include "contiki.h"
-#include "uart0.h"
-#include <stdio.h>
+#include "sys/process.h"
+#include "sys/autostart.h"
 
-int
-echo_rx(const unsigned char c)
+#include "iohandlers.h"
+#include "leds.h"
+#include "clock.h"
+#include <stdint.h>
+
+/*---------------------------------------------------------------------------*/
+
+static void
+delay(void)
 {
-  putchar(c);
-  return 0;
+  volatile uint16_t i;
+  for (i = 0; i < 640; i++) {
+    clock_delay(i);
+  }
 }
 
-PROCESS(echo_process, "Echo process");
-AUTOSTART_PROCESSES(&echo_process);
+/*---------------------------------------------------------------------------*/
 
-PROCESS_THREAD(echo_process, ev, data)
+static void
+myHandler(void)
+{
+  leds_toggle(LEDS_GREEN);
+}
+
+/*---------------------------------------------------------------------------*/
+
+HWCONF_PIN(BUTTON, 1, 4)
+HWCONF_IRQ(BUTTON, 1, 4, myHandler)
+
+/*---------------------------------------------------------------------------*/
+PROCESS(buttonIT_process, "Button process");
+AUTOSTART_PROCESSES(&buttonIT_process);
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(buttonIT_process, ev, data)
 {
   PROCESS_BEGIN();
 
-  uart0_set_input(echo_rx);
+    BUTTON_IRQ_EDGE_SELECTD();
+    BUTTON_SELECT();
+    BUTTON_MAKE_INPUT();
+    BUTTON_SET_HANDLER();
+    BUTTON_ENABLE_IRQ();
+
+    while (1)
+    {
+      PROCESS_PAUSE();
+      leds_on(LEDS_BLUE);
+      delay();
+      leds_off(LEDS_BLUE);
+      delay();
+    }
 
   PROCESS_END();
 }
+
+/*---------------------------------------------------------------------------*/

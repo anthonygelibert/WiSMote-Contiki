@@ -1,3 +1,12 @@
+/**
+ * \file
+ *         Button with event example.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,12 +36,6 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.0.2
- */
-
 #include "lib/sensors.h"
 #include "dev/button-sensor.h"
 #include "sys/process.h"
@@ -40,12 +43,11 @@
 #include "leds.h"
 #include <stdio.h>
 
-
 /*---------------------------------------------------------------------------*/
-PROCESS(buttonTest_process, "Button process");
-AUTOSTART_PROCESSES(&buttonTest_process);
+PROCESS(buttonEvent_process, "Button process");
+AUTOSTART_PROCESSES(&buttonEvent_process);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(buttonTest_process, ev, data)
+PROCESS_THREAD(buttonEvent_process, ev, data)
 {
   PROCESS_BEGIN();
   button_sensor.configure(SENSORS_ACTIVE,1);

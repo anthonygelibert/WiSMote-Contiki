@@ -1,3 +1,17 @@
+/**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
+ * \file
+ *         Contiki main.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,12 +41,6 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Feb 16, 2011
- * \version 0.0.3
- */
-
 #include <stdio.h>
 #include <signal.h>
 
@@ -49,17 +57,15 @@
 #include "spl.h"
 #include "msp430.h"
 
+SENSORS(&button_sensor);
+
 /** Display the list of auto-processes before executing them. */
-#define DEBUG_PROCESS 1
+#define DEBUG_PROCESS 0
 /** Doesn't display the list of sensors before starting them. */
-#define DEBUG_SENSORS 1
+#define DEBUG_SENSORS 0
 
 #if DEBUG_PROCESS
-/**
- * \brief Display a list of processes.
- *
- * \param processes An array of processes
- */
+/*---------------------------------------------------------------------------*/
 static void
 print_processes(struct process * const processes[])
 {
@@ -70,9 +76,11 @@ print_processes(struct process * const processes[])
   }
   putchar('\n');
 }
+/*---------------------------------------------------------------------------*/
 #endif /* DEBUG_PROCESS */
 
 #if DEBUG_SENSORS
+/*---------------------------------------------------------------------------*/
 static void
 print_sensors(void)
 {
@@ -85,15 +93,11 @@ print_sensors(void)
   }
   putchar('\n');
 }
+/*---------------------------------------------------------------------------*/
 #endif /* DEBUG_SENSORS */
 
-SENSORS(&button_sensor);
+/*---------------------------------------------------------------------------*/
 
-/**
- * \brief Make all the initializations and start the auto-processes.
- *
- * @return Always 0
- */
 int
 main(void)
 {
@@ -108,6 +112,7 @@ main(void)
   /* Initialize the uart */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
+
 #if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6) && SLIP_ENABLED
   slip_arch_init(0);
 #endif
@@ -127,6 +132,11 @@ main(void)
   uart0_set_input(serial_line_input_byte);
   serial_line_init();
 #endif
+
+#if !CONTIKI_NO_NET && WITH_UIP
+
+#endif
+
   /* Initialize the EnerGest module */
   energest_init();
   /* SETUP : END */
@@ -189,3 +199,6 @@ main(void)
   return 0;
 }
 
+/*---------------------------------------------------------------------------*/
+
+/** @} */

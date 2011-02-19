@@ -1,3 +1,26 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \defgroup rtimer Real-Timer Clock
+ *
+ * This is the module implementing the low-level functions of the Real-Timer
+ * module.
+ *
+ * @{
+ */
+
+/**
+ * \file
+ *         Low-level RTC routines.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -26,25 +49,19 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2011
- * \version 0.0.1
- */
-#ifndef __RTIMER_ARCH_H__
-#define __RTIMER_ARCH_H__
+
+#ifndef _RTIMER_ARCH_H_
+#define _RTIMER_ARCH_H_
+
 #include <io.h>
 #include "sys/rtimer.h"
 
-/** NOT_YET_DOCUMENTED_PTV */
 #define RTIMER_ARCH_SECOND (4096U*8)
 
-/**
- * NOT_YET_DOCUMENTED_PTV
- *
- * @return NOT_YET_DOCUMENTED_PTV
- */
 rtimer_clock_t
 rtimer_arch_now(void);
 
-#endif /* __RTIMER_ARCH_H__ */
+#endif /* _RTIMER_ARCH_H_ */
+
+/** @} */
+/** @} */

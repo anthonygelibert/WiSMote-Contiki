@@ -1,3 +1,12 @@
+/**
+ * \file
+ *         UART0 Echo with handler example.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,70 +36,25 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.0.2
- */
-
 #include "contiki.h"
-#include "contiki-lib.h"
-#include "sys/process.h"
-#include "sys/autostart.h"
-#include "watchdog.h"
-#include "leds.h"
-#include "signal.h"
+#include "uart0.h"
 #include <stdio.h>
-#include <stdint.h>
 
-void
-delay(void)
+int
+echo_rx(const unsigned char c)
 {
-  volatile uint16_t i;
-  for (i = 0; i < 64000; i++)
-  {
-    asm volatile("nop");
-  }
+  putchar(c);
+  return 0;
 }
 
-interrupt(PORT1_VECTOR)
-port1ITHandler(void)
-{
-  // User Int is P1.4
-  if (P1IFG & BIT4)
-  {
-    // Toogle Green led
-    leds_toggle(LEDS_GREEN);
+PROCESS(echo_process, "Echo process");
+AUTOSTART_PROCESSES(&echo_process);
 
-    // Clear IFG
-    P1IFG &= ~BIT4;
-  }
-}
-
-/*---------------------------------------------------------------------------*/
-PROCESS(buttonTest_process, "Button process");
-AUTOSTART_PROCESSES(&buttonTest_process);
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(buttonTest_process, ev, data)
+PROCESS_THREAD(echo_process, ev, data)
 {
   PROCESS_BEGIN();
 
-    // IT sur front descendant
-    P1IES |= BIT4;
-    // ack si IT
-    P1IFG &= ~BIT4;
-    // IT activee sur P1.4
-    P1IE |= BIT4;
+  uart0_set_input(echo_rx);
 
-    while (1)
-    {
-      PROCESS_PAUSE();
-      leds_on(LEDS_BLUE);
-      delay();
-      leds_off(LEDS_BLUE);
-      delay();
-    }
-
-    PROCESS_END();
-  }
-  /*---------------------------------------------------------------------------*/
+  PROCESS_END();
+}

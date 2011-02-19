@@ -1,3 +1,17 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \file
+ *         MSP430 initialization implementation.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,28 +41,14 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2011
- * \version 0.0.1
- */
-
+#include <signal.h>
+#include "contiki-conf.h"
 #include "msp430.h"
 #include "dev/watchdog.h"
 
-#include "contiki-conf.h"
-#include <signal.h>
+/*---------------------------------------------------------------------------*/
 
-/** Ports initialization.
- *
- * Initialize all the ports of the platform:
- * <ul>
- *    <li>PxSEL = 0</li>
- *    <li>PxDIR = 0</li>
- *    <li>PxOUT = 0</li>
- *    <li>PxIE  = 0</li>
- * </ul>
- */
+
 static void
 init_ports(void)
 {
@@ -114,7 +114,9 @@ init_ports(void)
 #endif
 }
 
-/** \brief Initialize the MSP430 CPU.
+/*---------------------------------------------------------------------------*/
+
+/** \brief      Initialize the MSP430 CPU.
  *
  *  This function initializes :
  *  <ol>
@@ -130,3 +132,7 @@ msp430_cpu_init(void)
   init_ports();
   eint();
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */

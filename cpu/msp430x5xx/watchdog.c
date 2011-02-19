@@ -1,3 +1,18 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \file
+ *         WatchDog implementation.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -36,18 +51,17 @@
 #include <signal.h>
 #include "dev/watchdog.h"
 
-/** Counter for watchdog's cycle. */
-static int s_counter = 0;
+static int counter = 0;
 
-/** Reboot the watchdog timer.
- *
- *  This interrupt vector restart the watchdog timer.
- */
+/*---------------------------------------------------------------------------*/
+
 interrupt(WDT_VECTOR)
 watchdog_interrupt(void)
 {
   watchdog_reboot();
 }
+
+/*---------------------------------------------------------------------------*/
 
 /**
  * Initialize the watchdog timer.
@@ -57,12 +71,14 @@ watchdog_interrupt(void)
 void
 watchdog_init(void)
 {
-  s_counter = 0;
+  counter = 0;
   watchdog_stop();
 
   SFRIFG1 &= ~WDTIFG;
   SFRIE1 |= WDTIE;
 }
+
+/*---------------------------------------------------------------------------*/
 
 /**
  * Start the watchdog timer.
@@ -73,10 +89,12 @@ watchdog_init(void)
 void
 watchdog_start(void)
 {
-  if ((--s_counter) == 0) {
+  if ((--counter) == 0) {
     WDTCTL = WDTPW | WDTCNTCL | WDTIS1 | WDTTMSEL;
   }
 }
+
+/*---------------------------------------------------------------------------*/
 
 /** Restart periodically the watchdog timer.
  *
@@ -88,14 +106,18 @@ watchdog_periodic(void)
   WDTCTL = (WDTCTL & 0xff) | WDTPW | WDTCNTCL | WDTTMSEL;
 }
 
+/*---------------------------------------------------------------------------*/
+
 /** Stop the counter */
 void
 watchdog_stop(void)
 {
-  if ((++s_counter) == 1) {
+  if ((++counter) == 1) {
     WDTCTL = WDTPW | WDTHOLD;
   }
 }
+
+/*---------------------------------------------------------------------------*/
 
 /** Reboot the watchdog timer. */
 void
@@ -103,3 +125,7 @@ watchdog_reboot(void)
 {
   WDTCTL = 0;
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */

@@ -1,3 +1,17 @@
+/**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
+ * \file
+ *         Clock platform-dependent code.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,16 +41,12 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 07, 2011
- * \version 0.0.1
- */
-
 #include <contiki-conf.h>
 
 /** Disable the output of the SMCLOCK on a port of the CPU */
 #define DEBUG_CLOCK 0
+
+/*---------------------------------------------------------------------------*/
 
 /**
  * \brief Initialize the clock for our platform.
@@ -53,3 +63,7 @@ void clock_platform_init(void)
   /* XT1 */
   P7SEL |= BIT0 + BIT1;
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */

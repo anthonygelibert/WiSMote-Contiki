@@ -1,3 +1,25 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \defgroup uart UART
+ *
+ * This is the module for the UART.
+ *
+ * @{
+ */
+
+/**
+ * \file
+ *         UART0 routines.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -25,12 +47,6 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- */
-
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.2.0
  */
 
 #ifndef __UART0_H__
@@ -72,3 +88,6 @@ uart0_set_input(int
 (* input)(const uint8_t c));
 
 #endif /* __UART0_H__ */
+
+/** @} */
+/** @} */

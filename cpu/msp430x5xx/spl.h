@@ -1,3 +1,22 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \defgroup spl SPL
+ * @{
+ */
+
+/**
+ * \file
+ *         SPL routines.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,20 +46,26 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.0.1
- */
-#ifndef __SPL_H__
-#define __SPL_H__
+#ifndef __SR_H__
+#define __SR_H__
 
 typedef int spl_t;
 
-void    splx_(const spl_t sr);
-spl_t   splhigh_(void);
+/**
+ * \brief Mask all interrupts that can be masked.
+ *
+ * \return Previous values
+ */
+spl_t   splhigh(void);
 
-#define splhigh() splhigh_()
+/**
+ * \brief Restore previous interrupt mask.
+ *
+ * \param sr The new SR
+ */
 #define splx(sr) __asm__ __volatile__("bis %0, r2" : : "r" (sr))
 
-#endif /* __SPL_H__ */
+#endif /* __SR_H__ */
+
+/** @} */
+/** @} */

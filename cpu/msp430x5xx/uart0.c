@@ -1,3 +1,22 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \addtogroup uart
+ * @{
+ */
+
+/**
+ * \file
+ *         UART0 implementation.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,12 +46,6 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.2.0
- */
-
 #include <stdio.h>
 #include <errno.h>
 #include "msp430.h"
@@ -44,10 +57,8 @@
 #include "lib/ringbuf.h"
 
 #ifdef UART0_CONF_TX_WITH_INTERRUPT
-/** Enable the interruptions for the UART0 TX. */
 #define TX_WITH_INTERRUPT UART0_CONF_TX_WITH_INTERRUPT
 #else
-/** Disable the interruptions for the UART0 TX. */
 #define TX_WITH_INTERRUPT 0
 #endif /* UART0_CONF_TX_WITH_INTERRUPT */
 
@@ -55,30 +66,25 @@
 #ifdef UART0_CONF_TX_BUFSIZE
 #define TXBUFSIZE UART0_CONF_TX_BUFSIZE
 #else
-/** Size of the TX buffer. */
 #define TXBUFSIZE 64
 #endif
-/** The ring buffer used for the TX */
 static struct ringbuf txbuf;
-/** The buffer in the ring buffer. */
 static uint8_t txbuf_data[TXBUFSIZE];
 #endif /* TX_WITH_INTERRUPT */
 
-/**
- * \brief RX handler.
- *
- * @param c The received character.
- * @return
- */
 static int
 (* uart0_input_handler)(const uint8_t c);
 
 static volatile uint8_t transmitting;
 
+/** UART0 platform-dependent code. */
 extern void
 uart0_arch_init();
 
-/** Initialize the UART0.
+/*---------------------------------------------------------------------------*/
+
+/**
+ * \brief Initialize the UART0.
  *
  * \param br The UCA1BRW value.
  * \param brs The UCBRSx value.
@@ -119,6 +125,8 @@ uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
 #endif /* TX_WITH_INTERRUPT */
 }
 
+/*---------------------------------------------------------------------------*/
+
 /** Write a byte on the UART0.
  *
  * \param c The byte to send.
@@ -153,6 +161,8 @@ uart0_writeb(const uint8_t c)
   return c;
 }
 
+/*---------------------------------------------------------------------------*/
+
 /** Test the activity of UART0
  *
  * \return Result of the test
@@ -162,6 +172,8 @@ uart0_active(void)
 {
   return (UCA1STAT & UCBUSY) | transmitting;
 }
+
+/*---------------------------------------------------------------------------*/
 
 /**
  * Set the UART0 RX handler.
@@ -174,6 +186,8 @@ uart0_set_input(int
 {
   uart0_input_handler = input;
 }
+
+/*---------------------------------------------------------------------------*/
 
 /**
  * \brief Writes character to the current position in the standard output.
@@ -196,6 +210,8 @@ putchar(int c)
   }
   return uart0_writeb(c);
 }
+
+/*---------------------------------------------------------------------------*/
 
 interrupt(USCI_A1_VECTOR)
 uart0_interrupt(void)
@@ -227,13 +243,17 @@ uart0_interrupt(void)
       } else {
         UCA1TXBUF = ringbuf_get(&txbuf);
       }
-
       /* In a stand-alone app won't work without this. Is the UG misleading? */
       UCA1IFG &= ~UCTXIFG;
-
     }
   }
 #endif /* TX_WITH_INTERRUPT */
+
   watchdog_stop();
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */
+/** @} */

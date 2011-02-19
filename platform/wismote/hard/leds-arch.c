@@ -1,3 +1,17 @@
+/**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
+ * \file
+ *         LEDs platform-dependent code.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,43 +41,29 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 03, 2011
- * \version 0.0.3
- */
-
 #include "contiki-conf.h"
 #include "dev/leds.h"
 
-/** PxDIR used for the blue LED. */
 #define PORTDIR_LED_BLUE  P2DIR
-/** PxDS used for the blue LED. */
 #define PORTDS_LED_BLUE   P2DS
-/** PxOUT used for the blue LED. */
 #define PORTOUT_LED_BLUE  P2OUT
-/** BIT used for the blue LED. */
 #define BIT_LED_BLUE      BIT4
 
-/** PxDIR used for the red LED. */
 #define PORTDIR_LED_RED   P5DIR
-/** PxDS used for the red LED. */
 #define PORTDS_LED_RED    P5DS
-/** PxOUT used for the red LED. */
 #define PORTOUT_LED_RED   P5OUT
-/** BIT used for the red LED. */
 #define BIT_LED_RED       BIT2
 
-/** PxDIR used for the green LED. */
 #define PORTDIR_LED_GREEN P8DIR
-/** PxDS used for the green LED. */
 #define PORTDS_LED_GREEN  P8DS
-/** PxOUT used for the green LED. */
 #define PORTOUT_LED_GREEN P8OUT
-/** BIT used for the green LED. */
 #define BIT_LED_GREEN     BIT6
 
-/** Initialize the ports used by the LEDs. */
+/*---------------------------------------------------------------------------*/
+
+/**
+ * \brief Initialize the ports used by the LEDs.
+ */
 void leds_arch_init(void)
 {
     PORTDIR_LED_GREEN |= BIT_LED_GREEN;
@@ -79,8 +79,10 @@ void leds_arch_init(void)
     PORTOUT_LED_RED |= BIT_LED_RED;
 }
 
+/*---------------------------------------------------------------------------*/
+
 /**
- * Get the state of the leds.
+ * \brief Get the state of the leds.
  *
  * \return State of the leds (in one byte).
  */
@@ -91,8 +93,10 @@ unsigned char leds_arch_get(void)
       | ((PORTOUT_LED_BLUE & BIT_LED_BLUE) ? 0 : LEDS_BLUE);
 }
 
+/*---------------------------------------------------------------------------*/
+
 /**
- * Set the state of the leds.
+ * \brief Set the state of the leds.
  *
  * \param leds New state of the leds (in one byte).
  */
@@ -102,3 +106,7 @@ void leds_arch_set(unsigned char leds)
     PORTOUT_LED_GREEN = (PORTOUT_LED_GREEN & ~BIT_LED_GREEN) | ((leds & LEDS_GREEN) ? 0 : BIT_LED_GREEN);
     PORTOUT_LED_BLUE = (PORTOUT_LED_BLUE & ~BIT_LED_BLUE) | ((leds & LEDS_BLUE) ? 0 : BIT_LED_BLUE);
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */

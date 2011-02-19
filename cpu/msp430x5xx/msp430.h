@@ -1,3 +1,20 @@
+/**
+ * \defgroup msp430x5xx MSP430x5xx
+ *
+ * This is the module implementing Contiki on MSP430x5xx chips.
+ *
+ * @{
+ */
+
+/**
+ * \file
+ *         MSP430 initialization routines.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -26,11 +43,6 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2011
- * \version 0.0.2
- */
 
 #ifndef __MSP430_H__
 #define __MSP430_H__
@@ -41,7 +53,6 @@
 #define EINVAL 22
 #endif /* EINVAL */
 
-/** Permits to mask the real "cpu_init" function. */
 #define cpu_init() msp430_cpu_init()
 
 /** \brief Initialize the MSP430 CPU.
@@ -56,3 +67,5 @@ void
 msp430_cpu_init(void);
 
 #endif /* __MSP430_H__ */
+
+/** @} */

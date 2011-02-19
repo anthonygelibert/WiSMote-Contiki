@@ -1,3 +1,22 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \addtogroup spl
+ * @{
+ */
+
+/**
+ * \file
+ *         SPL implementation.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,21 +46,18 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.0.1
- */
-
 #include "spl.h"
 #include "contiki-conf.h"
+
+/*---------------------------------------------------------------------------*/
+
 /**
  * \brief Mask all interrupts that can be masked.
  *
  * \return Previous values
  */
 int
-splhigh_(void)
+splhigh(void)
 {
   /* Clear the GIE (General Interrupt Enable) flag. */
   int sr;
@@ -51,14 +67,8 @@ splhigh_(void)
   return sr & GIE;
 }
 
-/**
- * \brief Restore previous interrupt mask.
- *
- * \param sr The new SR
- */
-void
-splx_(const spl_t sr)
-{
-  /* If GIE was set, restore it. */
-  __asm__ __volatile__ ("bis %0, r2" : : "r" (sr));
-}
+/*---------------------------------------------------------------------------*/
+
+/** @} */
+/** @} */
+

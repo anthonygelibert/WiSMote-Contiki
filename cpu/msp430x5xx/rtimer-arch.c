@@ -1,3 +1,24 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \addtogroup rtimer
+ * @{
+ */
+
+/**
+ * \file
+ *         Low-level RTC implementation.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ *
+ * \todo   XXX_PTV Timer -> RTC
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,13 +48,6 @@
  * SUCH DAMAGE.
  */
 
-/**
- * XXX_PTV Timer -> RTC
- *
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.1.0
- */
 #include <io.h>
 #include <signal.h>
 
@@ -42,6 +56,8 @@
 #include "sys/rtimer.h"
 #include "sys/process.h"
 #include "dev/watchdog.h"
+
+/*---------------------------------------------------------------------------*/
 
 interrupt(TIMER1_A0_VECTOR)
 timera0(void)
@@ -58,6 +74,8 @@ timera0(void)
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
+/*---------------------------------------------------------------------------*/
+
 /** Initialize the Real-Timer. */
 void
 rtimer_arch_init(void)
@@ -69,11 +87,8 @@ rtimer_arch_init(void)
   eint();
 }
 
-/**
- * NOT_YET_DOCUMENTED_PTV
- *
- * @return NOT_YET_DOCUMENTED_PTV
- */
+/*---------------------------------------------------------------------------*/
+
 rtimer_clock_t
 rtimer_arch_now(void)
 {
@@ -86,6 +101,8 @@ rtimer_arch_now(void)
   return t1;
 }
 
+/*---------------------------------------------------------------------------*/
+
 /** Set the delay before the next Real-Timer interruption.
  *
  * \param t Delay before next interruption.
@@ -95,3 +112,8 @@ rtimer_arch_schedule(rtimer_clock_t t)
 {
   TA0CCR0 = t;
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */
+/** @} */

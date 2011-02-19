@@ -1,3 +1,17 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \file
+ *         Low-level SLIP implementation.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,14 +41,10 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 15, 2011
- * \version 0.0.1
- */
-
 #include "uart0.h"
 #include "dev/slip.h"
+
+/*---------------------------------------------------------------------------*/
 
 /**
  * Send a byte on the serial line.
@@ -47,6 +57,8 @@ slip_arch_writeb(unsigned char c)
   uart0_writeb(c);
 }
 
+/*---------------------------------------------------------------------------*/
+
 /**
  * Initialize the RS232 port and the SLIP driver.
  *
@@ -58,3 +70,6 @@ slip_arch_init(unsigned long ubr)
   uart0_set_input(slip_input_byte);
 }
 
+/*---------------------------------------------------------------------------*/
+
+/** @} */

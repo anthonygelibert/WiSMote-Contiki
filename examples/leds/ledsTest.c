@@ -1,3 +1,12 @@
+/**
+ * \file
+ *         LEDs blinking example.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,27 +36,21 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.0.2
- */
-
 #include "contiki.h"
 #include "sys/process.h"
 #include "sys/autostart.h"
-#include "watchdog.h"
 #include "leds.h"
-#include "signal.h"
-
+#include "clock.h"
 #include <stdint.h>
 
-void
+/*---------------------------------------------------------------------------*/
+
+static void
 delay(void)
 {
   volatile uint16_t i;
-  for (i = 0; i < 64000; i++) {
-    asm volatile("nop");
+  for (i = 0; i < 640; i++) {
+    clock_delay(i);
   }
 }
 
@@ -60,6 +63,7 @@ PROCESS_THREAD(leds_process, ev, data)
   PROCESS_BEGIN();
 
   while (1) {
+    PROCESS_PAUSE();
     leds_on(LEDS_BLUE);
     delay();
     leds_off(LEDS_BLUE);

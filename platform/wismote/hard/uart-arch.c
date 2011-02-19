@@ -1,3 +1,17 @@
+/**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
+ * \file
+ *         UARTs platform-dependent code.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,13 +41,9 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 07, 2011
- * \version 0.0.1
- */
-
 #include <contiki-conf.h>
+
+/*---------------------------------------------------------------------------*/
 
 /**
  * \brief Initialize the port for the UART0.
@@ -42,3 +52,7 @@ void uart0_arch_init(void)
 {
   P5SEL = 0xC0;
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */

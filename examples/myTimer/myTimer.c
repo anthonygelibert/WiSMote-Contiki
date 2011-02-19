@@ -1,3 +1,12 @@
+/**
+ * \file
+ *         Clock on UART0.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,35 +36,17 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \brief This simple example increment a timer all the seconds.
- *
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.0.2
- */
 #include <stdio.h>
 #include "contiki.h"
 
-/** The interval of the clock is the second. */
 #define INTERVAL CLOCK_CONF_SECOND
 
-PROCESS(myTimer_process, "Timer process");
-AUTOSTART_PROCESSES(&myTimer_process);
-
-/** The timer. */
-static struct etimer et;
-
-/** Clock: seconds. */
 static int current_second = 0;
-/** Clock: minutes. */
 static int current_min = 0;
-/** Clock: hours. */
 static int current_hour = 0;
 
-/**
- * Increment the counter of one second and display the current time.
- */
+/*---------------------------------------------------------------------------*/
+
 static void
 timeout_handler(void)
 {
@@ -69,8 +60,14 @@ timeout_handler(void)
   printf("%02d:%02d:%02d\n", current_hour, current_min, current_second);
 }
 
+/*---------------------------------------------------------------------------*/
+PROCESS(myTimer_process, "Timer process");
+AUTOSTART_PROCESSES(&myTimer_process);
+/*---------------------------------------------------------------------------*/
 PROCESS_THREAD(myTimer_process, ev, data)
 {
+  static struct etimer et;
+
   PROCESS_BEGIN();
 
   printf("I start the timer (1 s.)\n");

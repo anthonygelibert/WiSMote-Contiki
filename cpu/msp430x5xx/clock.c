@@ -1,3 +1,17 @@
+/**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \file
+ *         Clock implementation.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@me.com>
+ * \date
+ *         Feb 18, 2011
+ */
+
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
@@ -27,12 +41,6 @@
  * SUCH DAMAGE.
  */
 
-/**
- * \author Anthony Gelibert
- * \date Feb 10, 2011
- * \version 0.1.0
- */
-
 #include "contiki-conf.h"
 #include "dev/watchdog.h"
 #include "sys/clock.h"
@@ -41,34 +49,71 @@
 #include "signal.h"
 #include "rtimer-arch.h"
 
-/** NOT_YET_DOCUMENTED_PTV */
 #define INTERVAL (RTIMER_ARCH_SECOND / CLOCK_SECOND)
-/** NOT_YET_DOCUMENTED_PTV */
 #define MAX_TICKS (~((clock_time_t)0) / 2)
-/** NOT_YET_DOCUMENTED_PTV */
+
 static volatile unsigned long seconds;
-/** NOT_YET_DOCUMENTED_PTV */
 static volatile clock_time_t count = 0;
-/** Used for calculating clock_fine. */
 static volatile uint16_t last_tar = 0;
 
 /** Platform-dependent initializations. */
-extern void
-clock_platform_init(void);
+extern void clock_platform_init(void);
 
-/** Initialize the XT1 clock. */
-static void
-initXT1(void);
+/*---------------------------------------------------------------------------*/
 
-/** Initialize the timer for the logical clock module. */
-static void
-initClockModule(void);
+static CC_INLINE void
+initXT1(void)
+{
+  dint();
+  clock_platform_init();
+  /* Set XT1 On */
+  UCSCTL6 &= ~XT1OFF;
+  /* Max drive strength, adjust according to crystal frequency. LFXT1 HF mode */
+  UCSCTL6 |= XT1DRIVE_2 | XTS | XT2OFF;
 
-/**
- * Wait for a multiple of 10 ms.
- *
- * \param i Delay
- */
+  /* Loop while oscillator fault flag. */
+  do {
+    /* Clear XT2,XT1,DCO fault flags */
+    UCSCTL7 &= ~(XT2OFFG | XT1LFOFFG | XT1HFOFFG | DCOFFG);
+    /* Clear fault flags */
+    SFRIFG1 &= ~OFIFG;
+  }
+  while (SFRIFG1 & OFIFG);
+
+  /* MCLCK = XT1 , SMCLK = XT1 , ACLK = XT1 */
+  UCSCTL4 = SELA__XT1CLK | SELS__XT1CLK | SELM__XT1CLK;
+  /* Set Clock divider 4 -> Clock = 4MHz */
+  /* Set Clock divider 2 -> Clock = 2 MHz (ACLK = 2 MHz) */
+  UCSCTL5 |= DIVA__8 | DIVS__4 | DIVM__4;
+  eint();
+}
+
+/*---------------------------------------------------------------------------*/
+
+static CC_INLINE void
+initClockModule(void)
+{
+  dint();
+
+  TA1EX0 |= TAIDEX_7;
+  TA1CTL = TASSEL__ACLK | TACLR | ID__8;
+
+  /* Initialize ccr1 to create the X ms interval. */
+  /* CCR1 interrupt enabled, interrupt occurs when timer equals CCR1. */
+  TA1CCTL1 |= CCIE;
+
+  /* Interrupt after X ms. */
+  TA1CCR1 = INTERVAL;
+
+  /* Start Timer_A in continuous mode. */
+  TA1CTL |= MC__CONTINOUS;
+  count = 0;
+  /* Enable interrupts. */
+  eint();
+}
+
+/*---------------------------------------------------------------------------*/
+
 void
 clock_wait(int i)
 {
@@ -79,6 +124,8 @@ clock_wait(int i)
   }
 }
 
+/*---------------------------------------------------------------------------*/
+
 interrupt(TIMER1_A1_VECTOR)
 timera1(void)
 {
@@ -86,7 +133,6 @@ timera1(void)
   watchdog_start();
 
   if (TA1IV == 2) {
-
     /* Make sure interrupt time is future */
     do {
       TA1CCR1 += INTERVAL;
@@ -115,12 +161,13 @@ timera1(void)
       LPM4_EXIT;
     }
   }
-  watchdog_stop();
 
+  watchdog_stop();
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/*---------------------------------------------------------------------------*/
+
 clock_time_t
 clock_time(void)
 {
@@ -133,7 +180,8 @@ clock_time(void)
   return t1;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/*---------------------------------------------------------------------------*/
+
 void
 clock_set(clock_time_t clock, clock_time_t fclock)
 {
@@ -142,14 +190,16 @@ clock_set(clock_time_t clock, clock_time_t fclock)
   count = clock;
 }
 
-/** Get the finest interval of the clock. */
+/*---------------------------------------------------------------------------*/
+
 int
 clock_fine_max(void)
 {
   return INTERVAL;
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/*---------------------------------------------------------------------------*/
+
 unsigned short
 clock_fine(void)
 {
@@ -160,13 +210,15 @@ clock_fine(void)
   return (unsigned short) (TA1R - t);
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/*---------------------------------------------------------------------------*/
+
 void
 clock_set_seconds(unsigned long sec)
 {
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/*---------------------------------------------------------------------------*/
+
 unsigned long
 clock_seconds(void)
 {
@@ -179,22 +231,16 @@ clock_seconds(void)
   return t1;
 }
 
-/** Get the current timer counter.
- *
- *  \return Timer A1 counter.
- */
+/*---------------------------------------------------------------------------*/
+
 rtimer_clock_t
 clock_counter(void)
 {
   return TA1R;
 }
 
-/** Initialize the clocks:
- *  <ol>
- *  <li>XT1 clock.</li>
- *  <li>Timer for the clock module.</li>
- *  </ol>
- */
+/*---------------------------------------------------------------------------*/
+
 void
 clock_init(void)
 {
@@ -202,7 +248,8 @@ clock_init(void)
   initClockModule();
 }
 
-/** NOT_YET_DOCUMENTED_PTV */
+/*---------------------------------------------------------------------------*/
+
 void
 clock_delay(unsigned int i)
 {
@@ -210,53 +257,6 @@ clock_delay(unsigned int i)
   asm("jnz $-2");
 }
 
-/** Initialize the XT1 clock. */
-static void
-initXT1(void)
-{
-  dint();
-  clock_platform_init();
-  /* Set XT1 On */
-  UCSCTL6 &= ~XT1OFF;
-  /* Max drive strength, adjust according to crystal frequency. LFXT1 HF mode */
-  UCSCTL6 |= XT1DRIVE_2 | XTS | XT2OFF;
+/*---------------------------------------------------------------------------*/
 
-  /* Loop while oscillator fault flag. */
-  do {
-    /* Clear XT2,XT1,DCO fault flags */
-    UCSCTL7 &= ~(XT2OFFG | XT1LFOFFG | XT1HFOFFG | DCOFFG);
-    /* Clear fault flags */
-    SFRIFG1 &= ~OFIFG;
-  }
-  while (SFRIFG1 & OFIFG);
-
-  /* MCLCK = XT1 , SMCLK = XT1 , ACLK = XT1 */
-  UCSCTL4 = SELA__XT1CLK | SELS__XT1CLK | SELM__XT1CLK;
-  /* Set Clock divider 4 -> Clock = 4MHz */
-  /* Set Clock divider 2 -> Clock = 2 MHz (ACLK = 2 MHz) */
-  UCSCTL5 |= DIVA__8 | DIVS__4 | DIVM__4;
-  eint();
-}
-
-/** Initialize the timer for the logical clock module. */
-static void
-initClockModule(void)
-{
-  dint();
-
-  TA1EX0 |= TAIDEX_7;
-  TA1CTL = TASSEL__ACLK | TACLR | ID__8;
-
-  /* Initialize ccr1 to create the X ms interval. */
-  /* CCR1 interrupt enabled, interrupt occurs when timer equals CCR1. */
-  TA1CCTL1 |= CCIE;
-
-  /* Interrupt after X ms. */
-  TA1CCR1 = INTERVAL;
-
-  /* Start Timer_A in continuous mode. */
-  TA1CTL |= MC__CONTINOUS;
-  count = 0;
-  /* Enable interrupts. */
-  eint();
-}
+/** @} */
