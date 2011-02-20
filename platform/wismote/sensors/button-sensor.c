@@ -81,19 +81,19 @@ static int
 configure(int type, int c)
 {
   switch (type) {
-    case SENSORS_HW_INIT:
-      timer_set(&debouncetimer, 0);
-      BUTTON_IRQ_EDGE_SELECTD();
-      BUTTON_SELECT();
-      BUTTON_MAKE_INPUT();
-      return 1;
     case SENSORS_ACTIVE:
       if (c) {
+        timer_set(&debouncetimer, 0);
+        BUTTON_IRQ_EDGE_SELECTD();
+        BUTTON_SELECT_IO();
+        BUTTON_MAKE_INPUT();
         BUTTON_SET_HANDLER();
         BUTTON_ENABLE_IRQ();
       } else {
-        BUTTON_RESET_HANDLER();
         BUTTON_DISABLE_IRQ();
+        BUTTON_RESET_HANDLER();
+        BUTTON_MAKE_OUTPUT();
+        timer_set(&debouncetimer, 0);
       }
       return 1;
   }
@@ -112,9 +112,7 @@ status(int type)
   }
   return 0;
 }
-
 /*---------------------------------------------------------------------------*/
-
 SENSORS_SENSOR(button_sensor, BUTTON_SENSOR, value, configure, status);
 
 /** @} */
