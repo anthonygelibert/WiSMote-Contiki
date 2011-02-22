@@ -60,6 +60,7 @@ typedef unsigned long clock_time_t;
 
 /* ----- UIP module ----- */
 typedef unsigned short uip_stats_t;
+#define UIP_CONF_LOGGING 1
 
 /* ----- UART module ----- */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
@@ -67,9 +68,6 @@ typedef unsigned short uip_stats_t;
 
 /* ----- Serial Line module ----- */
 #define SERIAL_LINE_CONF_BUFSIZE 64
-
-/* ----- CONTIKI MAIN ----- */
-#define SLIP_ENABLED 1
 
 /* ----- Includes ----- */
 #include "types.h"
