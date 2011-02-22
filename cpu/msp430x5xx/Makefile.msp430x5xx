@@ -9,7 +9,7 @@ CONTIKI_CPU=$(CONTIKI)/cpu/msp430x5xx
 
 CONTIKI_CPU_DIRS = .
 MSP430     =  msp430.c iohandlers.c uart0.c clock.c watchdog.c mtarch.c rtimer-arch.c spl.c
-UIPDRIVERS =  uart0_slip_arch.c slip.c
+UIPDRIVERS =  uart0_slip-arch.c slip.c
 ELFLOADER  =
 
 CONTIKI_SOURCEFILES += $(MSP430)  $(ELFLOADER) 
