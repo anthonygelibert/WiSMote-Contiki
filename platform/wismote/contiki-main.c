@@ -147,8 +147,7 @@ main(void)
   printf(CONTIKI_VERSION_STRING " started.\n");
 
   /* Initialize the sensors */
-  leds_on(LEDS_BLUE);
-#ifdef DEBUG_SENSORS
+#if DEBUG_SENSORS
   print_sensors();
 #endif
   process_start(&sensors_process, NULL);
