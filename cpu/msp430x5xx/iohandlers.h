@@ -64,6 +64,8 @@ static CC_INLINE void name##_SELECT_IO()   {P##port##SEL &= ~BIT##bit;}        \
 static CC_INLINE void name##_SELECT_PM()   {P##port##SEL |=  BIT##bit;}        \
 static CC_INLINE void name##_SET()         {P##port##OUT |=  BIT##bit;}        \
 static CC_INLINE void name##_CLEAR()       {P##port##OUT &= ~BIT##bit;}        \
+static CC_INLINE void name##_RESISTOR_ENABLE()   {P##port##REN |=  BIT##bit;}   \
+static CC_INLINE void name##_RESISTOR_DISABLE()  {P##port##REN &= ~BIT##bit;}   \
 static CC_INLINE int  name##_READ()        {return (P##port##IN & BIT##bit);}  \
 static CC_INLINE void name##_MAKE_OUTPUT() {P##port##DIR |= BIT##bit;}         \
 static CC_INLINE void name##_MAKE_INPUT()  {P##port##DIR &= ~BIT##bit;}
