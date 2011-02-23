@@ -81,28 +81,28 @@ init_ports(void)
 
   /* All available outputs */
 #ifdef P1DIR
-  P1DIR = 0xFF;
+  P1DIR = 0;
 #endif
 #ifdef P2DIR
-  P2DIR = 0xFF;
+  P2DIR = 0;
 #endif
 #ifdef P3DIR
-  P3DIR = 0xFF;
+  P3DIR = 0;
 #endif
 #ifdef P4DIR
-  P4DIR = 0xFF;
+  P4DIR = 0;
 #endif
 #ifdef P5DIR
-  P5DIR = 0xFF;
+  P5DIR = 0;
 #endif
 #ifdef P6DIR
-  P6DIR = 0xFF;
+  P6DIR = 0;
 #endif
 #ifdef P7DIR
-  P7DIR = 0xFF;
+  P7DIR = 0;
 #endif
 #ifdef P8DIR
-  P8DIR = 0xFF;
+  P8DIR = 0;
 #endif
 
   /* All available IE */
