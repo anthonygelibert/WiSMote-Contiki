@@ -46,16 +46,47 @@
 
 #include "contiki.h"
 #include "dev/leds.h"
-#include "dev/serial-line.h"
 #include "dev/button-sensor.h"
 #include "dev/watchdog.h"
-#include "dev/slip.h"
 #include "lib/sensors.h"
 #include "sys/energest.h"
-
 #include "uart0.h"
 #include "spl.h"
 #include "msp430.h"
+
+/* XXX_PTV HACK FOR ECLIPSE */
+#define WITH_UIP 1
+
+#ifndef WITH_UIP
+#define WITH_UIP 0
+#endif
+
+#ifndef WITH_UIP6
+#define WITH_UIP6 0
+#endif
+
+#ifndef CONTIKI_NO_NET
+#define CONTIKI_NO_NET 0
+#endif
+
+#if CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6)
+#include "dev/serial-line.h"
+#endif
+
+#if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
+#include "dev/slip.h"
+#include "net/rime.h"
+#include "net/tcpip.h"
+#endif
+
+#if !CONTIKI_NO_NET && WITH_UIP
+#include "net/uip.h"
+#include "net/uip-fw.h"
+#include "net/uip-fw-drv.h"
+#include "net/uip-over-mesh.h"
+static struct uip_fw_netif slipif =
+  {UIP_FW_NETIF(192,168,1,1, 255,255,255,255, slip_send)};
+#endif
 
 SENSORS(&button_sensor);
 
@@ -113,7 +144,7 @@ main(void)
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   uart0_init(34,UCBRS_3,UCBRF_0);
 
-#if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6) && SLIP_ENABLED
+#if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
   slip_arch_init(0);
 #endif
   leds_on(LEDS_GREEN);
@@ -134,7 +165,22 @@ main(void)
 #endif
 
 #if !CONTIKI_NO_NET && WITH_UIP
+  process_start(&tcpip_process, NULL);
+  process_start(&uip_fw_process, NULL);
+  process_start(&slip_process, NULL);
+  {
+      uip_ipaddr_t hostaddr, netmask;
 
+      uip_init();
+      uip_ipaddr(&hostaddr, 192,168,1,2);
+      uip_ipaddr(&netmask, 255,255,255,0);
+      uip_sethostaddr(&hostaddr);
+      uip_setnetmask(&netmask);
+      uip_fw_default(&slipif);
+#if UIP_LOGGING
+      printf("uIP started with IP address %d.%d.%d.%d\n", uip_ipaddr_to_quad(&hostaddr));
+#endif
+  }
 #endif
 
   /* Initialize the EnerGest module */
@@ -197,6 +243,15 @@ main(void)
   }
   return 0;
 }
+
+/*---------------------------------------------------------------------------*/
+
+#if UIP_LOGGING
+void uip_log(char *msg)
+{
+  printf("uIP: %s\n",msg);
+}
+#endif
 
 /*---------------------------------------------------------------------------*/
 
