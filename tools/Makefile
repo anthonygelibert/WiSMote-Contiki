@@ -1,1 +1,1 @@
-all: tunslip
+all: tunslip tunslip6
