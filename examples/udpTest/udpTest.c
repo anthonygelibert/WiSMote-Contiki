@@ -53,22 +53,25 @@ PROCESS_THREAD(ping_process, ev, data)
 {
   uip_ipaddr_t serveraddr;
   struct uip_udp_conn *udpconn;
+  static struct etimer et;
 
   PROCESS_BEGIN();
 
   uiplib_ipaddrconv(server, &serveraddr);
-  udpconn = udp_new(&serveraddr, uip_htons(port), NULL);
-  if (udpconn == NULL)
+  udpconn = udp_new(&serveraddr, port, NULL);
+  printf("IP: %u.%u.%u.%u\nLP: %u\nRP: %u\nTTL: %u\n",
+      (udpconn->ripaddr).u8[0],
+      (udpconn->ripaddr).u8[1],
+      (udpconn->ripaddr).u8[2],
+      (udpconn->ripaddr).u8[3],
+      udpconn->lport,
+      udpconn->rport,
+      udpconn->ttl);
+  while (1)
   {
-    printf("FAIL TO INITIALIZE UDPCONN\n");
-  }
-  else
-  {
-    while (1)
-    {
-      PROCESS_PAUSE();
-      uip_udp_packet_send(udpconn, "Hello world !!!", 16);
-    }
+    etimer_set(&et, CLOCK_CONF_SECOND);
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+    uip_udp_packet_send(udpconn, "Hello world !!!", 16);
   }
   PROCESS_END();
 }
