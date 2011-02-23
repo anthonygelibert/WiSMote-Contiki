@@ -5,3 +5,4 @@ syntax: regexp
 ^examples/.*/.*\.wismote$
 ^examples/.*/.*\.hex$
 ^.*\.DS\_Store$
+^tools/tunslip$
