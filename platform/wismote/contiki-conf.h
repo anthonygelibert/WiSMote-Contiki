@@ -61,6 +61,8 @@ typedef unsigned long clock_time_t;
 /* ----- UIP module ----- */
 typedef unsigned short uip_stats_t;
 #define UIP_CONF_LOGGING 1
+#define UIP_CONF_UDP 1
+#define UIP_CONF_TCP 0
 
 /* ----- UART module ----- */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
