@@ -50,12 +50,10 @@
 #include "dev/watchdog.h"
 #include "lib/sensors.h"
 #include "sys/energest.h"
+#include "process.h"
 #include "uart0.h"
 #include "spl.h"
 #include "msp430.h"
-
-/* XXX_PTV HACK FOR ECLIPSE */
-#define WITH_UIP 1
 
 #ifndef WITH_UIP
 #define WITH_UIP 0
