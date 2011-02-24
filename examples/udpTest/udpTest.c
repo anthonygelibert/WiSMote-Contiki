@@ -43,7 +43,7 @@
 #include <stdio.h> /* For printf() */
 
 static char server[] = "192.168.1.1";
-static uint16_t port = 1234;
+static uint16_t remote_port = 1234, local_port = 1234;
 
 /*---------------------------------------------------------------------------*/
 PROCESS(ping_process, "Ping process");
@@ -58,12 +58,21 @@ PROCESS_THREAD(ping_process, ev, data)
   PROCESS_BEGIN();
 
   uiplib_ipaddrconv(server, &serveraddr);
-  udpconn = udp_new(&serveraddr, uip_htons(port), NULL);
+  udpconn = udp_new(&serveraddr, uip_htons(remote_port), NULL);
+  udp_bind(udpconn,uip_htons(local_port));
   while (1)
   {
     etimer_set(&et, CLOCK_CONF_SECOND);
-    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-    uip_udp_packet_send(udpconn, "Hello world !!!", 16);
+    PROCESS_WAIT_EVENT();
+    if (ev == etimer_expired(&et)) {
+      uip_udp_packet_send(udpconn, "Hello world !!!", 16);
+    } else {
+      if (ev == tcpip_event) {
+        if (uip_newdata()) {
+          printf(uip_appdata);
+        }
+      }
+    }
   }
 
   PROCESS_END();
