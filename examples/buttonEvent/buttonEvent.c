@@ -50,7 +50,7 @@ AUTOSTART_PROCESSES(&buttonEvent_process);
 PROCESS_THREAD(buttonEvent_process, ev, data)
 {
   PROCESS_BEGIN();
-  button_sensor.configure(SENSORS_ACTIVE,1);
+  SENSORS_ACTIVATE(button_sensor);
   while (1)
   {
     PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &button_sensor);
