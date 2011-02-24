@@ -1,4 +1,3 @@
-
 #include <signal.h>
 
 #include "presence-sensor.h"
@@ -7,7 +6,6 @@
 #include "leds.h"
 
 const struct sensors_sensor presence_sensor;
-static struct timer debouncetimer;
 
 /*---------------------------------------------------------------------------*/
 
@@ -15,11 +13,7 @@ static void
 myHandler(void)
 {
   leds_toggle(LEDS_RED);
-  /*if (timer_expired(&debouncetimer))*/ {
-    //timer_set(&debouncetimer, CLOCK_SECOND / 4);
-    sensors_changed(&presence_sensor);
-    LPM4_EXIT;
-  }
+  sensors_changed(&presence_sensor);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -32,9 +26,7 @@ HWCONF_IRQ(PRESENCE, 1, 2, myHandler)
 static int
 value(int type)
 {
- // return PRESENCE_READ() || !timer_expired(&debouncetimer);
   return PRESENCE_READ() ;
-
 }
 
 /*---------------------------------------------------------------------------*/
@@ -45,7 +37,6 @@ configure(int type, int c)
   switch (type) {
     case SENSORS_ACTIVE:
       if (c) {
-      //  timer_set(&debouncetimer, 0);
         PRESENCE_RESISTOR_ENABLE();
         PRESENCE_CLEAR();
         PRESENCE_IRQ_EDGE_SELECTU();
@@ -59,7 +50,6 @@ configure(int type, int c)
         PRESENCE_DISABLE_IRQ();
         PRESENCE_RESET_HANDLER();
         PRESENCE_MAKE_OUTPUT();
-      //  timer_set(&debouncetimer, 0);
       }
       return 1;
   }
