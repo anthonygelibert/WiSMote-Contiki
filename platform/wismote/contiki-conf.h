@@ -60,9 +60,17 @@ typedef unsigned long clock_time_t;
 
 /* ----- UIP module ----- */
 typedef unsigned short uip_stats_t;
-#define UIP_CONF_LOGGING 1
-#define UIP_CONF_UDP 1
-#define UIP_CONF_TCP 0
+#define UIP_CONF_LOGGING           1
+#define UIP_CONF_UDP               1
+#define UIP_CONF_TCP               1
+#define UIP_CONF_ICMP_DEST_UNREACH 1
+#define UIP_CONF_MAX_CONNECTIONS   4
+#define UIP_CONF_MAX_LISTENPORTS   8
+#define UIP_CONF_UDP_CONNS         12
+#define UIP_CONF_FWCACHE_SIZE      30
+#define UIP_CONF_BROADCAST         1
+#define UIP_CONF_PINGADDRCONF      0
+#define UIP_CONF_TCP_SPLIT         0
 
 /* ----- UART module ----- */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
