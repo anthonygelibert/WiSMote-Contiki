@@ -51,14 +51,14 @@ AUTOSTART_PROCESSES(&ping_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(ping_process, ev, data)
 {
-  uip_ipaddr_t serveraddr;
-  struct uip_udp_conn *udpconn;
+  static uip_ipaddr_t serveraddr;
+  static struct uip_udp_conn *udpconn;
   static struct etimer et;
 
   PROCESS_BEGIN();
 
   uiplib_ipaddrconv(server, &serveraddr);
-  udpconn = udp_new(&serveraddr, port, NULL);
+  udpconn = udp_new(&serveraddr, uip_htons(port), NULL);
   printf("IP: %u.%u.%u.%u\nLP: %u\nRP: %u\nTTL: %u\n",
       (udpconn->ripaddr).u8[0],
       (udpconn->ripaddr).u8[1],
