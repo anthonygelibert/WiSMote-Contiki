@@ -64,8 +64,11 @@ static CC_INLINE void name##_SELECT_IO()   {P##port##SEL &= ~BIT##bit;}        \
 static CC_INLINE void name##_SELECT_PM()   {P##port##SEL |=  BIT##bit;}        \
 static CC_INLINE void name##_SET()         {P##port##OUT |=  BIT##bit;}        \
 static CC_INLINE void name##_CLEAR()       {P##port##OUT &= ~BIT##bit;}        \
-static CC_INLINE void name##_RESISTOR_ENABLE()   {P##port##REN |=  BIT##bit;}   \
-static CC_INLINE void name##_RESISTOR_DISABLE()  {P##port##REN &= ~BIT##bit;}   \
+static CC_INLINE void name##_RESISTOR_ENABLE()   {P##port##REN |=  BIT##bit;}  \
+static CC_INLINE void name##_RESISTOR_DISABLE()  {P##port##REN &= ~BIT##bit;}  \
+static CC_INLINE void name##_RESISTOR_PULL_UP()  {P##port##OUT |= BIT##bit;}   \
+static CC_INLINE void name##_RESISTOR_PULL_DOWN() {P##port##OUT &= ~BIT##bit;}  \
+static CC_INLINE void name##_RESISTOR_PULL_SWAP() {P##port##OUT ^= BIT##bit;}   \
 static CC_INLINE int  name##_READ()        {return (P##port##IN & BIT##bit);}  \
 static CC_INLINE void name##_MAKE_OUTPUT() {P##port##DIR |= BIT##bit;}         \
 static CC_INLINE void name##_MAKE_INPUT()  {P##port##DIR &= ~BIT##bit;}
@@ -76,6 +79,7 @@ static CC_INLINE void name##_DISABLE_IRQ()      {P##port##IE &= ~BIT##bit;}    \
 static CC_INLINE int  name##_IRQ_ENABLED()    {return P##port##IE & BIT##bit;} \
 static CC_INLINE void name##_IRQ_EDGE_SELECTD() {P##port##IES |= BIT##bit;}    \
 static CC_INLINE void name##_IRQ_EDGE_SELECTU() {P##port##IES &= ~BIT##bit;}   \
+static CC_INLINE void name##_IRQ_EDGE_SWAP()    {P##port##IES ^= BIT##bit;}    \
 static CC_INLINE int  name##_CHECK_IRQ()      {return P##port##IFG & BIT##bit;}\
 static CC_INLINE int  name##_IRQ_PORT()       {return port;}                   \
 static CC_INLINE void name##_SET_HANDLER()      {setHandler(handler,port,P##port##IV_P##port##IFG##bit);}\
