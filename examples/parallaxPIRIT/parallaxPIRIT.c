@@ -1,5 +1,7 @@
+/* NO_YET_DOCUMENTED_PTV */
+
 /*
- * Copyright (c) 2005, Swedish Institute of Computer Science
+ * Copyright (c) 2011, Plateforme Technologique de Valence.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,18 +27,56 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
- * This file is part of the Contiki operating system.
- *
- * @(#)$Id: button-sensor.h,v 1.1 2007/03/15 21:42:09 adamdunkels Exp $
  */
-#ifndef __PRESENCE_SENSOR_H__
-#define __PRESENCE_SENSOR_H__
 
-#include "lib/sensors.h"
+#include "contiki.h"
+#include "sys/process.h"
+#include "sys/autostart.h"
 
-extern const struct sensors_sensor presence_sensor;
+#include "iohandlers.h"
+#include "leds.h"
 
-#define PRESENCE_SENSOR "Presence"
+/*---------------------------------------------------------------------------*/
 
-#endif /* __PRESENCE_SENSOR_H__ */
+static void
+myHandler(void)
+{
+  leds_toggle(LEDS_RED);
+}
+
+/*---------------------------------------------------------------------------*/
+
+HWCONF_PIN(BUTTON, 1, 2)
+HWCONF_IRQ(BUTTON, 1, 2, myHandler)
+
+/*---------------------------------------------------------------------------*/
+PROCESS(detect_presence_process, "detect_presence process");
+AUTOSTART_PROCESSES(&detect_presence_process);
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(detect_presence_process, ev, data)
+{
+  PROCESS_BEGIN();
+
+  leds_off(LEDS_RED);
+  leds_off(LEDS_GREEN);
+
+  BUTTON_RESISTOR_ENABLE();
+  BUTTON_CLEAR();
+  BUTTON_IRQ_EDGE_SELECTU();
+  BUTTON_SELECT();
+  BUTTON_MAKE_INPUT();
+  BUTTON_SET_HANDLER();
+  BUTTON_ENABLE_IRQ();
+
+  P1DIR &= ~BIT2; // Set P1.2 to input direction   ENTREE SIGNAL CAPT
+  P6DIR |= BIT0; // P6.0 ADC0 output      GND
+  P6OUT &= ~BIT0; // P6.0 ADC0 output     GND
+
+  while (1)
+  {
+    PROCESS_PAUSE();
+  }
+  PROCESS_END();
+}
+
+/*---------------------------------------------------------------------------*/

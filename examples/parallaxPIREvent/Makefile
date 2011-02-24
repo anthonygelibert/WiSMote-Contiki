@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = detect_presence
+CONTIKI_PROJECT = parallaxPIREvent
 all: $(CONTIKI_PROJECT)
 
 CONTIKI_NO_NET=1

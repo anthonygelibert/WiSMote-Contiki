@@ -1,11 +1,4 @@
-/**
- * \file
- *         Button with event example.
- * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
- * \date
- *         Feb 18, 2011
- */
+/* NO_YET_DOCUMENTED_PTV */
 
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
@@ -39,86 +32,40 @@
 #include "contiki.h"
 #include "sys/process.h"
 #include "sys/autostart.h"
-
+#include "parallax_pir-555-28027.h"
 #include "iohandlers.h"
 #include "leds.h"
 #include "clock.h"
 #include <stdint.h>
 
-/*---------------------------------------------------------------------------*/
-/*
-static void
-delay(void)
-{
-  volatile uint16_t i;
-  for (i = 0; i < 640; i++) {
-    clock_delay(i);
-  }
-}*/
+#include "lib/sensors.h"
+#include "contiki.h"
+#include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
-
-static void
-myHandler(void)
-{
- // leds_toggle(LEDS_GREEN);
-  leds_toggle(LEDS_RED);
-}
-
+PROCESS(exemple_presence_process, "exemple_presence process");
+AUTOSTART_PROCESSES(&exemple_presence_process);
 /*---------------------------------------------------------------------------*/
-//
-HWCONF_PIN(BUTTON, 1, 2)
-HWCONF_IRQ(BUTTON, 1, 2, myHandler)
-
-/*---------------------------------------------------------------------------*/
-PROCESS(detect_presence_process, "detect_presence process");
-AUTOSTART_PROCESSES(&detect_presence_process);
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(detect_presence_process, ev, data)
+PROCESS_THREAD(exemple_presence_process, ev, data)
 {
   PROCESS_BEGIN();
-
-   leds_off(LEDS_RED);
-   leds_off(LEDS_GREEN);
-
-
-    BUTTON_RESISTOR_ENABLE();
-    BUTTON_CLEAR();
-    BUTTON_IRQ_EDGE_SELECTU();
-    BUTTON_SELECT();
-    BUTTON_MAKE_INPUT();
-    BUTTON_SET_HANDLER();
-    BUTTON_ENABLE_IRQ();
-
-
-// TODO: A fusionner avec les init_button_*
-        // INIT PORT
-//    P1REN |= BIT2;  // Enable P1.2 internal resistance
-//    P1OUT &= ~BIT2; // Set P1.2 as pull-Down resistance //mettre le pulldown (forcer état à 0)
-//    P1IES &= ~BIT2; // P1.2 Lo/Hi edge   //configurer interruption sur 0->1
-//    P1IE |= BIT2;   // P1.2 interrupt enabled
-//    P1IFG &= ~BIT2; // P1.2 IFG cleared
-
-        // INIT LED
-        //P8DIR |= BIT6; // P8.6 output VERTE
-        //P5DIR |= BIT2; // P5.2 output ROUGE
-        //P2DIR |= BIT4; // P2.4 output BLUE
-
-        // INIT CAPT
-        P1DIR &= ~BIT2; // Set P1.2 to input direction   ENTREE SIGNAL CAPT
-        P6DIR |= BIT0; // P6.0 ADC0 output      GND
-        P6OUT &= ~BIT0; // P6.0 ADC0 output     GND
-
-     //   __bis_SR_register(LPM0_bits | GIE);
-
-    while (1)
+  /* Set-up GND */
+  P6DIR |= BIT0;
+  P6OUT &= ~BIT0;
+  SENSORS_ACTIVATE(PIR_555_28027_sensor);
+  while (1)
+  {
+    PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &PIR_555_28027_sensor);
+    int presence = ((struct sensors_sensor *)data)->value(0);
+    if (presence)
     {
-      PROCESS_PAUSE();
-      //leds_on(LEDS_BLUE);
-      //delay();
-      //leds_off(LEDS_BLUE);
-      //delay();
+      printf("Someone is here !!!\n");
     }
+    else
+    {
+      printf("Nobody\n");
+    }
+  }
   PROCESS_END();
 }
 

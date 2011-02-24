@@ -1,4 +1,4 @@
-CONTIKI_PROJECT = exemple_presence
+CONTIKI_PROJECT = parallaxPIRIT
 all: $(CONTIKI_PROJECT)
 
 CONTIKI_NO_NET=1

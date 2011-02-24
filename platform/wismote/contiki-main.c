@@ -51,10 +51,10 @@
 #include "lib/sensors.h"
 #include "sys/energest.h"
 #include "process.h"
-#include "sensors/presence-sensor.h"
 #include "uart0.h"
 #include "spl.h"
 #include "msp430.h"
+#include "parallax_pir-555-28027.h"
 
 #ifndef WITH_UIP
 #define WITH_UIP 0
@@ -87,7 +87,7 @@ static struct uip_fw_netif slipif =
   {UIP_FW_NETIF(192,168,1,1, 255,255,255,255, slip_send)};
 #endif
 
-SENSORS(&presence_sensor, &button_sensor);
+SENSORS(&PIR_555_28027_sensor, &button_sensor);
 
 /** Display the list of auto-processes before executing them. */
 #define DEBUG_PROCESS 0
@@ -116,9 +116,9 @@ print_sensors(void)
 {
   struct sensors_sensor * sensor = sensors_first();
 
-  printf("Sensors (%d): ", SENSORS_NUM);
+  printf("Sensors (%d): ", SENSORS_NUM - 1);
   while (sensor != NULL) {
-    printf(" '%s(%x)' ", sensor->type, (unsigned int)sensor);
+    printf(" '%s' ", sensor->type);
     sensor = sensors_next(sensor);
   }
   putchar('\n');

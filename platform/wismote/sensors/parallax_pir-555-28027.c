@@ -1,11 +1,9 @@
 #include <signal.h>
 
-#include "presence-sensor.h"
-#include "lib/sensors.h"
+#include "parallax_pir-555-28027.h"
 #include "iohandlers.h"
-#include "leds.h"
 
-const struct sensors_sensor presence_sensor;
+const struct sensors_sensor PIR_555_28027_sensor;
 
 static void myHandler(void);
 
@@ -19,7 +17,7 @@ myHandler(void)
 {
   PRESENCE_RESISTOR_PULL_SWAP();
   PRESENCE_IRQ_EDGE_SWAP();
-  sensors_changed(&presence_sensor);
+  sensors_changed(&PIR_555_28027_sensor);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -45,7 +43,6 @@ configure(int type, int c)
         PRESENCE_MAKE_INPUT();
         PRESENCE_SET_HANDLER();
         PRESENCE_ENABLE_IRQ();
-
       } else {
         PRESENCE_DISABLE_IRQ();
         PRESENCE_RESET_HANDLER();
@@ -72,6 +69,6 @@ status(int type)
 
 /*---------------------------------------------------------------------------*/
 
-SENSORS_SENSOR(presence_sensor, PRESENCE_SENSOR, value, configure, status);
+SENSORS_SENSOR(PIR_555_28027_sensor, PIR_555_28027_SENSOR, value, configure, status);
 
 /** @} */
