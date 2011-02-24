@@ -49,7 +49,6 @@
 #include "contiki.h"
 #include <stdio.h>
 
-
 /*---------------------------------------------------------------------------*/
 PROCESS(exemple_presence_process, "exemple_presence process");
 AUTOSTART_PROCESSES(&exemple_presence_process);
@@ -57,11 +56,13 @@ AUTOSTART_PROCESSES(&exemple_presence_process);
 PROCESS_THREAD(exemple_presence_process, ev, data)
 {
   PROCESS_BEGIN();
+  /* Set-up GND */
+  P6DIR |= BIT0;
+  P6OUT &= ~BIT0;
   SENSORS_ACTIVATE(presence_sensor);
   while (1)
   {
     PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &presence_sensor);
-    printf("Call value\n");
     int presence = ((struct sensors_sensor *)data)->value(0);
     if (presence)
     {

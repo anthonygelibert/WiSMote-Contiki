@@ -9,8 +9,6 @@ const struct sensors_sensor presence_sensor;
 
 static void myHandler(void);
 
-/*---------------------------------------------------------------------------*/
-
 HWCONF_PIN(PRESENCE, 1, 2)
 HWCONF_IRQ(PRESENCE, 1, 2, myHandler)
 
@@ -22,8 +20,8 @@ myHandler(void)
   PRESENCE_RESISTOR_PULL_SWAP();
   PRESENCE_IRQ_EDGE_SWAP();
   sensors_changed(&presence_sensor);
-
 }
+
 /*---------------------------------------------------------------------------*/
 
 static int
@@ -40,8 +38,6 @@ configure(int type, int c)
   switch (type) {
     case SENSORS_ACTIVE:
       if (c) {
-        P6DIR |= BIT0; // P6.0 ADC0 output      GND
-        P6OUT &= ~BIT0; // P6.0 ADC0 output     GND
         PRESENCE_RESISTOR_ENABLE();
         PRESENCE_RESISTOR_PULL_DOWN();
         PRESENCE_IRQ_EDGE_SELECTU();
@@ -73,7 +69,9 @@ status(int type)
   }
   return 0;
 }
+
 /*---------------------------------------------------------------------------*/
+
 SENSORS_SENSOR(presence_sensor, PRESENCE_SENSOR, value, configure, status);
 
 /** @} */
