@@ -51,6 +51,7 @@
 #include "lib/sensors.h"
 #include "sys/energest.h"
 #include "process.h"
+#include "sensors/presence-sensor.h"
 #include "uart0.h"
 #include "spl.h"
 #include "msp430.h"
@@ -86,7 +87,7 @@ static struct uip_fw_netif slipif =
   {UIP_FW_NETIF(192,168,1,1, 255,255,255,255, slip_send)};
 #endif
 
-SENSORS(&button_sensor);
+SENSORS(&presence_sensor, &button_sensor);
 
 /** Display the list of auto-processes before executing them. */
 #define DEBUG_PROCESS 0
@@ -115,9 +116,9 @@ print_sensors(void)
 {
   struct sensors_sensor * sensor = sensors_first();
 
-  printf("Sensors");
-  while (sensor) {
-    printf(" '%s' ", sensor->type);
+  printf("Sensors (%d): ", SENSORS_NUM);
+  while (sensor != NULL) {
+    printf(" '%s(%x)' ", sensor->type, (unsigned int)sensor);
     sensor = sensors_next(sensor);
   }
   putchar('\n');
@@ -191,10 +192,10 @@ main(void)
   printf(CONTIKI_VERSION_STRING " started.\n");
 
   /* Initialize the sensors */
+  process_start(&sensors_process, NULL);
 #if DEBUG_SENSORS
   print_sensors();
 #endif
-  process_start(&sensors_process, NULL);
 
   /* Start the processes */
 #if DEBUG_PROCESS

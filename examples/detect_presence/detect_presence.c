@@ -110,7 +110,7 @@ PROCESS_THREAD(detect_presence_process, ev, data)
         P6OUT &= ~BIT0; // P6.0 ADC0 output     GND
 
      //   __bis_SR_register(LPM0_bits | GIE);
-      *
+
     while (1)
     {
       PROCESS_PAUSE();
