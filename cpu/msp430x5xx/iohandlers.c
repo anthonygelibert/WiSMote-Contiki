@@ -146,7 +146,7 @@ setHandler(const ITHandler handler, const uint8_t port, const uint8_t bit)
 #if DEBUG_IOHANDLERS
   printf("I set handlers[%d][%d]\n", bit, port - 1);
 #endif
-  handlers[bit][port - 1] = handler;
+  handlers[bit][port] = handler;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -164,7 +164,7 @@ resetHandler(const uint8_t port, const uint8_t bit)
 #if DEBUG_IOHANDLERS
   printf("I reset handlers[%d][%d]\n", bit, port - 1);
 #endif
-  handlers[bit][port - 1] = dummyHandler;
+  handlers[bit][port] = dummyHandler;
 }
 
 /*---------------------------------------------------------------------------*/

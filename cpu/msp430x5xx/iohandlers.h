@@ -82,8 +82,8 @@ static CC_INLINE void name##_IRQ_EDGE_SELECTU() {P##port##IES &= ~BIT##bit;}   \
 static CC_INLINE void name##_IRQ_EDGE_SWAP()    {P##port##IES ^= BIT##bit;}    \
 static CC_INLINE int  name##_CHECK_IRQ()      {return P##port##IFG & BIT##bit;}\
 static CC_INLINE int  name##_IRQ_PORT()       {return port;}                   \
-static CC_INLINE void name##_SET_HANDLER()      {setHandler(handler,port,P##port##IV_P##port##IFG##bit);}\
-static CC_INLINE void name##_RESET_HANDLER()    {resetHandler(port,P##port##IV_P##port##IFG##bit);}
+static CC_INLINE void name##_SET_HANDLER()      {setHandler(handler,port-1,P##port##IV_P##port##IFG##bit);}\
+static CC_INLINE void name##_RESET_HANDLER()    {resetHandler(port-1,P##port##IV_P##port##IFG##bit);}
 
 /** IT interruption handler. */
 typedef void (*ITHandler)(void);
