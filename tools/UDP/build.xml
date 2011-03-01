@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="UDP Tools"
+         basedir="."
+         default="UDPClient">
+    <target name="UDPClient"
+            description="Compile UDPClient.java">
+        <!-- Compile -->
+        <javac srcdir="${basedir}"
+               destdir="${basedir}"
+               fork="true"
+               target="1.6"
+               source="1.6"
+               includeAntRuntime="false" />
+    </target>
+
+    <target name="clean">
+        <delete file="UDPClient.class" />
+    </target>
+
+</project>
