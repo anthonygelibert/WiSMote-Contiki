@@ -59,24 +59,42 @@
 typedef unsigned long clock_time_t;
 
 /* ----- UIP module ----- */
+/* ---- General ---- */
 typedef unsigned short uip_stats_t;
+/** Enable UIP logging. */
 #define UIP_CONF_LOGGING           1
+/* ---- UDP ---- */
+/** Enable UDP compilation. */
 #define UIP_CONF_UDP               1
-#define UIP_CONF_TCP               1
-#define UIP_CONF_ICMP_DEST_UNREACH 1
-#define UIP_CONF_MAX_CONNECTIONS   4
-#define UIP_CONF_MAX_LISTENPORTS   8
-#define UIP_CONF_UDP_CONNS         12
-#define UIP_CONF_FWCACHE_SIZE      30
+#if UIP_CONF_UDP
+/** Number of simultaneous connex. */
+#define UIP_UDP_CONNS             10
+/** Enable broadcast. */
 #define UIP_CONF_BROADCAST         1
-#define UIP_CONF_PINGADDRCONF      0
-#define UIP_CONF_TCP_SPLIT         0
+#else
+#define UIP_UDP_CONNS              0
+/** Disable UDP broadcast. */
+#define UIP_CONF_BROADCAST         0
+#endif
+
+/* ---- TCP ---- */
+/** Enable TCP compilation. */
+#define UIP_CONF_TCP               1
+#if UIP_CONF_TCP
+/** Number of simultaneous connex. */
+#define UIP_CONF_ACTIVE_OPEN       2
+#else
+#define UIP_CONF_ACTIVE_OPEN       0
+#endif
 
 /* ----- UART module ----- */
+/** UART0: uses interrupt for TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
+/** UART0: size of the TX buffer. */
 #define UART0_CONF_TX_BUFSIZE 64
 
 /* ----- Serial Line module ----- */
+/** Buffer for the serial line receive buffer. */
 #define SERIAL_LINE_CONF_BUFSIZE 64
 
 /* ----- Includes ----- */
