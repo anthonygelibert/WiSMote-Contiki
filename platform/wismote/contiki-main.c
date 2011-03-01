@@ -56,6 +56,8 @@
 #include "msp430.h"
 #include "parallax_pir-555-28027.h"
 
+#define WITH_UIP 1
+
 #ifndef WITH_UIP
 #define WITH_UIP 0
 #endif
@@ -84,7 +86,7 @@
 #include "net/uip-fw-drv.h"
 #include "net/uip-over-mesh.h"
 static struct uip_fw_netif slipif =
-  {UIP_FW_NETIF(192,168,1,1, 255,255,255,255, slip_send)};
+  {UIP_FW_NETIF(192,168,1,2, 255,255,255,0, slip_send)};
 #endif
 
 SENSORS(&PIR_555_28027_sensor, &button_sensor);
@@ -165,20 +167,32 @@ main(void)
 
 #if !CONTIKI_NO_NET && WITH_UIP
   process_start(&tcpip_process, NULL);
+  uip_fw_init();
   process_start(&uip_fw_process, NULL);
   process_start(&slip_process, NULL);
   {
-      uip_ipaddr_t hostaddr, netmask;
-
+      uip_ipaddr_t addr;
       uip_init();
-      uip_ipaddr(&hostaddr, 192,168,1,2);
-      uip_ipaddr(&netmask, 255,255,255,0);
-      uip_sethostaddr(&hostaddr);
-      uip_setnetmask(&netmask);
-      uip_fw_default(&slipif);
+
+      uip_ipaddr(&addr, 192,168,1,2);
+      uip_sethostaddr(&addr);
 #if UIP_LOGGING
-      printf("uIP started with IP address %d.%d.%d.%d\n", uip_ipaddr_to_quad(&hostaddr));
+      printf("IP Address: %d.%d.%d.%d\n", uip_ipaddr_to_quad(&addr));
 #endif
+
+      uip_ipaddr(&addr,192,168,1,1);
+      uip_setdraddr(&addr);
+#if UIP_LOGGING
+      printf("Def Router Address: %d.%d.%d.%d\n", uip_ipaddr_to_quad(&addr));
+#endif
+
+      uip_ipaddr(&addr, 255,255,255,0);
+      uip_setnetmask(&addr);
+#if UIP_LOGGING
+      printf("Netmask Address: %d.%d.%d.%d\n", uip_ipaddr_to_quad(&addr));
+#endif
+
+      uip_fw_default(&slipif);
   }
 #endif
 
