@@ -5,5 +5,7 @@ syntax: regexp
 ^examples/.*/.*\.wismote$
 ^examples/.*/.*\.hex$
 ^.*\.DS\_Store$
-^tools/tunslip$
-^tools/tunslip6$
+^tools/.*/tunslip$
+^tools/.*/tunslip6$
+^.*/.*\.class$
+
