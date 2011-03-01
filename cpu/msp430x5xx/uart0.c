@@ -189,7 +189,6 @@ uart0_set_input(int
 
 /*---------------------------------------------------------------------------*/
 
-#if !WITH_UIP
 /**
  * \brief Writes character to the current position in the standard output.
  *
@@ -211,7 +210,6 @@ putchar(int c)
   }
   return uart0_writeb(c);
 }
-#endif
 
 /*---------------------------------------------------------------------------*/
 
