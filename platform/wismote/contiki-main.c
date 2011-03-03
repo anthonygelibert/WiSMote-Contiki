@@ -7,9 +7,9 @@
  * \file
  *         Contiki main.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*
@@ -56,8 +56,6 @@
 #include "msp430.h"
 #include "parallax_pir-555-28027.h"
 
-#define WITH_UIP 1
-
 #ifndef WITH_UIP
 #define WITH_UIP 0
 #endif
@@ -87,7 +85,7 @@
 #include "net/uip-over-mesh.h"
 static struct uip_fw_netif slipif =
   {UIP_FW_NETIF(192,168,1,2, 255,255,255,0, slip_send)};
-#endif
+#endif /* !CONTIKI_NO_NET && WITH_UIP */
 
 SENSORS(&PIR_555_28027_sensor, &button_sensor);
 
@@ -263,6 +261,15 @@ main(void)
 void uip_log(char *msg)
 {
   printf("uIP: %s\n",msg);
+}
+#endif
+
+/*---------------------------------------------------------------------------*/
+
+#if LOG_CONF_ENABLED
+void log_message(const char *part1, const char *part2)
+{
+  printf("log_message: %s / %s",part1,part2);
 }
 #endif
 
