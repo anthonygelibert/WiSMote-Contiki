@@ -2,7 +2,7 @@
  * \file
  *         Button with event example.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
  *         Feb 18, 2011
  */
@@ -43,6 +43,9 @@
 #include "leds.h"
 #include <stdio.h>
 
+/** Disable debugging. */
+#define DEBUG 1
+
 /*---------------------------------------------------------------------------*/
 PROCESS(buttonEvent_process, "Button process");
 AUTOSTART_PROCESSES(&buttonEvent_process);
@@ -53,6 +56,9 @@ PROCESS_THREAD(buttonEvent_process, ev, data)
   SENSORS_ACTIVATE(button_sensor);
   while (1)
   {
+#if DEBUG
+    printf("I wait an event...\n");
+#endif
     PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &button_sensor);
     printf("Stop pushing me !!!\n");
   }
