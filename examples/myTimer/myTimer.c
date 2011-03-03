@@ -1,10 +1,15 @@
 /**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
  * \file
  *         Clock on UART0.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*
@@ -79,3 +84,6 @@ PROCESS_THREAD(myTimer_process, ev, data)
 
   PROCESS_END();
 }
+/*---------------------------------------------------------------------------*/
+
+/** @} */

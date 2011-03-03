@@ -1,10 +1,15 @@
 /**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
  * \file
  *         LEDs blinking example.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*
@@ -73,3 +78,5 @@ PROCESS_THREAD(leds_process, ev, data)
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
+
+/** @} */

@@ -1,10 +1,15 @@
 /**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
  * \file
  *         Button with event example.
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*
@@ -64,3 +69,7 @@ PROCESS_THREAD(buttonEvent_process, ev, data)
   }
   PROCESS_END();
 }
+
+/*---------------------------------------------------------------------------*/
+
+/** @} */

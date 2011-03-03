@@ -1,10 +1,15 @@
 /**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
  * \file
- *         Button with event example.
+ *         Button with IT example.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*
@@ -77,22 +82,23 @@ PROCESS_THREAD(buttonIT_process, ev, data)
 {
   PROCESS_BEGIN();
 
-    BUTTON_IRQ_EDGE_SELECTD();
-    BUTTON_SELECT();
-    BUTTON_MAKE_INPUT();
-    BUTTON_SET_HANDLER();
-    BUTTON_ENABLE_IRQ();
-
-    while (1)
-    {
-      PROCESS_PAUSE();
-      leds_on(LEDS_BLUE);
-      delay();
-      leds_off(LEDS_BLUE);
-      delay();
-    }
+  BUTTON_IRQ_EDGE_SELECTD();
+  BUTTON_SELECT();
+  BUTTON_MAKE_INPUT();
+  BUTTON_SET_HANDLER();
+  BUTTON_ENABLE_IRQ();
+  while (1)
+  {
+    PROCESS_PAUSE();
+    leds_on(LEDS_BLUE);
+    delay();
+    leds_off(LEDS_BLUE);
+    delay();
+  }
 
   PROCESS_END();
 }
 
 /*---------------------------------------------------------------------------*/
+
+/** @} */

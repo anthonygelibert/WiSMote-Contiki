@@ -15,9 +15,9 @@
  * \file
  *         UART0 routines.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*

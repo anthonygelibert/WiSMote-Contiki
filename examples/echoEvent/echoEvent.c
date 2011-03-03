@@ -1,10 +1,15 @@
 /**
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
  * \file
  *         UART0 Echo with event example.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*
@@ -54,3 +59,6 @@ PROCESS_THREAD(echoEvent_process, ev, data)
   }
   PROCESS_END();
 }
+/*---------------------------------------------------------------------------*/
+
+/** @} */

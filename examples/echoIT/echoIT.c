@@ -1,14 +1,13 @@
 /**
- * \addtogroup wismote
+ * \addtogroup msp430x5xx
  * @{
  */
 
 /**
  * \file
- *         Parallax PIR sensor with IT example.
+ *         UART0 Echo with IT example.
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
- *         Fabien Rey <fabien-rey@wanadoo.fr>
  * \date
  *         March 03, 2011
  */
@@ -43,55 +42,30 @@
  */
 
 #include "contiki.h"
-#include "sys/process.h"
-#include "sys/autostart.h"
-
-#include "iohandlers.h"
-#include "leds.h"
+#include "uart0.h"
+#include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
 
-static void
-myHandler(void)
+int
+echo_rx(const unsigned char c)
 {
-  leds_toggle(LEDS_RED);
+  putchar(c);
+  return 0;
 }
 
 /*---------------------------------------------------------------------------*/
-
-HWCONF_PIN(BUTTON, 1, 2)
-HWCONF_IRQ(BUTTON, 1, 2, myHandler)
-
+PROCESS(echo_process, "Echo process");
+AUTOSTART_PROCESSES(&echo_process);
 /*---------------------------------------------------------------------------*/
-PROCESS(detect_presence_process, "detect_presence process");
-AUTOSTART_PROCESSES(&detect_presence_process);
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(detect_presence_process, ev, data)
+PROCESS_THREAD(echo_process, ev, data)
 {
   PROCESS_BEGIN();
 
-  leds_off(LEDS_RED);
-  leds_off(LEDS_GREEN);
+  uart0_set_input(echo_rx);
 
-  BUTTON_RESISTOR_ENABLE();
-  BUTTON_CLEAR();
-  BUTTON_IRQ_EDGE_SELECTU();
-  BUTTON_SELECT();
-  BUTTON_MAKE_INPUT();
-  BUTTON_SET_HANDLER();
-  BUTTON_ENABLE_IRQ();
-
-  P1DIR &= ~BIT2; // Set P1.2 to input direction   ENTREE SIGNAL CAPT
-  P6DIR |= BIT0; // P6.0 ADC0 output      GND
-  P6OUT &= ~BIT0; // P6.0 ADC0 output     GND
-
-  while (1)
-  {
-    PROCESS_PAUSE();
-  }
   PROCESS_END();
 }
-
 /*---------------------------------------------------------------------------*/
 
 /** @} */

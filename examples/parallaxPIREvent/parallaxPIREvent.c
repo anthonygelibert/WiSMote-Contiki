@@ -1,4 +1,17 @@
-/* NO_YET_DOCUMENTED_PTV */
+/**
+ * \addtogroup wismote
+ * @{
+ */
+
+/**
+ * \file
+ *         Parallax PIR sensor with event example.
+ * \author
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
+ *         Fabien Rey <fabien-rey@wanadoo.fr>
+ * \date
+ *         March 03, 2011
+ */
 
 /*
  * Copyright (c) 2011, Plateforme Technologique de Valence.
@@ -70,3 +83,5 @@ PROCESS_THREAD(exemple_presence_process, ev, data)
 }
 
 /*---------------------------------------------------------------------------*/
+
+/** @} */
