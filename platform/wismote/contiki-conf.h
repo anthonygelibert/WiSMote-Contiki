@@ -10,9 +10,9 @@
  * \file
  *         Contiki configuration.
  * \author
- *         Anthony Gelibert <anthony.gelibert@me.com>
+ *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         Feb 18, 2011
+ *         March 03, 2011
  */
 
 /*
@@ -61,18 +61,41 @@ typedef unsigned long clock_time_t;
 /* ----- UIP module ----- */
 /* ---- General ---- */
 typedef unsigned short uip_stats_t;
+/** Globally enable logging. */
+#define PLATFORM_LOGGING           1
+#if PLATFORM_LOGGING
 /** Enable UIP logging. */
 #define UIP_CONF_LOGGING           1
+/** Enable conf. logging. */
+#define LOG_CONF_ENABLED           1
+/** Enable UIP statistics. */
+#define UIP_CONF_STATISTICS        1
+#else
+/** Enable UIP logging. */
+#define UIP_CONF_LOGGING           0
+/** Enable conf. logging. */
+#define LOG_CONF_ENABLED           0
+/** Disable UIP statistics. */
+#define UIP_CONF_STATISTICS        0
+#endif
+/** Disable PING ADDR. CONF. */
+#define UIP_CONF_PINGADDRCONF      0
+/** Disable IP packet reassembly. */
+#define UIP_CONF_REASSEMBLY        0
+/** Size of the uIP buffer. */
+#define UIP_CONF_BUFFER_SIZE    1514
 /* ---- UDP ---- */
 /** Enable UDP compilation. */
 #define UIP_CONF_UDP               1
+/** Disable UDP checksum. */
+#define UIP_CONF_UDP_CHECKSUMS     0
 #if UIP_CONF_UDP
 /** Number of simultaneous connex. */
-#define UIP_UDP_CONNS             10
+#define UIP_CONF_UDP_CONNS         5
 /** Enable broadcast. */
 #define UIP_CONF_BROADCAST         1
 #else
-#define UIP_UDP_CONNS              0
+#define UIP_CONF_UDP_CONNS         0
 /** Disable UDP broadcast. */
 #define UIP_CONF_BROADCAST         0
 #endif
@@ -81,10 +104,19 @@ typedef unsigned short uip_stats_t;
 /** Enable TCP compilation. */
 #define UIP_CONF_TCP               1
 #if UIP_CONF_TCP
-/** Number of simultaneous connex. */
-#define UIP_CONF_ACTIVE_OPEN       2
+/** Enable open connex. */
+#define UIP_CONF_ACTIVE_OPEN       1
+/** Number of open connex. */
+#define UIP_CONF_MAX_CONNECTIONS   5
+/** Number of open ports. */
+#define UIP_CONF_MAX_LISTENPORTS   5
 #else
+/** Disable open connex. */
 #define UIP_CONF_ACTIVE_OPEN       0
+/** No open connex. */
+#define UIP_CONF_MAX_CONNECTIONS   0
+/** No port available. */
+#define UIP_CONF_MAX_LISTENPORTS   0
 #endif
 
 /* ----- UART module ----- */
