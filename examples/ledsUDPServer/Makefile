@@ -1,0 +1,6 @@
+CONTIKI_PROJECT = ledsUDPServer
+all: $(CONTIKI_PROJECT)
+
+CLEAN += $(CONTIKI_PROJECT).$(TARGET) $(CONTIKI_PROJECT).hex
+CONTIKI = ../..
+include $(CONTIKI)/Makefile.include
