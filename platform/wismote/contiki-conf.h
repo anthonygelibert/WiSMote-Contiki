@@ -127,7 +127,7 @@ typedef unsigned short uip_stats_t;
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line receive buffer. */
-#define SERIAL_LINE_CONF_BUFSIZE 64
+#define SERIAL_LINE_CONF_BUFSIZE 2048
 
 /* ----- Includes ----- */
 #include "types.h"
