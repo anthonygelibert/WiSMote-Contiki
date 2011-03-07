@@ -141,7 +141,11 @@ main(void)
 
   /* Initialize the UART */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
-  uart0_init(416,UCBRS_3,UCBRF_0);
+  // 9600   -> uart0_init(416,UCBRS_6,UCBRF_0);   OK
+  // 38400  -> uart0_init(104, UCBRS_1, UCBRF_0); OK
+  // 57600  -> uart0_init(69, UCBRS_4,UCBRF_0);   OK
+  // 115200 -> uart0_init(34,UCBRS_6,UCBRF_0); NOK
+  uart0_init(69, UCBRS_4,UCBRF_0);
 
 #if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
   slip_arch_init(0);
@@ -269,7 +273,7 @@ void uip_log(char *msg)
 #if LOG_CONF_ENABLED
 void log_message(const char *part1, const char *part2)
 {
-  printf("log_message: %s / %s",part1,part2);
+  printf("log_message: %s / %s\n",part1,part2);
 }
 #endif
 
