@@ -102,7 +102,7 @@ uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
   UCA1CTL1 |= UCSSEL__SMCLK;
   /* Set baudrate */
   UCA1BRW = br;
-  /* Modulation UCBRSx=1, UCBRFx=0 */
+  /* Modulation */
   UCA1MCTL |= brs | brf;
   /* We don't transmit */
   transmitting = 0;
