@@ -1,20 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="UDP Tools"
          basedir="."
-         default="UDPClient">
+         default="all">
+    
     <target name="UDPClient"
             description="Compile UDPClient.java">
         <!-- Compile -->
-        <javac srcdir="${basedir}"
+        <javac includes="UDPClient.java"
+               srcdir="${basedir}"
                destdir="${basedir}"
                fork="true"
                target="1.6"
                source="1.6"
                includeAntRuntime="false" />
     </target>
-
+    
+    <target name="ledsUDPClient"
+            description="Compile ledsUDPClient.java">
+        <!-- Compile -->
+        <javac includes="ledsUDPClient.java"
+               srcdir="${basedir}"
+               destdir="${basedir}"
+               fork="true"
+               target="1.6"
+               source="1.6"
+               includeAntRuntime="false" />
+    </target>
+    
+    <target name="all" depends="UDPClient, ledsUDPClient">
+    </target>
+    
     <target name="clean">
         <delete file="UDPClient.class" />
+        <delete file="ledsUDPClient.class" />
     </target>
 
 </project>
