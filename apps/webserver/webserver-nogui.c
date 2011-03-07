@@ -55,7 +55,9 @@ PROCESS_THREAD(webserver_nogui_process, ev, data)
   httpd_init();
 
   while(1) {
+    printf("I wait for a new event...\n");
     PROCESS_WAIT_EVENT_UNTIL(ev == tcpip_event);
+    printf("I received an HTTP request...\n");
     httpd_appcall(data);
   }
   
