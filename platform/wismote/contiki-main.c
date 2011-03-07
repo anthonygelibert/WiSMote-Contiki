@@ -135,13 +135,13 @@ main(void)
   cpu_init();
   /* Initialize the clock of the card and the clock module */
   clock_init();
-  /* Initialize the leds */
+  /* Initialize the LEDs */
   leds_init();
   leds_on(LEDS_RED);
 
-  /* Initialize the uart */
+  /* Initialize the UART */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
-  uart0_init(34,UCBRS_3,UCBRF_0);
+  uart0_init(416,UCBRS_3,UCBRF_0);
 
 #if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
   slip_arch_init(0);
