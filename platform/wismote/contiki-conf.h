@@ -125,6 +125,11 @@ typedef unsigned short uip_stats_t;
 /** UART0: size of the TX buffer. */
 #define UART0_CONF_TX_BUFSIZE 1024
 
+/* ----- CTK ----- */
+#define CTK_CONF_WINDOWS 1
+#define CTK_CONF_ICONS 1
+#define CTK_CONF_MENUS 1
+
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line receive buffer. */
 #define SERIAL_LINE_CONF_BUFSIZE 64
