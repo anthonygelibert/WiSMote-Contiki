@@ -129,6 +129,7 @@ typedef unsigned short uip_stats_t;
 #define CTK_CONF_WINDOWS 1
 #define CTK_CONF_ICONS 1
 #define CTK_CONF_MENUS 1
+#define CTK_VNCSERVER_CONF_MAX_ICONS 12
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line receive buffer. */
