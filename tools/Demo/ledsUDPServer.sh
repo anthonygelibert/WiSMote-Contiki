@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[[ $# -ne 1 ]] && echo "usage: $0 USB_Interface" && exit 1
+[ $# -ne 1 ] && echo "usage: $0 USB_Interface" && exit 1
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!! WARNING!!! THIS SCRIPT MUST BE STARTED FROM THE ROOT OF CONTIKI !!!"
@@ -9,13 +9,13 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "\n"
 
 echo "I test the presence of the required apps"
-[[ -z "`which make`" ]]  && "MAKE:  [FAILED]" && exit 2
+[ -z "`which make`" ]  && "MAKE:  [FAILED]" && exit 2
 echo "MAKE:  [DONE]"
-[[ -z "`which xterm`" ]] && "XTERM: [FAILED]" && exit 2
+[ -z "`which xterm`" ] && "XTERM: [FAILED]" && exit 2
 echo "XTERM: [DONE]"
-[[ -z "`which ant`" ]]   && "ANT:   [FAILED]" && exit 2
+[ -z "`which ant`" ]   && "ANT:   [FAILED]" && exit 2
 echo "ANT:   [DONE]"
-[[ -z "`which java`" ]]  && "JAVA:  [FAILED]" && exit 2
+[ -z "`which java`" ]  && "JAVA:  [FAILED]" && exit 2
 echo "JAVA:  [DONE]"
 
 echo "\n"
@@ -47,8 +47,15 @@ echo "I go to examples/ledsUDPServer"
 cd $PWD/examples/ledsUDPServer
 echo "I compile the code"
 make TARGET=wismote
+if [ $? -ne 0 ]; then
+    echo "It's impossible to compile ledsUDPServer";
+    sleep 1;
+    kill -s QUIT `ps -o pid,cmd | grep "xterm -T" | cut -f2 -d " " | xargs` 2> /dev/null;  
+    exit 1;
+fi
 echo "I program and run the wismote" 
-xterm -T MSPDebug -e mspdebug -j olimex "prog ledsUDPServer-example.wismote" "run" &
+xterm -T MSPDebug -e mspdebug -j olimex "prog ledsUDPServer-example.wismote" 
+xterm -T MSPDebug -e mspdebug -j olimex "run" &
 echo "NOW YOUR WISMOTE MUST BE RUNNING WITH THE GOOD PROGRAM"
 
 cd - > /dev/null
@@ -66,4 +73,4 @@ cd - > /dev/null
 
 echo "\nNOW, I WILL SHUTDOWN THE TUNNEL AND THE MSPDEBUG"
 
-kill -s QUIT `ps | grep "xterm -T" | cut -f1 -d " " | xargs` 2> /dev/null
+kill -s QUIT `ps -o pid,cmd | grep "xterm -T" | cut -f2 -d " " | xargs` 2> /dev/null
