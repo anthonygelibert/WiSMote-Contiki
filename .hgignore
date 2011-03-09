@@ -8,4 +8,7 @@ syntax: regexp
 ^tools/.*/tunslip$
 ^tools/.*/tunslip6$
 ^.*/.*\.class$
+^.*/.*\.ipr$
+^.*/.*\.iml$
+^.*/.*\.iws$
 

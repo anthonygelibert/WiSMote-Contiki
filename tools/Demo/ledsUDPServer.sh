@@ -58,9 +58,9 @@ echo "----------------------------------------------"
 echo "I go to tools/UDP"
 cd $PWD/tools/UDP
 echo "I compile"
-ant ledsUDPClient
+ant LEDsUDPClient
 echo "I run the client"
-java ledsUDPClient 192.168.1.2 1234
+java LEDsUDPClient 192.168.1.2 1234
 
 cd - > /dev/null
 
