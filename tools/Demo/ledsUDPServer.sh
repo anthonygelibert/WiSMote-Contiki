@@ -43,18 +43,22 @@ cd - > /dev/null
 
 echo "\nSecond step: compile, program and run the wismote."
 echo "-------------------------------------------------"
-echo "I go to examples/ledsUDPServer" 
+echo "I go to examples/ledsUDPServer"
 cd $PWD/examples/ledsUDPServer
 echo "I compile the code"
 make TARGET=wismote
 if [ $? -ne 0 ]; then
     echo "It's impossible to compile ledsUDPServer";
     sleep 1;
-    kill -s QUIT `ps -o pid,cmd | grep "xterm -T" | cut -f2 -d " " | xargs` 2> /dev/null;  
+    case `uname -s` in
+        "Linux") kill -s QUIT `ps -o pid,cmd | grep "xterm -T" | cut -f2 -d " " | xargs` 2> /dev/null;;
+        "Darwin") kill -s QUIT `ps | grep "xterm -T" | cut -f1 -d " " | xargs` 2> /dev/null;;
+        *) echo "Sorry but I haven't the licence to kill on your system";;
+    esac
     exit 1;
 fi
-echo "I program and run the wismote" 
-xterm -T MSPDebug -e mspdebug -j olimex "prog ledsUDPServer-example.wismote" 
+echo "I program and run the wismote"
+xterm -T MSPDebug -e mspdebug -j olimex "prog ledsUDPServer-example.wismote"
 xterm -T MSPDebug -e mspdebug -j olimex "run" &
 echo "NOW YOUR WISMOTE MUST BE RUNNING WITH THE GOOD PROGRAM"
 
@@ -73,4 +77,8 @@ cd - > /dev/null
 
 echo "\nNOW, I WILL SHUTDOWN THE TUNNEL AND THE MSPDEBUG"
 
-kill -s QUIT `ps -o pid,cmd | grep "xterm -T" | cut -f2 -d " " | xargs` 2> /dev/null
+case `uname -s` in
+    "Linux") kill -s QUIT `ps -o pid,cmd | grep "xterm -T" | cut -f2 -d " " | xargs` 2> /dev/null;;
+    "Darwin") kill -s QUIT `ps | grep "xterm -T" | cut -f1 -d " " | xargs` 2> /dev/null;;
+    *) echo "Sorry but I haven't the licence to kill on your system";;
+esac

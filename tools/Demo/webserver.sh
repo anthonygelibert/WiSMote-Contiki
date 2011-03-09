@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[[ $# -ne 1 ]] && echo "usage: $0 USB_Interface" && exit 1
+[ $# -ne 1 ] && echo "usage: $0 USB_Interface" && exit 1
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!! WARNING!!! THIS SCRIPT MUST BE STARTED FROM THE ROOT OF CONTIKI !!!"
@@ -9,9 +9,9 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "\n"
 
 echo "I test the presence of the required apps"
-[[ -z "`which make`" ]]  && "MAKE:  [FAILED]" && exit 2
+[ -z "`which make`" ]  && "MAKE:  [FAILED]" && exit 2
 echo "MAKE:  [DONE]"
-[[ -z "`which xterm`" ]] && "XTERM: [FAILED]" && exit 2
+[ -z "`which xterm`" ] && "XTERM: [FAILED]" && exit 2
 echo "XTERM: [DONE]"
 
 echo "\n"
@@ -39,11 +39,21 @@ cd - > /dev/null
 
 echo "\nSecond step: compile, program and run the wismote."
 echo "-------------------------------------------------"
-echo "I go to examples/webserver" 
+echo "I go to examples/webserver"
 cd $PWD/examples/webserver
 echo "I compile the code"
 make TARGET=wismote
-echo "I program and run the wismote" 
+if [ $? -ne 0 ]; then
+    echo "It's impossible to compile webserver";
+    sleep 1;
+    case `uname -s` in
+        "Linux") kill -s QUIT `ps -o pid,cmd | grep "xterm -T" | cut -f2 -d " " | xargs` 2> /dev/null;;
+        "Darwin") kill -s QUIT `ps | grep "xterm -T" | cut -f1 -d " " | xargs` 2> /dev/null;;
+        *) echo "Sorry but I haven't the licence to kill on your system";;
+    esac
+    exit 1;
+fi
+echo "I program and run the wismote"
 xterm -T MSPDebug -e mspdebug -j olimex "prog webserver-example.wismote"
 xterm -T MSPDebug -e mspdebug -j olimex "run" &
 echo "NOW YOUR WISMOTE MUST BE RUNNING WITH THE GOOD PROGRAM"
