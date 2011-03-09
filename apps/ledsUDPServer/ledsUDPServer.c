@@ -42,7 +42,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -82,7 +82,7 @@ PROCESS_THREAD(ledsUDPServer_process, ev, data)
      *  - With at least "preambleSize + 1" bytes.
      *  - Packet start with the good preamble.
      */
-    if(uip_newdata() && uip_datalen() > (preambleSize + 1) &&
+    if(uip_newdata() && uip_datalen() >= (preambleSize + 1) &&
        !strncmp(uip_appdata,preamble,preambleSize))
     {
       PRINTF("I received a LED toggling request.\n");
