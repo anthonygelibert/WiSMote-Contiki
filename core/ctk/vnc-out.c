@@ -36,7 +36,7 @@
 #include "ctk/vnc-server.h"
 #include "ctk/vnc-out.h"
 #include "ctk/ctk-vncfont.h"
-#include "ctk/ctk-vncarch.h"
+
 #include "ctk/ctk-mouse.h"
 
 #include "lib/libconio.h"
