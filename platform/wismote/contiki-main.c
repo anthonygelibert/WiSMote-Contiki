@@ -55,6 +55,7 @@
 #include "spl.h"
 #include "msp430.h"
 #include "parallax_pir-555-28027.h"
+#include "sht11-sensor.h"
 
 #ifndef WITH_UIP
 #define WITH_UIP 0
@@ -87,7 +88,7 @@ static struct uip_fw_netif slipif =
   {UIP_FW_NETIF(192,168,1,2, 255,255,255,0, slip_send)};
 #endif /* !CONTIKI_NO_NET && WITH_UIP */
 
-SENSORS(&PIR_555_28027_sensor, &button_sensor);
+SENSORS(&PIR_555_28027_sensor, &button_sensor, &sht11_sensor);
 
 /** Display the list of auto-processes before executing them. */
 #define DEBUG_PROCESS 0
