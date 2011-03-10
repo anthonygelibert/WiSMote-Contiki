@@ -123,7 +123,7 @@ typedef unsigned short uip_stats_t;
 /** UART0: uses interrupt for TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 /** UART0: size of the TX buffer. */
-#define UART0_CONF_TX_BUFSIZE 1024
+#define UART0_CONF_TX_BUFSIZE      128
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line receive buffer. */
