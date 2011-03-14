@@ -36,9 +36,6 @@ savedefines:
 	@echo >Makefile.$(TARGET).defines "DEFINES = $(DEFINES)"
 
 OBJECTDIR = obj_$(TARGET)
-ifeq (${wildcard $(OBJECTDIR)},)
-  DUMMY := ${shell mkdir $(OBJECTDIR)}
-endif
 
 LOWERCASE = -abcdefghijklmnopqrstuvwxyz
 UPPERCASE = _ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -78,7 +75,7 @@ CTKVNC  = $(CTK) ctk-vncserver.c libconio.c vnc-server.c vnc-out.c ctk-vncfont.c
 ifndef CONTIKI_NO_NET
   CONTIKIFILES = $(SYSTEM) $(LIBS) $(NET) $(THREADS) $(DHCP) $(DEV)
 else
-  CONTIKIFILES = $(SYSTEM) $(LIBS) $(THREADS) $(DEV) # sicslowpan.c fakeuip.c
+  CONTIKIFILES = $(SYSTEM) $(LIBS) $(THREADS) $(DEV) #sicslowpan.c #fakeuip.c
 endif
 
 CONTIKI_SOURCEFILES += $(CONTIKIFILES)
@@ -112,10 +109,13 @@ endif
 
 target_makefile := $(wildcard $(CONTIKI)/platform/$(TARGET)/Makefile.$(TARGET))
 
-# Check if the target makefile exists
+# Check if the target makefile exists, and create the object directory if necessary.
 ifeq ($(strip $(target_makefile)),)
   ${error The target platform "$(TARGET)" does not exist (maybe it was misspelled?)}
 else
+  ifeq (${wildcard $(OBJECTDIR)},)
+    DUMMY := ${shell mkdir $(OBJECTDIR)}
+  endif
   include $(CONTIKI)/platform/$(TARGET)/Makefile.$(TARGET)
 endif
 
