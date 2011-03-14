@@ -54,7 +54,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define INTERVAL CLOCK_CONF_SECOND
+#define INTERVAL (CLOCK_CONF_SECOND * 5)
 
 /*---------------------------------------------------------------------------*/
 PROCESS(sht15_process, "SHT15 process");
@@ -63,6 +63,8 @@ AUTOSTART_PROCESSES(&sht15_process);
 PROCESS_THREAD(sht15_process, ev, data)
 {
   static struct etimer et;
+  static unsigned int rh;
+  static unsigned int tmp;
 
   PROCESS_BEGIN();
 
@@ -70,15 +72,34 @@ PROCESS_THREAD(sht15_process, ev, data)
   P6DIR |= BIT0;
   P6OUT &= ~BIT0;
 
+  printf("I start checking sensor \n");
   SENSORS_ACTIVATE(sht11_sensor);
+  printf("[DONE]\n");
   while (1)
   {
     etimer_set(&et, INTERVAL);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     printf("One event !\n");
-    printf("Temp:     %d\n",sht11_sensor.value(SHT11_SENSOR_TEMP));
-    printf("Humidity: %d\n",sht11_sensor.value(SHT11_SENSOR_HUMIDITY));
-    printf("Battery:  %d\n",sht11_sensor.value(SHT11_SENSOR_BATTERY_INDICATOR));
+
+    tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
+    if (tmp == -1)
+    {
+      printf("No temperature available...\n");
+    }
+    else
+    {
+      printf("Temp: %d\n",-39.60 + 0.01 * tmp);
+    }
+    rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
+    if (rh == -1)
+    {
+      printf("No humidity available...\n");
+    }
+    else
+    {
+      printf("Humidity: %d\n", -4 + 0.0405*rh - 2.8e-6*(rh*rh));
+    }
+    printf("Battery: %d\n",sht11_sensor.value(SHT11_SENSOR_BATTERY_INDICATOR));
   }
   PROCESS_END();
 }
