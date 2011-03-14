@@ -169,13 +169,13 @@ main(void)
 #endif
 
 #if !CONTIKI_NO_NET && WITH_UIP
+  uip_init();
   process_start(&tcpip_process, NULL);
   uip_fw_init();
   process_start(&uip_fw_process, NULL);
   process_start(&slip_process, NULL);
   {
       uip_ipaddr_t addr;
-      uip_init();
 
       uip_ipaddr(&addr, 192,168,1,2);
       uip_sethostaddr(&addr);
@@ -195,8 +195,8 @@ main(void)
       printf("Netmask Address: %d.%d.%d.%d\n", uip_ipaddr_to_quad(&addr));
 #endif
 
-      uip_fw_default(&slipif);
   }
+  uip_fw_default(&slipif);
 #endif
 
   /* Initialize the EnerGest module */
