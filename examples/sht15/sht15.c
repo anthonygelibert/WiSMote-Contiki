@@ -88,7 +88,7 @@ PROCESS_THREAD(sht15_process, ev, data)
     }
     else
     {
-      printf("Temp: %d\n",-39.60 + 0.01 * tmp);
+      printf("Temp: %d\n", tmp);
     }
     rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
     if (rh == -1)
@@ -97,7 +97,7 @@ PROCESS_THREAD(sht15_process, ev, data)
     }
     else
     {
-      printf("Humidity: %d\n", -4 + 0.0405*rh - 2.8e-6*(rh*rh));
+      printf("Humidity: %d\n", rh);
     }
     printf("Battery: %d\n",sht11_sensor.value(SHT11_SENSOR_BATTERY_INDICATOR));
   }
