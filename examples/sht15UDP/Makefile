@@ -1,0 +1,8 @@
+CONTIKI_PROJECT = sht15UDP
+all: $(CONTIKI_PROJECT)
+
+#UIP_CONF_IPV6=1
+
+CLEAN += $(CONTIKI_PROJECT).$(TARGET) $(CONTIKI_PROJECT).hex
+CONTIKI = ../..
+include $(CONTIKI)/Makefile.include

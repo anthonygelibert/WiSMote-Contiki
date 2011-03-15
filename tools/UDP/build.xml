@@ -25,7 +25,18 @@
                includeAntRuntime="false" />
     </target>
 
-    <target name="all" depends="UDPClient, LEDsUDPClient" />
+    <target name="SHT15UDP"
+            description="Compile SHT15UDP">
+        <javac includes="SHT15UDP.java"
+               srcdir="${basedir}"
+               destdir="${basedir}"
+               fork="true"
+               target="1.6"
+               source="1.6"
+               includeAntRuntime="false" />
+    </target>
+
+    <target name="all" depends="UDPClient, LEDsUDPClient, SHT15UDP" />
 
     <target name="clean">
         <delete file="UDPClient.class" />
