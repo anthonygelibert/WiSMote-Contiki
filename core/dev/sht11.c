@@ -37,7 +37,7 @@
 #include <stdio.h>
 
 #include <io.h>
-
+#include <signal.h>
 #include <dev/sht11.h>
 #include "sht11-arch.h"
 
@@ -100,8 +100,8 @@ swrite(unsigned _c)
   int i;
   int ret;
 
-  for(i = 0; i < 8; i++, c <<= 1) {
-    if(c & 0x80) {
+  for(i = 0; i < 8; i++, _c <<= 1) {
+    if(_c & 0x80) {
       SDA_1();
     } else {
       SDA_0();
@@ -146,11 +146,10 @@ sread(int send_ack)
   SCL_0();
 
   SDA_1();			/* Release SDA */
-
   return c;
 }
 /*---------------------------------------------------------------------------*/
-#define CRC_CHECK
+//#define CRC_CHECK
 #ifdef CRC_CHECK
 static unsigned char
 rev8bits(unsigned char v)
@@ -224,6 +223,7 @@ scmd(unsigned cmd)
     return -1;
   }
 
+  dint();
   sstart();			/* Start transmission */
   if(!swrite(cmd)) {
     goto fail;
@@ -246,12 +246,14 @@ scmd(unsigned cmd)
 	}
       }
 #endif
+      eint();
       return (t0 << 8) | t1;
     }
   }
 
  fail:
   sreset();
+  eint();
   return -1;
 }
 /*---------------------------------------------------------------------------*/
