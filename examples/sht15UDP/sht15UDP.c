@@ -49,7 +49,7 @@
 
 #define INTERVAL (CLOCK_CONF_SECOND*10)
 
-static const char remote[] = "172.28.1.224";
+static const char remote[] = "192.168.1.1";
 static const uint16_t remote_port = 1234;
 
 /*---------------------------------------------------------------------------*/
@@ -68,7 +68,6 @@ PROCESS_THREAD(ping_process, ev, data)
   PROCESS_BEGIN();
 
   SENSORS_ACTIVATE(sht11_sensor);
-
 
   uiplib_ipaddrconv(remote, &serveraddr);
   udpconn = udp_new(&serveraddr, uip_htons(remote_port), NULL);
