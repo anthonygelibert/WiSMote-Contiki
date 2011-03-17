@@ -43,32 +43,28 @@
  */
 
 #include "contiki.h"
-#include "sys/process.h"
-#include "sys/autostart.h"
-#include "parallax_pir-555-28027.h"
-#include "iohandlers.h"
-#include "leds.h"
-#include "clock.h"
-#include <stdint.h>
-
 #include "lib/sensors.h"
-#include "contiki.h"
+#include "parallax_pir-555-28027.h"
 #include <stdio.h>
 
+
 /*---------------------------------------------------------------------------*/
-PROCESS(exemple_presence_process, "exemple_presence process");
-AUTOSTART_PROCESSES(&exemple_presence_process);
+PROCESS(parallaxPIREvent_process, "Parallax PIR Event process");
+AUTOSTART_PROCESSES(&parallaxPIREvent_process);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(exemple_presence_process, ev, data)
+PROCESS_THREAD(parallaxPIREvent_process, ev, data)
 {
   PROCESS_BEGIN();
-  /* Set-up GND */
-  P6DIR |= BIT0;
-  P6OUT &= ~BIT0;
+
   SENSORS_ACTIVATE(PIR_555_28027_sensor);
   while (1)
   {
+    /* I wait for a specific situation:
+     *   - The event is of kind "sensor".
+     *   - The concerned sensor is "PIR 555-28027".
+     */
     PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &PIR_555_28027_sensor);
+    /* I use the pointer to the sensor (data) to interrogate it.*/
     int presence = ((struct sensors_sensor *)data)->value(0);
     if (presence)
     {

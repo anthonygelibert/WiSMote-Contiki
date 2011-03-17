@@ -50,8 +50,11 @@
 #define PRINTF(...)
 #endif
 
+/** Local port used by the server. */
 static const uint16_t local_port = 1234;
+/** Prefix of a "LED Toggling" packet. */
 static const char preamble[] = "LED-";
+/** Size of the preamble. */
 static const uint8_t preambleSize = 4;
 
 /*---------------------------------------------------------------------------*/

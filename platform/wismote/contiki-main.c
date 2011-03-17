@@ -46,17 +46,18 @@
 
 #include "contiki.h"
 #include "dev/leds.h"
-#include "dev/button-sensor.h"
 #include "dev/watchdog.h"
+
 #include "lib/sensors.h"
-#include "sys/energest.h"
-#include "process.h"
+#include "dev/button-sensor.h"
+#include "dev/sht11-sensor.h"
+#include "parallax_pir-555-28027.h"
+
 #include "uart0.h"
 #include "spl.h"
 #include "msp430.h"
-#include "parallax_pir-555-28027.h"
-#include "sht11-sensor.h"
 
+/* If the macro aren't defined, we consider them like disabled. */
 #ifndef WITH_UIP
 #define WITH_UIP 0
 #endif
@@ -75,7 +76,6 @@
 
 #if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
 #include "dev/slip.h"
-#include "net/rime.h"
 #include "net/tcpip.h"
 #endif
 
@@ -83,7 +83,6 @@
 #include "net/uip.h"
 #include "net/uip-fw.h"
 #include "net/uip-fw-drv.h"
-#include "net/uip-over-mesh.h"
 static struct uip_fw_netif slipif =
   {UIP_FW_NETIF(192,168,1,2, 255,255,255,0, slip_send)};
 #endif /* !CONTIKI_NO_NET && WITH_UIP */
@@ -145,7 +144,7 @@ main(void)
   // 9600   -> uart0_init(416,UCBRS_6,UCBRF_0);   OK
   // 38400  -> uart0_init(104, UCBRS_1, UCBRF_0); OK
   // 57600  -> uart0_init(69, UCBRS_4,UCBRF_0);   OK
-  // 115200 -> uart0_init(34,UCBRS_6,UCBRF_0); NOK
+  // 115200 -> uart0_init(34,UCBRS_6,UCBRF_0);    NOK
   uart0_init(69, UCBRS_4,UCBRF_0);
 
 #if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)

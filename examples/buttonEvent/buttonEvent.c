@@ -43,16 +43,11 @@
 
 #include "lib/sensors.h"
 #include "dev/button-sensor.h"
-#include "sys/process.h"
 #include "contiki.h"
-#include "leds.h"
 #include <stdio.h>
 
-/** Disable debugging. */
-#define DEBUG 1
-
 /*---------------------------------------------------------------------------*/
-PROCESS(buttonEvent_process, "Button process");
+PROCESS(buttonEvent_process, "Button Event Process");
 AUTOSTART_PROCESSES(&buttonEvent_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(buttonEvent_process, ev, data)
@@ -61,9 +56,11 @@ PROCESS_THREAD(buttonEvent_process, ev, data)
   SENSORS_ACTIVATE(button_sensor);
   while (1)
   {
-#if DEBUG
     printf("I wait an event...\n");
-#endif
+    /* I wait for a specific situation:
+     *   - The event is of kind "sensor".
+     *   - The concerned sensor is "button".
+     */
     PROCESS_WAIT_EVENT_UNTIL(ev == sensors_event && data == &button_sensor);
     printf("Stop pushing me !!!\n");
   }

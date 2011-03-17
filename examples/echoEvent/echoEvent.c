@@ -46,7 +46,7 @@
 #include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
-PROCESS(echoEvent_process, "Echo process");
+PROCESS(echoEvent_process, "Echo Event Process");
 AUTOSTART_PROCESSES(&echoEvent_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(echoEvent_process, ev, data)
@@ -54,6 +54,10 @@ PROCESS_THREAD(echoEvent_process, ev, data)
   PROCESS_BEGIN();
   while(1)
   {
+    /* I wait for a specific situation:
+     *   - The event is of kind "serial_line".
+     *   - The buffer isn't NULL.
+     */
     PROCESS_WAIT_EVENT_UNTIL(ev == serial_line_event_message && data != NULL);
     printf("%s",(char *)data);
   }

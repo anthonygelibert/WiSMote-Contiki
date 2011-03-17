@@ -42,8 +42,6 @@
  */
 
 #include "contiki.h"
-#include "sys/process.h"
-#include "sys/autostart.h"
 #include "leds.h"
 #include "clock.h"
 #include <stdint.h>
@@ -60,7 +58,7 @@ delay(void)
 }
 
 /*---------------------------------------------------------------------------*/
-PROCESS(leds_process, "LEDs process");
+PROCESS(leds_process, "LEDs Process");
 AUTOSTART_PROCESSES(&leds_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(leds_process, ev, data)

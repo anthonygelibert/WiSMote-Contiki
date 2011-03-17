@@ -53,8 +53,16 @@ HWCONF_IRQ(PRESENCE, 1, 2, myHandler)
 static void
 myHandler(void)
 {
+  /* Change the internal resistance state
+   * (pull-up -> pull-down // pull-down -> pull-up)
+   */
   PRESENCE_RESISTOR_PULL_SWAP();
+  /*
+   * Change the level detection
+   * (up -> down // down up)
+   */
   PRESENCE_IRQ_EDGE_SWAP();
+  /* Notify the sensor module */
   sensors_changed(&PIR_555_28027_sensor);
 }
 

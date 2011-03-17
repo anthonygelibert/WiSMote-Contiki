@@ -5,7 +5,7 @@
 
 /**
  * \file
- *         UDP Server and Client example.
+ *         SHT15UDP Example.
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
@@ -53,10 +53,10 @@ static const char remote[] = "192.168.1.1";
 static const uint16_t remote_port = 1234;
 
 /*---------------------------------------------------------------------------*/
-PROCESS(ping_process, "Ping Process");
-AUTOSTART_PROCESSES(&ping_process);
+PROCESS(SHT15_UDP_process, "SHT15 UDP Client Process");
+AUTOSTART_PROCESSES(&SHT15_UDP_process);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(ping_process, ev, data)
+PROCESS_THREAD(SHT15_UDP_process, ev, data)
 {
   static uip_ipaddr_t serveraddr;
   static struct uip_udp_conn *udpconn;
@@ -67,17 +67,25 @@ PROCESS_THREAD(ping_process, ev, data)
 
   PROCESS_BEGIN();
 
+  /* XXX_PTV Enable and disable between Timer Events */
+  /* Enable the sensor */
   SENSORS_ACTIVATE(sht11_sensor);
 
+  /* Create UDP connection */
   uiplib_ipaddrconv(remote, &serveraddr);
   udpconn = udp_new(&serveraddr, uip_htons(remote_port), NULL);
   while (1)
   {
+    /* Send a packet each INTERVAL */
     etimer_set(&et, INTERVAL);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+
+    /* Read TEMP and HUMIDITY */
     tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
     rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
-    sprintf(string,"%4d-%4d",(tmp==-1?0:tmp),(rh==-1?0:rh));
+    /* Create the data of the packet */
+    sprintf(string,"%04d-%04d",(tmp==-1?0:tmp),(rh==-1?0:rh));
+    /* Send the packet */
     uip_udp_packet_send(udpconn, string, 10);
   }
 

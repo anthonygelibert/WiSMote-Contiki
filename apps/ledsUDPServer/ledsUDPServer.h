@@ -41,6 +41,7 @@
 
 #include "contiki.h"
 
+/* Export the process to be used in examples or other applications. */
 PROCESS_NAME(ledsUDPServer_process);
 
 #endif /* __LEDS_UDP_SERVER_H__ */

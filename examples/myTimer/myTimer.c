@@ -44,8 +44,6 @@
 #include <stdio.h>
 #include "contiki.h"
 
-#define INTERVAL CLOCK_CONF_SECOND
-
 static int current_second = 0;
 static int current_min = 0;
 static int current_hour = 0;
@@ -66,7 +64,7 @@ timeout_handler(void)
 }
 
 /*---------------------------------------------------------------------------*/
-PROCESS(myTimer_process, "Timer process");
+PROCESS(myTimer_process, "Timer Process");
 AUTOSTART_PROCESSES(&myTimer_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(myTimer_process, ev, data)
@@ -77,7 +75,7 @@ PROCESS_THREAD(myTimer_process, ev, data)
 
   printf("I start the timer (1 s.)\n");
   while(1) {
-    etimer_set(&et, INTERVAL);
+    etimer_set(&et, CLOCK_CONF_SECOND);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     timeout_handler();
   }

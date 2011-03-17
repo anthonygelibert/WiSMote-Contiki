@@ -4,5 +4,6 @@
 
 case `uname -s` in
     "Darwin") ping -v -b $1 -c 4 -t 20 -m 64 -s 1 $2;;
-    *) echo "Your system is currently not supported...";;
+    "Linux") ping -v -I $1 -c 4 -W 20 -t 64 -s 1 $2;;
+	*) echo "Your system is currently not supported...";;
 esac

@@ -42,9 +42,6 @@
  */
 
 #include "contiki.h"
-#include "sys/process.h"
-#include "sys/autostart.h"
-
 #include "iohandlers.h"
 #include "leds.h"
 #include "clock.h"
@@ -75,7 +72,7 @@ HWCONF_PIN(BUTTON, 1, 4)
 HWCONF_IRQ(BUTTON, 1, 4, myHandler)
 
 /*---------------------------------------------------------------------------*/
-PROCESS(buttonIT_process, "Button process");
+PROCESS(buttonIT_process, "Button IT Process");
 AUTOSTART_PROCESSES(&buttonIT_process);
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(buttonIT_process, ev, data)

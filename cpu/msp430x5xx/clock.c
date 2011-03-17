@@ -253,8 +253,8 @@ clock_init(void)
 void
 clock_delay(unsigned int i)
 {
-  asm("add #-1, r15");
-  asm("jnz $-2");
+  __asm__ __volatile__ ("add #-1, r15");
+  __asm__ __volatile__ ("jnz $-2");
 }
 
 /*---------------------------------------------------------------------------*/

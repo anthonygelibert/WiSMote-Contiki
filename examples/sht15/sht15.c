@@ -5,7 +5,7 @@
 
 /**
  * \file
- *         Parallax PIR sensor with event example.
+ *         SHT15 Sensor example.
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  *         Fabien Rey <fabien-rey@wanadoo.fr>
@@ -43,13 +43,9 @@
  */
 
 #include "contiki.h"
-#include "dev/sht11-sensor.h"
-#include "sys/process.h"
-#include "sys/autostart.h"
 #include "lib/sensors.h"
+#include "dev/sht11-sensor.h"
 #include "iohandlers.h"
-#include "leds.h"
-#include "clock.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -68,38 +64,40 @@ PROCESS_THREAD(sht15_process, ev, data)
 
   PROCESS_BEGIN();
 
-  /* Set-up GND */
-  P6DIR |= BIT0;
-  P6OUT &= ~BIT0;
 
-  printf("I start checking sensor \n");
+  /* XXX_PTV Enable and disable between Timer Events */
+  /* Enable the sensor. */
   SENSORS_ACTIVATE(sht11_sensor);
-  printf("[DONE]\n");
   while (1)
   {
+    /* Check temperature every INTERVAL */
     etimer_set(&et, INTERVAL);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-    printf("One event !\n");
 
+    /* Read the temperature. */
     tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
     if (tmp == -1)
     {
-      printf("No temperature available...\n");
+      printf("TMP: N/A\n");
     }
     else
     {
-      printf("Temp: %d\n", tmp);
+      printf("TMP: %d\n", tmp);
     }
+
+    /* Read the humidity */
     rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
     if (rh == -1)
     {
-      printf("No humidity available...\n");
+      printf("HR:  N/A\n");
     }
     else
     {
-      printf("Humidity: %d\n", rh);
+      printf("HR:  %d\n", rh);
     }
-    printf("Battery: %d\n",sht11_sensor.value(SHT11_SENSOR_BATTERY_INDICATOR));
+
+    /* Check the battery warning */
+    printf("PWR: %d\n",sht11_sensor.value(SHT11_SENSOR_BATTERY_INDICATOR));
   }
   PROCESS_END();
 }

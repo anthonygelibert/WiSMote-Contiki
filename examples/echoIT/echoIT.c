@@ -55,10 +55,10 @@ echo_rx(const unsigned char c)
 }
 
 /*---------------------------------------------------------------------------*/
-PROCESS(echo_process, "Echo process");
-AUTOSTART_PROCESSES(&echo_process);
+PROCESS(echoIT_process, "Echo IT Process");
+AUTOSTART_PROCESSES(&echoIT_process);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(echo_process, ev, data)
+PROCESS_THREAD(echoIT_process, ev, data)
 {
   PROCESS_BEGIN();
 

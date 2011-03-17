@@ -49,19 +49,22 @@
 static uint16_t local_port = 1234;
 
 /*---------------------------------------------------------------------------*/
-PROCESS(echo_process, "ECHO process");
-AUTOSTART_PROCESSES(&echo_process);
+PROCESS(tcpEcho_process, "TCP Echo process");
+AUTOSTART_PROCESSES(&tcpEcho_process);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(echo_process, ev, data)
+PROCESS_THREAD(tcpEcho_process, ev, data)
 {
 
   PROCESS_BEGIN();
 
+  /* Listen for a connection on local port */
   tcp_listen(UIP_HTONS(local_port));
   while (1)
   {
     PROCESS_WAIT_EVENT_UNTIL(ev == tcpip_event);
+    /* If there is new uIP data, display it */
     if(uip_newdata()) {
+      /* Add the end of string. */
       ((char *)uip_appdata)[uip_datalen()] = 0;
       printf("New uIP data: '%s'\n", uip_appdata);
     }

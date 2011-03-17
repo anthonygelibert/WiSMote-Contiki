@@ -9,6 +9,7 @@
                srcdir="${basedir}"
                destdir="${basedir}"
                fork="true"
+			   debug="true"
                target="1.6"
                source="1.6"
                includeAntRuntime="false" />
@@ -20,6 +21,7 @@
                srcdir="${basedir}"
                destdir="${basedir}"
                fork="true"
+			   debug="true"
                target="1.6"
                source="1.6"
                includeAntRuntime="false" />
@@ -31,6 +33,7 @@
                srcdir="${basedir}"
                destdir="${basedir}"
                fork="true"
+			   debug="true"
                target="1.6"
                source="1.6"
                includeAntRuntime="false" />
@@ -40,7 +43,8 @@
 
     <target name="clean">
         <delete file="UDPClient.class" />
-        <delete file="ledsUDPClient.class" />
+        <delete file="LEDsUDPClient.class" />
+        <delete file="SHT15UDP.class" />
     </target>
 
 </project>

@@ -43,9 +43,6 @@
  */
 
 #include "contiki.h"
-#include "sys/process.h"
-#include "sys/autostart.h"
-
 #include "iohandlers.h"
 #include "leds.h"
 
@@ -63,10 +60,10 @@ HWCONF_PIN(BUTTON, 1, 2)
 HWCONF_IRQ(BUTTON, 1, 2, myHandler)
 
 /*---------------------------------------------------------------------------*/
-PROCESS(detect_presence_process, "detect_presence process");
-AUTOSTART_PROCESSES(&detect_presence_process);
+PROCESS(parallaxPIRIT, "Parallax PIR IT process");
+AUTOSTART_PROCESSES(&parallaxPIRIT);
 /*---------------------------------------------------------------------------*/
-PROCESS_THREAD(detect_presence_process, ev, data)
+PROCESS_THREAD(parallaxPIRIT, ev, data)
 {
   PROCESS_BEGIN();
 
@@ -80,10 +77,6 @@ PROCESS_THREAD(detect_presence_process, ev, data)
   BUTTON_MAKE_INPUT();
   BUTTON_SET_HANDLER();
   BUTTON_ENABLE_IRQ();
-
-  P1DIR &= ~BIT2; // Set P1.2 to input direction   ENTREE SIGNAL CAPT
-  P6DIR |= BIT0; // P6.0 ADC0 output      GND
-  P6OUT &= ~BIT0; // P6.0 ADC0 output     GND
 
   while (1)
   {

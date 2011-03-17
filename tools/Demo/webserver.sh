@@ -32,7 +32,7 @@ cd $PWD/tools/SLIP
 echo "I compile"
 make tunslip
 echo "I start tunslip in a new terminal"
-xterm -T tunslip -e sudo ./tunslip -s $1 -B 57600 192.168.1.1 255.255.0.0 &
+xterm -T tunslip -e sudo ./tunslip -s $1 -B 57600 192.168.1.1 255.255.255.0 &
 echo "NOW YOU HAVE A TERMINAL WITH THE TUNNEL RUNNING"
 
 cd - > /dev/null
