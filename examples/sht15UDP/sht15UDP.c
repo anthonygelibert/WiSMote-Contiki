@@ -67,10 +67,6 @@ PROCESS_THREAD(SHT15_UDP_process, ev, data)
 
   PROCESS_BEGIN();
 
-  /* XXX_PTV Enable and disable between Timer Events */
-  /* Enable the sensor */
-  SENSORS_ACTIVATE(sht11_sensor);
-
   /* Create UDP connection */
   uiplib_ipaddrconv(remote, &serveraddr);
   udpconn = udp_new(&serveraddr, uip_htons(remote_port), NULL);
@@ -79,10 +75,13 @@ PROCESS_THREAD(SHT15_UDP_process, ev, data)
     /* Send a packet each INTERVAL */
     etimer_set(&et, INTERVAL);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-
+    /* Enable the sensor */
+    SENSORS_ACTIVATE(sht11_sensor);
     /* Read TEMP and HUMIDITY */
     tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
     rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
+    /* Disable the sensor */
+    SENSORS_DEACTIVATE(sht11_sensor);
     /* Create the data of the packet */
     sprintf(string,"%04d-%04d",(tmp==-1?0:tmp),(rh==-1?0:rh));
     /* Send the packet */

@@ -65,15 +65,13 @@ PROCESS_THREAD(sht15_process, ev, data)
   PROCESS_BEGIN();
 
 
-  /* XXX_PTV Enable and disable between Timer Events */
-  /* Enable the sensor. */
-  SENSORS_ACTIVATE(sht11_sensor);
   while (1)
   {
     /* Check temperature every INTERVAL */
     etimer_set(&et, INTERVAL);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-
+    /* Enable the sensor. */
+    SENSORS_ACTIVATE(sht11_sensor);
     /* Read the temperature. */
     tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
     if (tmp == -1)
@@ -98,6 +96,8 @@ PROCESS_THREAD(sht15_process, ev, data)
 
     /* Check the battery warning */
     printf("PWR: %d\n",sht11_sensor.value(SHT11_SENSOR_BATTERY_INDICATOR));
+    /* Disable the sensor */
+    SENSORS_DEACTIVATE(sht11_sensor);
   }
   PROCESS_END();
 }
