@@ -119,6 +119,12 @@ typedef unsigned short uip_stats_t;
 #define UIP_CONF_MAX_LISTENPORTS   0
 #endif
 
+/* ----- SPI module ----- */
+#define SPI_WAITFORTxREADY() while ((IFG2 & UCB0TXIFG) == 0)
+#define SPI_WAITFOREOTx() while ((UCB0STAT & UCBUSY) != 0)
+#define SPI_TXBUF UCB0TXBUF
+#define SPI_RXBUF UCB0RXBUF
+
 /* ----- UART module ----- */
 /** UART0: uses interrupt for TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
