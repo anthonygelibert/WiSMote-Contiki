@@ -44,7 +44,6 @@
 const struct sensors_sensor PIR_555_28027_sensor;
 
 static void myHandler(void);
-static unsigned char currentVal;
 
 HWCONF_PIN(PRESENCE, 1, 2)
 HWCONF_IRQ(PRESENCE, 1, 2, myHandler)
@@ -54,7 +53,6 @@ HWCONF_IRQ(PRESENCE, 1, 2, myHandler)
 static void
 myHandler(void)
 {
-  currentVal ^= 1;
   /* Change the internal resistance state
    * (pull-up -> pull-down // pull-down -> pull-up)
    */
@@ -73,7 +71,7 @@ myHandler(void)
 static int
 value(int type)
 {
-  return currentVal;
+  return PRESENCE_READ() ;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -84,7 +82,6 @@ configure(int type, int c)
   switch (type) {
     case SENSORS_ACTIVE:
       if (c) {
-        currentVal = 0;
         PRESENCE_RESISTOR_ENABLE();
         PRESENCE_RESISTOR_PULL_DOWN();
         PRESENCE_IRQ_EDGE_SELECTU();
