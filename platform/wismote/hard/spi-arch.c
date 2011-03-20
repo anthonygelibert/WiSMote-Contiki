@@ -1,12 +1,6 @@
-#include <spi.h>
+#include "spi.h"
+#include "spi-arch.h"
 #include "contiki-conf.h"
-
-#define SPI_MOSI BIT1
-#define SPI_MISO BIT2
-#define SPI_CLK  BIT3
-
-#define SPI_Px_SEL P3SEL
-#define SPI_Px_DIR P3DIR
 
 unsigned char spi_busy = 0;
 
