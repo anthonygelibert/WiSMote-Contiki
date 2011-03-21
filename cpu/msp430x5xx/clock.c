@@ -9,11 +9,13 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
+ * \note
+ *         This module uses XT1 clock by default.
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,13 +43,26 @@
  * SUCH DAMAGE.
  */
 
-#include "contiki-conf.h"
-#include "dev/watchdog.h"
-#include "sys/clock.h"
-#include "sys/energest.h"
-#include "sys/etimer.h"
+/* From MSP430-GCC */
 #include "signal.h"
+
+/* From CONTIKI */
+#include "contiki.h"
+#include "dev/watchdog.h"
+
+/* From MSP430x5xx */
 #include "rtimer-arch.h"
+#include "contiki-conf.h"
+#include "clock-arch.h"
+
+#ifndef XT1_CONF_CLOCK
+#define XT1_CLOCK 1
+#else
+#define XT1_CLOCK (XT1_CONF_CLOCK)
+#if !XT1_CLOCK
+#warning "Only the XT1 is initialized. Currently, we don't support other clocks (DCO,...)"
+#endif
+#endif
 
 #define INTERVAL (RTIMER_ARCH_SECOND / CLOCK_SECOND)
 #define MAX_TICKS (~((clock_time_t)0) / 2)
@@ -56,15 +71,14 @@ static volatile unsigned long seconds;
 static volatile clock_time_t count = 0;
 static volatile uint16_t last_tar = 0;
 
-/** Platform-dependent initializations. */
-extern void clock_platform_init(void);
-
 /*---------------------------------------------------------------------------*/
 
+#if XT1_CLOCK
 static CC_INLINE void
 initXT1(void)
 {
   dint();
+
   clock_platform_init();
   /* Set XT1 On */
   UCSCTL6 &= ~XT1OFF;
@@ -85,8 +99,10 @@ initXT1(void)
   /* Set Clock divider 4 -> Clock = 4MHz */
   /* Set Clock divider 2 -> Clock = 2 MHz (ACLK = 2 MHz) */
   UCSCTL5 |= DIVA__8 | DIVS__4 | DIVM__4;
+
   eint();
 }
+#endif
 
 /*---------------------------------------------------------------------------*/
 
@@ -95,6 +111,7 @@ initClockModule(void)
 {
   dint();
 
+  /* Set the clock source (ACLK), divider... */
   TA1EX0 |= TAIDEX_7;
   TA1CTL = TASSEL__ACLK | TACLR | ID__8;
 
@@ -108,7 +125,7 @@ initClockModule(void)
   /* Start Timer_A in continuous mode. */
   TA1CTL |= MC__CONTINOUS;
   count = 0;
-  /* Enable interrupts. */
+
   eint();
 }
 
@@ -118,7 +135,6 @@ void
 clock_wait(int i)
 {
   clock_time_t start;
-
   start = clock_time();
   while (clock_time() - start < (clock_time_t) i) {
   }
@@ -155,8 +171,8 @@ timera1(void)
 
     last_tar = TA1R;
 
-    if (etimer_pending() && (etimer_next_expiration_time() - count - 1)
-        > MAX_TICKS) {
+    if (etimer_pending() &&
+        etimer_next_expiration_time() - count - 1 > MAX_TICKS) {
       etimer_request_poll();
       LPM4_EXIT;
     }
@@ -244,7 +260,9 @@ clock_counter(void)
 void
 clock_init(void)
 {
+#if XT1_CLOCK
   initXT1();
+#endif
   initClockModule();
 }
 

@@ -9,11 +9,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,10 +41,14 @@
  * SUCH DAMAGE.
  */
 
+/* From MPS430-GCC */
 #include <signal.h>
 
+/* From CONTIKI*/
 #include "dev/button-sensor.h"
 #include "lib/sensors.h"
+
+/* From MSP430x5xx */
 #include "iohandlers.h"
 
 const struct sensors_sensor button_sensor;
@@ -52,6 +56,9 @@ static struct timer debouncetimer;
 
 /*---------------------------------------------------------------------------*/
 
+/**
+ * Change the status of the sensor only if the "de-bounce" timer expired.
+ */
 static void
 myHandler(void)
 {
@@ -69,6 +76,9 @@ HWCONF_IRQ(BUTTON, 1, 4, myHandler)
 
 /*---------------------------------------------------------------------------*/
 
+/**
+ * Read the value of the button.
+ */
 static int
 value(int type)
 {
@@ -77,6 +87,15 @@ value(int type)
 
 /*---------------------------------------------------------------------------*/
 
+/**
+ * Enable/Disable the sensor.
+ *
+ * @param type Configuration type.
+ * @param c If type == SENSORS_ACTIVE, 0 ~> Disable / ~0 ~> Enable.
+ *
+ * @retval 1 Operation done.
+ * @retval 0 No operation done.
+ */
 static int
 configure(int type, int c)
 {
@@ -102,6 +121,7 @@ configure(int type, int c)
 
 /*---------------------------------------------------------------------------*/
 
+/** Use the IRQ state to determine the curent status */
 static int
 status(int type)
 {
@@ -112,7 +132,9 @@ status(int type)
   }
   return 0;
 }
+
 /*---------------------------------------------------------------------------*/
+
 SENSORS_SENSOR(button_sensor, BUTTON_SENSOR, value, configure, status);
 
 /** @} */

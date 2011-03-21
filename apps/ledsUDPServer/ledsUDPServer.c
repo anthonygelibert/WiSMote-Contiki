@@ -4,11 +4,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 07, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ PROCESS_THREAD(ledsUDPServer_process, ev, data)
 
   PROCESS_BEGIN();
 
-  /* Create a local conn. structure :
+  /* Create a local connection structure :
    *  - Remote IP: 0.0.0.0 (all accepted).
    *  - Remote port: 0 (all accepted).
    */
@@ -85,7 +85,8 @@ PROCESS_THREAD(ledsUDPServer_process, ev, data)
      *  - With at least "preambleSize + 1" bytes.
      *  - Packet start with the good preamble.
      */
-    if(uip_newdata() && uip_datalen() >= (preambleSize + 1) &&
+    if(uip_newdata() &&
+       uip_datalen() >= (preambleSize + 1) &&
        !strncmp(uip_appdata,preamble,preambleSize))
     {
       PRINTF("I received a LED toggling request.\n");

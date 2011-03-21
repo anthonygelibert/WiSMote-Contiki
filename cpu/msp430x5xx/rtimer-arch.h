@@ -18,11 +18,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,11 @@
 #ifndef _RTIMER_ARCH_H_
 #define _RTIMER_ARCH_H_
 
+/* From MSP430-GCC */
 #include <io.h>
-#include "sys/rtimer.h"
+
+/* From CONTIKI */
+#include "contiki.h"
 
 #define RTIMER_ARCH_SECOND (4096U*8)
 

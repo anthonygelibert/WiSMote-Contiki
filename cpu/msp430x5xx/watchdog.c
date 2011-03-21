@@ -9,12 +9,12 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,14 +41,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-/**
- * \author Anthony Gelibert and Fabien Rey
- * \date Jan 24, 2011
- * \version 0.0.4
- */
 
+/* From MSP430-GCC */
 #include <io.h>
 #include <signal.h>
+
+/* From CONTIKI */
 #include "dev/watchdog.h"
 
 static int counter = 0;

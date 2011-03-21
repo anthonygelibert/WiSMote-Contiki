@@ -9,11 +9,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,21 +41,25 @@
  * SUCH DAMAGE.
  */
 
+/* From MSP430-GCC */
 #include <stdio.h>
 #include <signal.h>
 
+/* From CONTIKI */
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/watchdog.h"
-
 #include "lib/sensors.h"
 #include "dev/button-sensor.h"
 #include "dev/sht11-sensor.h"
-#include "parallax_pir-555-28027.h"
 
+/* From MSP430x5xx */
 #include "uart0.h"
 #include "spl.h"
 #include "msp430.h"
+
+/* From platform */
+#include "parallax_pir-555-28027.h"
 
 /* If the macro aren't defined, we consider them like disabled. */
 #ifndef WITH_UIP

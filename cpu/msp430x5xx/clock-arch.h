@@ -1,19 +1,19 @@
 /**
- * \addtogroup wismote
+ * \addtogroup msp430x5xx
  * @{
  */
 
 /**
  * \file
- *         LEDs sensor on Wismote.
+ *         Clock platform-dependent functions.
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 17, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,3 +40,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+#ifndef __CLOCK_ARCH_H__
+#define __CLOCK_ARCH_H__
+
+/** Platform-dependent initializations. */
+extern void clock_platform_init(void);
+
+#endif
+
+/** @} */

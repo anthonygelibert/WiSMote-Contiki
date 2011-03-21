@@ -4,11 +4,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,3 +46,5 @@ extern const struct sensors_sensor PIR_555_28027_sensor;
 #define PIR_555_28027_SENSOR "PIR 555-28027"
 
 #endif /* __PARALLAX_PIR_555_28027_H__ */
+
+/** @} */

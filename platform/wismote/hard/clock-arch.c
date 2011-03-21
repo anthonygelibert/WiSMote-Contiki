@@ -9,11 +9,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,10 +41,16 @@
  * SUCH DAMAGE.
  */
 
+/* From CONTIKI */
 #include <contiki-conf.h>
+/* From MSP430-GCC */
+#include "clock-arch.h"
 
-/** Disable the output of the SMCLOCK on a port of the CPU */
-#define DEBUG_CLOCK 0
+#ifndef SMCLOCK_CONF_DEBUG
+#define DEBUG_SMCLOCK 0
+#else
+#define DEBUG_SMCLOCK (SMCLOCK_CONF_DEBUG)
+#endif
 
 /*---------------------------------------------------------------------------*/
 
@@ -56,7 +62,7 @@
  */
 void clock_platform_init(void)
 {
-#if DEBUG_CLOCK
+#if DEBUG_SMCLOCK
   P4DIR |= 0x80;
   P4SEL |= 0x80;
 #endif

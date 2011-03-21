@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,8 +39,8 @@ import java.util.Scanner;
  * Display a prompt and if the user types "blue", "green" or "red", the application
  * send the corresponding UDP packet to toggle the LED.
  *
- * @author Plateforme Technologique de Valence - Anthony Gelibert
- * @version March 16, 2011
+ * @author LCIS/CTSYS - Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
+ * @version March 21, 2011
  */
 public class LEDsUDPClient
 {

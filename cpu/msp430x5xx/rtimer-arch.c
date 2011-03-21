@@ -14,13 +14,13 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  *
  * \todo   XXX_PTV Timer -> RTC
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,13 +48,15 @@
  * SUCH DAMAGE.
  */
 
+/* From MSP430-GCC */
 #include <io.h>
 #include <signal.h>
 
+/* From CONTIKI */
+#include "contiki.h"
+
+/* From MSP430x5xx */
 #include "rtimer-arch.h"
-#include "sys/energest.h"
-#include "sys/rtimer.h"
-#include "sys/process.h"
 #include "dev/watchdog.h"
 
 /*---------------------------------------------------------------------------*/

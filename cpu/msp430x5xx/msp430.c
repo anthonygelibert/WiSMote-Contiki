@@ -9,11 +9,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,10 +41,15 @@
  * SUCH DAMAGE.
  */
 
+/* From MSP430-GCC */
 #include <signal.h>
+
+/* From CONTIKI*/
+#include "dev/watchdog.h"
+
+/* From MSP430x5xx */
 #include "contiki-conf.h"
 #include "msp430.h"
-#include "dev/watchdog.h"
 
 /*---------------------------------------------------------------------------*/
 

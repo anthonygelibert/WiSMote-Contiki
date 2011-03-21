@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,8 @@ import java.net.InetAddress;
  * <b>Format of the data:</b> tttt-hhhh (where t is for temperature and h for relative
  * humidity). We used the default precision (14 bits/12 bits) and a power supply of 3.5V.
  *
- * @author Plateforme Technologique de Valence - Anthony Gelibert
- * @version March 16, 2011
+ * @author LCIS/CTSYS - Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
+ * @version March 21, 2011
  */
 public class SHT15UDP
 {

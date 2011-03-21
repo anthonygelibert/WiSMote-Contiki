@@ -9,11 +9,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,8 +41,11 @@
  * SUCH DAMAGE.
  */
 
-#include "contiki-conf.h"
+/* From CONTIKI */
 #include "dev/leds.h"
+
+/* From platform */
+#include "contiki-conf.h"
 
 #define PORTDIR_LED_BLUE  P2DIR
 #define PORTDS_LED_BLUE   P2DS

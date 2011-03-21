@@ -14,11 +14,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,36 +46,45 @@
  * SUCH DAMAGE.
  */
 
+/* From MSP430-GCC */
 #include <stdio.h>
 #include <errno.h>
-#include "msp430.h"
-#include "uart0.h"
-#include "signal.h"
+#include <signal.h>
+
+/* From CONTIKI */
+#include "contiki.h"
 #include "dev/watchdog.h"
 #include "dev/leds.h"
-#include "sys/energest.h"
 #include "lib/ringbuf.h"
 
+/* From MSP430x5xx */
+#include "msp430.h"
+#include "uart0.h"
+
 #ifdef UART0_CONF_TX_WITH_INTERRUPT
-#define TX_WITH_INTERRUPT UART0_CONF_TX_WITH_INTERRUPT
+#define TX_WITH_INTERRUPT (UART0_CONF_TX_WITH_INTERRUPT)
 #else
 #define TX_WITH_INTERRUPT 0
 #endif /* UART0_CONF_TX_WITH_INTERRUPT */
 
 #if TX_WITH_INTERRUPT
 #ifdef UART0_CONF_TX_BUFSIZE
-#define TXBUFSIZE UART0_CONF_TX_BUFSIZE
+#define TXBUFSIZE (UART0_CONF_TX_BUFSIZE)
 #else
 #define TXBUFSIZE 64
 #endif
+static volatile uint8_t transmitting;
 static struct ringbuf txbuf;
 static uint8_t txbuf_data[TXBUFSIZE];
 #endif /* TX_WITH_INTERRUPT */
 
+/** Handler for the char reception.
+ *
+ * \param c Received char.
+ * \return ...
+ */
 static int
 (* uart0_input_handler)(const uint8_t c);
-
-static volatile uint8_t transmitting;
 
 /** UART0 platform-dependent code. */
 extern void
@@ -104,8 +113,6 @@ uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
   UCA1BRW = br;
   /* Modulation */
   UCA1MCTL |= brs | brf;
-  /* We don't transmit */
-  transmitting = 0;
   /* Clear pending flags. */
   UCA1IFG &= ~UCRXIFG;
   UCA1IFG &= ~UCTXIFG;
@@ -119,6 +126,8 @@ uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
   UCA1IE |= UCRXIE;
 
 #if TX_WITH_INTERRUPT
+  /* We don't transmit */
+  transmitting = 0;
   /* USCI Transmit Interrupt Enable */
   ringbuf_init(&txbuf, txbuf_data, sizeof(txbuf_data));
   UCA1IE |= UCTXIE;

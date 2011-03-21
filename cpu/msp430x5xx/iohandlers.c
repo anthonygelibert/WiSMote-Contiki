@@ -14,11 +14,11 @@
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
- *         March 03, 2011
+ *         March 21, 2011
  */
 
 /*
- * Copyright (c) 2011, Plateforme Technologique de Valence.
+ * Copyright (c) 2011, LCIS/CTSYS.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,15 +46,24 @@
  * SUCH DAMAGE.
  */
 
+/* From MSP430-GCC */
 #include <stdio.h>
 #include <signal.h>
 
-#include "contiki-conf.h"
-#include "iohandlers.h"
+/* From CONTIKI */
 #include "sys/energest.h"
 #include "dev/watchdog.h"
 
+/* From MSP430x5xx */
+#include "contiki-conf.h"
+#include "iohandlers.h"
+
+#ifndef IOHANDLERS_CONF_DEBUG
 #define DEBUG_IOHANDLERS 0
+#else
+#define DEBUG_IOHANDLERS (IOHANDLERS_CONF_DEBUG)
+#endif
+
 
 /*---------------------------------------------------------------------------*/
 
@@ -68,6 +77,12 @@ dummyHandler(void)
 
 /*---------------------------------------------------------------------------*/
 
+/** All the IT handlers.
+ *
+ * Some of them doesn't exist (in the hardware) and are only here to obtain
+ * the good index for the correct ones (see the possible values of the
+ * PxIV registers).
+ */
 static ITHandler handlers[17][2] = { { dummyHandler, dummyHandler },
                                       { dummyHandler, dummyHandler },
                                       { dummyHandler, dummyHandler },
