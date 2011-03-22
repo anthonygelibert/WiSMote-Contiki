@@ -15,6 +15,18 @@
                includeAntRuntime="false" />
     </target>
 
+    <target name="UDPServer"
+            description="Compile UDPServer.java">
+        <javac includes="UDPServer.java"
+               srcdir="${basedir}"
+               destdir="${basedir}"
+               fork="true"
+               debug="true"
+               target="1.6"
+               source="1.6"
+               includeAntRuntime="false" />
+    </target>
+
     <target name="LEDsUDPClient"
             description="Compile LEDsUDPClient.java">
         <javac includes="LEDsUDPClient.java"
@@ -39,7 +51,7 @@
                includeAntRuntime="false" />
     </target>
 
-    <target name="all" depends="UDPClient, LEDsUDPClient, SHT15UDP" />
+    <target name="all" depends="UDPClient, LEDsUDPClient, SHT15UDP, UDPServer" />
 
     <target name="clean">
         <delete file="UDPClient.class" />
