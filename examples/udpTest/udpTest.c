@@ -89,7 +89,6 @@ PROCESS_THREAD(UDP_echo_process, ev, data)
   PROCESS_BEGIN();
 
   /* Create the local listener */
-  uiplib_ipaddrconv(remote, &localaddr);
   localconn = udp_new(&uip_all_zeroes_addr, 0, NULL);
   udp_bind(localconn,uip_htons(local_port));
   while (1)
