@@ -1,7 +1,7 @@
 ### The parameters for our own target (our platform)
 # Code of the platform.
 FROM_CONTIKI = leds.c sensors.c sht11.c sht11-sensor.c
-ARCH = leds-arch.c clock-arch.c uart-arch.c button-sensor.c parallax_pir-555-28027.c
+ARCH = leds-arch.c clock-arch.c spi-arch.c uart-arch.c button-sensor.c parallax_pir-555-28027.c diagnostic.c
 
 # All the directories containing code for our platform (relative path from /platform/wismote).
 CONTIKI_TARGET_DIRS = . hard sensors

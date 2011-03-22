@@ -59,6 +59,7 @@
 #include "msp430.h"
 
 /* From platform */
+#include "diagnostic.h"
 #include "parallax_pir-555-28027.h"
 
 /* If the macro aren't defined, we consider them like disabled. */
@@ -93,10 +94,12 @@ static struct uip_fw_netif slipif =
 
 SENSORS(&PIR_555_28027_sensor, &button_sensor, &sht11_sensor);
 
-/** Display the list of auto-processes before executing them. */
+/** Doesn't display the list of auto-processes before executing them. */
 #define DEBUG_PROCESS 0
 /** Doesn't display the list of sensors before starting them. */
 #define DEBUG_SENSORS 0
+/** Enable the diagnostic port. */
+#define DEBUG_DIAGNOSTIC 1
 
 #if DEBUG_PROCESS
 /*---------------------------------------------------------------------------*/
@@ -215,6 +218,13 @@ main(void)
   process_start(&sensors_process, NULL);
 #if DEBUG_SENSORS
   print_sensors();
+#endif
+
+#if DEBUG_DIAGNOSTIC
+  process_start(&diagnostic_process, NULL);
+  printf("Diagnostic :\n - local port: 7890\n - remote port: 7891\n");
+#else
+  printf("No diagnostic.\n")
 #endif
 
   /* Start the processes */
