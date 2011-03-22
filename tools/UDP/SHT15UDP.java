@@ -58,6 +58,10 @@ public class SHT15UDP
     private static final double C2 = 0.0367;
     private static final double C3 = -0.0000015955;
 
+	/* Relative humidity, temperature compensation constants */
+	private static final double T1 = 0.01;
+	private static final double T2 = 0.00008;	
+	
     private SHT15UDP(){}
 
     public static void main(final String[] args) throws IOException
@@ -82,7 +86,8 @@ public class SHT15UDP
             try
             {
                 final double rh = Double.parseDouble(values[1]);
-                final double hr = C1 + C2 * rh + C3 * rh * rh;
+                final double rhl = C1 + C2 * rh + C3 * rh * rh;
+				final double hr = (tmp - 25) * (T1 + T2*rh) + rhl;
                 System.out.println("HR:  " + round(hr) + "%");
             }
             catch (final NumberFormatException ex)
