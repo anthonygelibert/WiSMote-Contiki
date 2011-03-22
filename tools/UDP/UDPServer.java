@@ -57,7 +57,7 @@ public class UDPServer
         while (true)
         {
             socket.receive(data);
-            System.out.println("I received '" + new String(data.getData()) +
+            System.out.println("I received '" + new String(data.getData(),0,data.getLength()) +
                                "' from '" + data.getAddress().toString() +
                                "' on port '" + data.getPort() + '\'');
 
