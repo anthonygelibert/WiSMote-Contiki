@@ -74,9 +74,10 @@ public class SHT15UDP
         {
             socket.receive(data);
             final String[] values = new String(data.getData()).split("-", 2);
-            try
+            double tmp = 0;
+			try
             {
-                final double tmp = D1 + D2 * Double.parseDouble(values[0]);
+                tmp = D1 + D2 * Double.parseDouble(values[0]);
                 System.out.println("TMP: " + round(tmp) + "°C");
             }
             catch (final NumberFormatException ex)
