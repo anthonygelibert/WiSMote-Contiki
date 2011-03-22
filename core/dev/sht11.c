@@ -96,7 +96,6 @@ sreset(void)
 static int
 swrite(unsigned _c)
 {
-  unsigned char c = _c;
   int i;
   int ret;
 
