@@ -40,7 +40,9 @@ static struct uip_udp_conn *remoteconn;
 static void sendAnswer(const char const * answer)
 {
   PRINTF("I will answer '%s'\n", answer);
+  /* Copy the source address in the destination field */
   uip_ipaddr_copy(&remoteconn->ripaddr, &UIP_IP_BUF->srcipaddr);
+  /* Send the packet */
   uip_udp_packet_send(remoteconn, answer, strlen(answer));
 }
 
@@ -51,9 +53,12 @@ static void requestHandler(void)
 {
   int i = 0;
 
+  /* Create a "real" C string.*/
   ((char *)uip_appdata)[uip_datalen()] = 0;
   PRINTF("New uIP data: '%s'\n", (char *)uip_appdata);
+  /* Search for a potential handler */
   for (i = 0; i < COMMAND_NUM && strcmp(handlers[i]->name, uip_appdata); i++);
+  /* If we find one, use it */
   if (i < COMMAND_NUM)
   {
     PRINTF("I chose handler '%s'\n", handlers[i]->name);
@@ -68,12 +73,14 @@ PROCESS_THREAD(diagnostic_process, ev, data)
 {
   PROCESS_BEGIN();
 
-  /* Create the local listener */
+  /* Create the remote and local structures */
   remoteconn = udp_new(&uip_all_zeroes_addr, uip_htons(remote_port), NULL);
   localconn = udp_new(&uip_all_zeroes_addr, 0, NULL);
+  /* Listen on the good port */
   udp_bind(localconn,uip_htons(local_port));
   while (1)
   {
+    /* Wait for a packet */
     PROCESS_WAIT_EVENT_UNTIL(ev == tcpip_event);
     /* If there is new uIP data, display it */
     if(uip_newdata()) {

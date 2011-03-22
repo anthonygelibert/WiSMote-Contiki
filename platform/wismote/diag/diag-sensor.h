@@ -3,6 +3,7 @@
 
 #include "diag.h"
 
+/* Export the "sensor" command */
 COMMAND_NAME(sensor_command);
 
 #endif
