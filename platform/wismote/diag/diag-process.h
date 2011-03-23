@@ -3,7 +3,7 @@
 
 #include "diag.h"
 
-/* Export the "process" command */
+/** Export the "process" command */
 COMMAND_NAME(process_command);
 
 #endif

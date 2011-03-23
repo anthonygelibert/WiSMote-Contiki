@@ -3,7 +3,7 @@
 
 #include "diag.h"
 
-/* Export the "version" command */
+/** Export the "version" command */
 COMMAND_NAME(version_command);
 
 #endif
