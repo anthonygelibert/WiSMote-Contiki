@@ -59,7 +59,7 @@
 #include "msp430.h"
 
 /* From platform */
-#include "diagnostic.h"
+#include "diag.h"
 #include "parallax_pir-555-28027.h"
 
 /* If the macro aren't defined, we consider them like disabled. */
@@ -224,7 +224,7 @@ main(void)
   process_start(&diagnostic_process, NULL);
   printf("Diagnostic :\n - local port: 7890\n - remote port: 7891\n");
 #else
-  printf("No diagnostic.\n")
+  printf("No diagnostic.\n");
 #endif
 
   /* Start the processes */
