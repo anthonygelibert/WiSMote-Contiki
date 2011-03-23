@@ -225,9 +225,9 @@ static void event(void)
     SENSORS_ACTIVATE(sht11_sensor);
     /* Read TEMP and HUMIDITY */
     tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
-    if (tmp == -1) tmp = 0; // XXX
+    if (tmp == -1 || tmp == 0) tmp = 3970; // See below for formula.
     rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
-    if (rh == -1) rh = 0; // XXX
+    if (rh == -1 || rh == 0) rh = 56; // See below for formula.
     /* Disable the sensor */
     SENSORS_DEACTIVATE(sht11_sensor);
 
@@ -270,7 +270,7 @@ static void event(void)
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
     /* Value 2 */
-    // RHlinear       = -2.0468 + 0.00367 * val - 1.5955e-6 * val * val (12-bit val)
+    // RHlinear       = -2.0468 + 0.0367 * val - 1.5955e-6 * val * val (12-bit val)
     // 256 * RHLinear = -523.98 + 9.3952  * val - 4.0845e-4 * val * val
     // 256 * RHLinear ~ -524    + 9.4     * val - val * val / 2448;
     acc1 = ((u32_t)rh * 940) / 100;
