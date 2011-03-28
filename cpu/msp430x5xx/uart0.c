@@ -223,7 +223,9 @@ putchar(int c)
 #endif
 
 /*---------------------------------------------------------------------------*/
-
+/*TODO_PTV preciser le cas de declenchement du vecteur , RX, TX)
+ *
+ */
 interrupt(USCI_A1_VECTOR)
 uart0_interrupt(void)
 {
