@@ -1,16 +1,19 @@
 
+/* From MSP430-GCC */
+#include <string.h>
 
+/* From CONTIKI*/
 #include "contiki.h"
 #include "contiki-lib.h"
 #include "contiki-net.h"
-#include <string.h>
-
 #include "dev/sht11-sensor.h"
 
+/* From this example */
 #include "SensorDemoConfig.h"
 
-
+/** Enable debug. */
 #define DEBUG 1
+
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
@@ -22,7 +25,10 @@
 #define PRINTLLADDR(addr)
 #endif
 
+/** NOT_YET_DOCUMENTED_PTV */
 #define UDP_NB 4
+
+/** NOT_YET_DOCUMENTED_PTV */
 #define UDP_MAX_DATA_LEN 200
 
 /*clock_delay(65535);*/
@@ -30,6 +36,14 @@
 static struct uip_udp_conn *udpconn_discovery;
 static struct uip_udp_conn *udpconn_data;
 
+/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ *
+ * @param u8Data  NOT_YET_DOCUMENTED_PTV
+ * @param pString NOT_YET_DOCUMENTED_PTV
+ */
 static void Print8BitsToDecString(u8_t u8Data, u8_t *pString)
 {
     *pString++ = (u8Data / 100) + '0';
@@ -38,6 +52,14 @@ static void Print8BitsToDecString(u8_t u8Data, u8_t *pString)
     *pString++ = u8Data % 10 + '0';
 }
 
+/*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ *
+ * @param u16Data NOT_YET_DOCUMENTED_PTV
+ * @param pString NOT_YET_DOCUMENTED_PTV
+ */
 static void Print16BitsToDecString(u16_t u16Data, u8_t *pString)
 {
     *pString++ = (u16Data / 10000) + '0';
@@ -50,39 +72,15 @@ static void Print16BitsToDecString(u16_t u16Data, u8_t *pString)
     *pString++ = u16Data % 10 + '0';
 }
 
-/*static void Print8BitsToHexString(const u8_t u16Data, u8_t *pString)
-{
-    u8_t u8Nybble;
+/*---------------------------------------------------------------------------*/
 
-    u8Nybble = (u8_t)((u16Data >> 4) & 0x0f);
-    u8Nybble += '0';
-    if (u8Nybble > '9')
-        u8Nybble += 'A' - '9' - 1;
-    *pString++ = u8Nybble;
-
-    u8Nybble = (u8_t)((u16Data >> 0) & 0x0f);
-    u8Nybble += '0';
-    if (u8Nybble > '9')
-        u8Nybble += 'A' - '9' - 1;
-    *pString++ = u8Nybble;
-}
-
-static void Print16BitsToHexString(const u16_t u16Data, u8_t *pString)
-{
-    int   i;
-    u8_t  u8Nybble;
-
-    for (i = 12; i >= 0; i -= 4)
-    {
-        u8Nybble = (u8_t)((u16Data >> i) & 0x0f);
-        u8Nybble += '0';
-        if (u8Nybble > '9')
-            u8Nybble += 'A' - '9' - 1;
-
-        *pString++ = u8Nybble;
-    }
-}*/
-
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ *
+ * @param psSock  NOT_YET_DOCUMENTED_PTV
+ * @param pString NOT_YET_DOCUMENTED_PTV
+ * @return NOT_YET_DOCUMENTED_PTV
+ */
 static int PrintAddr(const u8_t *psSock, u8_t *pString)
 {
     int i;
@@ -95,30 +93,18 @@ static int PrintAddr(const u8_t *psSock, u8_t *pString)
     }
     return (4*3 + 3*1);
 }
-/*
-static int PrintAddr(const u16_t *psSock, u8_t *pString)
-{
-    int i;
-    for (i = 0; i < 8; i++)
-    {
-        Print16BitsToHexString(psSock[i], pString);
-        pString += 4;
-        if (i != 7)
-            *pString++ = ':';
-    }
-    return (8*4 + 7*1);
-}
-*/
 
 /*---------------------------------------------------------------------------*/
+
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ */
 static void discovery(void)
 {
     u8_t buf[200];
     u8_t * pu8Payload;
     const u8_t * sOwnAddr = (u8_t [4]){172, 28, 1, 100};
     const u8_t * sAddr = (u8_t [4]){172, 28, 1, 198};
-//    u16_t * sOwnAddr = (u16_t *)(&uip_netif_physical_if.addresses[0].ipaddr);
-//    u16_t * sAddr = (u16_t *)(&udpconn_data->ripaddr);
 
     PRINTF("Sender sending to: ");
     PRINT6ADDR(sAddr);
@@ -127,7 +113,7 @@ static void discovery(void)
     // Send HELLO message.
     pu8Payload = buf;
 
-#if 0
+#if USE_MULTICAST_MESSAGE
     /* START MULTICAST MESSAGE */
     /* Prefix */
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_1;
@@ -169,7 +155,7 @@ static void discovery(void)
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
     /* END DISCOVERY MESSAGE */
 
-#if 0
+#if USE_MULTICAST_MESSAGE
     /* Payload separator */
     *pu8Payload++ = MESSAGE_WRAPPER;
     /* END MULTICAST MESSAGE */
@@ -177,12 +163,12 @@ static void discovery(void)
 
     *pu8Payload++ = 0;
 
-//    PRINTF("%s\n", buf);
-
     uip_udp_packet_send(udpconn_discovery, buf, (pu8Payload - buf));
 }
 
-
+/**
+ * NOT_YET_DOCUMENTED_PTV
+ */
 static void event(void)
 {
     u8_t buf[200];
@@ -190,8 +176,6 @@ static void event(void)
     const u8_t * sOwnAddr = (u8_t [4]){172, 28, 1, 100};
     const u8_t * sAddr = (u8_t [4]){172, 28, 1, 198};
     u16_t tmp, rh, val2;
-//    u16_t * sOwnAddr = (u16_t *)(&uip_netif_physical_if.addresses[0].ipaddr);
-//    u16_t * sAddr = (u16_t *)(&udpconn_data->ripaddr);
 
     PRINTF("Sender sending to: ");
     PRINT6ADDR(sAddr);
@@ -200,7 +184,7 @@ static void event(void)
     // Send EVENT message containing measurements.
     pu8Payload = buf;
 
-#if 0
+#if USE_MULTICAST_MESSAGE
     /* START MULTICAST MESSAGE */
     /* Prefix */
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_1;
@@ -291,7 +275,7 @@ static void event(void)
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
     /* END DISCOVERY MESSAGE */
 
-#if 0
+#if USE_MULTICAST_MESSAGE
     /* Payload separator */
     *pu8Payload++ = MESSAGE_WRAPPER;
     /* END MULTICAST MESSAGE */
@@ -304,16 +288,13 @@ static void event(void)
     uip_udp_packet_send(udpconn_data, buf, (pu8Payload - buf));
 }
 
-
-
-
 PROCESS(OsamiUDP_process, "OSAMI UDP");
 AUTOSTART_PROCESSES(&OsamiUDP_process);
 
 /*---------------------------------------------------------------------------*/
+
 PROCESS_THREAD(OsamiUDP_process, ev, data)
 {
-    //static uip_ipaddr_t ownaddr;
     static uip_ipaddr_t ipaddr;
     static struct etimer data_timer;
     static struct etimer discovery_timer;
@@ -321,36 +302,21 @@ PROCESS_THREAD(OsamiUDP_process, ev, data)
     PROCESS_BEGIN();
 
     PRINTF("Process test UDP sender started\n");
-
     PRINTF("Local IPv6 address: ");
-//    PRINT6ADDR(&uip_netif_physical_if.addresses[0].ipaddr);
-//    uip_ip6addr(&ownaddr,0xfd04,0x0bd3,0x80e8,0x0001,0x0215,0x8D00,0x0012,0x3456);
     uip_ipaddr(&ipaddr, 172, 28, 1, 198);
-
     PRINTF("\n");
-
-//    leds_toggle(LEDS_ALL);
-
-//    uip_ip6addr(&ipaddr,0xfe80,0x0000,0x0000,0x0000,0x0012,0x13ff,0xfe14,0x1516);
-//    uip_ip6addr(&ipaddr,0xfd04,0x0bd3,0x80e8,0x0001,0x0000,0x0000,0x0000,0x0001);
 
     /* new connection with remote host */
     udpconn_data = uip_udp_new(&ipaddr, uip_htons(PC_UDP_PORT));
     udpconn_discovery = uip_udp_new(&ipaddr, uip_htons(DISCOVERY_PORT));
 
-
     PRINTF("Created connection with remote peer ");
-//    PRINT6ADDR(&udpconn_data->ripaddr);
 
     etimer_set(&discovery_timer, 10 * CLOCK_SECOND);
     etimer_set(&data_timer, 3 * CLOCK_SECOND);
 
     while(1)
     {
-//        u32_t val = (uint16_t)3521 * (uint16_t)3467;
-//        u32_t val2 = (val * 6553) + val >> 1;
-//        u32_t val3 = val2 >>
-//        PRINTF("%lu %lu"
         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&discovery_timer) || etimer_expired(&data_timer));
         if (etimer_expired(&discovery_timer))
         {
@@ -366,3 +332,5 @@ PROCESS_THREAD(OsamiUDP_process, ev, data)
 
     PROCESS_END();
 }
+
+/** @} */
