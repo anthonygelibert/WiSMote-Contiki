@@ -26,11 +26,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
- 
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 /**
  * Simple UDP Server.
@@ -61,10 +60,10 @@ public class UDPServer
             return;
         }
 
-        /* UDP socket. */
+        /* UDP socket: data */
         final DatagramPacket data = new DatagramPacket(BUFFER, BUFFER_SIZE);
-        final DatagramSocket socket = new DatagramSocket(Integer.parseInt(args[0]),
-                                                         InetAddress.getByName("192.168.1.1"));
+        /* UDP socket */
+        final DatagramSocket socket = new DatagramSocket(Integer.parseInt(args[0]));
         System.out.println("I listen on "+ socket.getLocalAddress().toString() +
                            ':' + socket.getLocalPort());
         while (true)

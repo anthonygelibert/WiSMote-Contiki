@@ -39,11 +39,17 @@ import java.util.Scanner;
  */
 public class DiagnosticTUI
 {
+    /** Help message. */
     private static final String HELP_MESSAGE = "Usage: DiagTUI.class @IP local_port remote_port\n";
+    /** Prompt of the technician. */
     private static final String MY_PROMPT = "you> ";
+    /** Prompt of the Wismote. */
     private static final String ITS_PROMPT = "wismote> ";
+    /** Exit command. */
     private static final String EXIT_CMD = "exit";
+    /** Size of the receiver buffer. */
     private static final int BUFFER_SIZE = 500;
+    /** Reception buffer. */
     private static final byte[] BUFFER = new byte[BUFFER_SIZE];
 
     private DiagnosticTUI() {}
@@ -77,12 +83,16 @@ public class DiagnosticTUI
             {
                 break;
             }
+            /* Send the packet of the technician */
             packet.setData(line.getBytes());
             packet.setLength(line.getBytes().length);
             socket.send(packet);
+            /* Wait for an answer */
             serverSocket.receive(data);
+            /* Display the answer with the remote prompt */
             System.out.println(ITS_PROMPT + new String(data.getData(), 0, data.getLength()) + '\n');
         }
+        /* Close the two sockets. */
         socket.close();
         serverSocket.close();
     }

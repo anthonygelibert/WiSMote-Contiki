@@ -44,14 +44,23 @@ import java.util.Scanner;
  */
 public class LEDsUDPClient
 {
+    /** Help message. */
     private static final String HELP_MESSAGE = "Usage: UDPClient.class @IP port\n";
+    /** Prompt. */
     private static final String PROMPT = "text>";
+    /** Command to toggle the blue LED. */
     private static final String BLUE_CMD = "blue";
+    /** Command to toggle the green LED. */
     private static final String GREEN_CMD = "green";
+    /** Command to toggle the red LED. */
     private static final String RED_CMD = "red";
+    /** Command to "exit". */
     private static final String EXIT_CMD = "exit";
+    /** Packet to toggle the blue LED. */
     private static final String BLUE_LED_PACKET = "LED-1";
+    /** Packet to toggle the green LED. */
     private static final String GREEN_LED_PACKET = "LED-2";
+    /** Packet to toggle the red LED. */
     private static final String RED_LED_PACKET = "LED-3";
 
     private LEDsUDPClient(){}
@@ -77,6 +86,7 @@ public class LEDsUDPClient
         {
             System.out.print(PROMPT);
             String line = input.nextLine();
+            /* Send the good packet or exit */
             if (BLUE_CMD.compareTo(line) == 0)
             {
                 line = BLUE_LED_PACKET;
@@ -98,6 +108,10 @@ public class LEDsUDPClient
                         if (EXIT_CMD.compareTo(line) == 0)
                         {
                             break;
+                        }
+                        else
+                        {
+                            continue;
                         }
                     }
                 }
