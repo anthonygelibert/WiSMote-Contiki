@@ -41,8 +41,11 @@ import java.util.Scanner;
  */
 public class UDPClient
 {
+    /** Help message. */
     private static final String HELP_MESSAGE = "Usage: UDPClient.class @IP port\n";
+    /** Prompt. */
     private static final String PROMPT = "text>";
+    /** Command to "exit". */
     private static final String EXIT_CMD = "exit";
 
     private UDPClient(){}

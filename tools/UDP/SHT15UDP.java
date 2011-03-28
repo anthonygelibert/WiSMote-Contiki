@@ -30,7 +30,6 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 /**
  * Simple class listening on 192.168.1.1:1234 (UDP) for TMP/HR data from a SHT1x
@@ -60,20 +59,23 @@ public class SHT15UDP
 
 	/* Relative humidity, temperature compensation constants */
 	private static final double T1 = 0.01;
-	private static final double T2 = 0.00008;	
-	
+	private static final double T2 = 0.00008;
+
     private SHT15UDP(){}
 
     public static void main(final String[] args) throws IOException
     {
-        /* UDP socket. */
+        /* UDP socket: packet */
         final DatagramPacket data = new DatagramPacket(BUFFER, BUFFER_SIZE);
-        final DatagramSocket socket = new DatagramSocket(1234, InetAddress.getByName("192.168.1.1"));
+        /* UDP socket */
+        final DatagramSocket socket = new DatagramSocket(1234);
         System.out.println("I wait tmp/hr data on UDP port 1234\n");
         while (true)
         {
             socket.receive(data);
+            /* Parse answer */
             final String[] values = new String(data.getData()).split("-", 2);
+            /* Temperature */
             double tmp = 0;
 			try
             {
@@ -84,6 +86,7 @@ public class SHT15UDP
             {
                 System.err.println("TMP: N/A");
             }
+            /* Relative humidity */
             try
             {
                 final double rh = Double.parseDouble(values[1]);

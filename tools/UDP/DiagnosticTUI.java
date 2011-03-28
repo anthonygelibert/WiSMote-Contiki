@@ -30,49 +30,70 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Scanner;
 
 /**
- * Simple UDP Server.
- *
  * @author LCIS/CTSYS - Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
- * @version March 23, 2011
+ * @version March 24, 2011
  */
-public class UDPServer
+public class DiagnosticTUI
 {
-    /**
-     * UDP Buffer size.
-     */
-    private static final int BUFFER_SIZE = 20;
-    /**
-     * UDP Buffer.
-     */
+    /** Help message. */
+    private static final String HELP_MESSAGE = "Usage: DiagTUI.class @IP local_port remote_port\n";
+    /** Prompt of the technician. */
+    private static final String MY_PROMPT = "you> ";
+    /** Prompt of the Wismote. */
+    private static final String ITS_PROMPT = "wismote> ";
+    /** Exit command. */
+    private static final String EXIT_CMD = "exit";
+    /** Size of the receiver buffer. */
+    private static final int BUFFER_SIZE = 500;
+    /** Reception buffer. */
     private static final byte[] BUFFER = new byte[BUFFER_SIZE];
 
-    private static final String HELP_MESSAGE = "Usage: UDPServer.class port\n";
-
-    private UDPServer(){}
+    private DiagnosticTUI() {}
 
     public static void main(final String[] args) throws IOException
     {
-        if (args.length != 1)
+        if (args.length != 3)
         {
             System.err.println(HELP_MESSAGE);
             return;
         }
-
-        /* UDP socket: data */
+        /* Server IP. */
+        final InetAddress address = InetAddress.getByName(args[0]);
+        /* Server port. */
+        final int port = Integer.parseInt(args[2]);
+        /* The packets. */
+        final DatagramPacket packet = new DatagramPacket(new byte[1], 1, address, port);
+        /* Input. */
+        final Scanner input = new Scanner(System.in);
+        /* UDP Client socket. */
+        final DatagramSocket socket = new DatagramSocket();
+        /* UDP Server socket. */
+        final DatagramSocket serverSocket = new DatagramSocket(Integer.parseInt(args[1]));
+        /* UDP Server socket: data */
         final DatagramPacket data = new DatagramPacket(BUFFER, BUFFER_SIZE);
-        /* UDP socket */
-        final DatagramSocket socket = new DatagramSocket(Integer.parseInt(args[0]));
-        System.out.println("I listen on "+ socket.getLocalAddress().toString() +
-                           ':' + socket.getLocalPort());
         while (true)
         {
-            socket.receive(data);
-            System.out.println("I received '" + new String(data.getData(),0,data.getLength()) +
-                               "' from '" + data.getAddress().toString() +
-                               "' on port '" + data.getPort() + '\'');
-
+            System.out.print(MY_PROMPT);
+            final String line = input.nextLine();
+            if (EXIT_CMD.compareTo(line) == 0)
+            {
+                break;
+            }
+            /* Send the packet of the technician */
+            packet.setData(line.getBytes());
+            packet.setLength(line.getBytes().length);
+            socket.send(packet);
+            /* Wait for an answer */
+            serverSocket.receive(data);
+            /* Display the answer with the remote prompt */
+            System.out.println(ITS_PROMPT + new String(data.getData(), 0, data.getLength()) + '\n');
         }
+        /* Close the two sockets. */
+        socket.close();
+        serverSocket.close();
     }
 }
