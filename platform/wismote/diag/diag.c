@@ -112,6 +112,11 @@ static void requestHandler(void)
     PRINTF("I chose handler '%s'\n", handlers[i]->name);
     sendAnswer(handlers[i]->handler());
   }
+  else
+  {
+    PRINTF("I don't found the correct handler\n");
+    sendAnswer("Sorry, I can't find this command...");
+  }
 }
 
 /*---------------------------------------------------------------------------*/
