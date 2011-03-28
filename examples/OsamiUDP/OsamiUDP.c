@@ -127,6 +127,7 @@ static void discovery(void)
     // Send HELLO message.
     pu8Payload = buf;
 
+#if 0
     /* START MULTICAST MESSAGE */
     /* Prefix */
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_1;
@@ -146,6 +147,7 @@ static void discovery(void)
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Payload separator */
     *pu8Payload++ = MESSAGE_WRAPPER;
+#endif
 
     /* START DISCOVERY MESSAGE */
     /* Prefix */
@@ -167,9 +169,11 @@ static void discovery(void)
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
     /* END DISCOVERY MESSAGE */
 
+#if 0
     /* Payload separator */
     *pu8Payload++ = MESSAGE_WRAPPER;
     /* END MULTICAST MESSAGE */
+#endif
 
     *pu8Payload++ = 0;
 
@@ -196,6 +200,7 @@ static void event(void)
     // Send EVENT message containing measurements.
     pu8Payload = buf;
 
+#if 0
     /* START MULTICAST MESSAGE */
     /* Prefix */
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_1;
@@ -215,6 +220,7 @@ static void event(void)
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Payload separator */
     *pu8Payload++ = MESSAGE_WRAPPER;
+#endif
 
     /* START DISCOVERY MESSAGE */
     /* Prefix */
@@ -285,9 +291,11 @@ static void event(void)
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
     /* END DISCOVERY MESSAGE */
 
+#if 0
     /* Payload separator */
     *pu8Payload++ = MESSAGE_WRAPPER;
     /* END MULTICAST MESSAGE */
+#endif
 
     *pu8Payload++ = 0;
 
