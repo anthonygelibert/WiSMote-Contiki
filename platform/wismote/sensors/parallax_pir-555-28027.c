@@ -44,7 +44,11 @@
 const struct sensors_sensor PIR_555_28027_sensor;
 
 static void myHandler(void);
-/*TODO_PTV : Preciser */
+
+/* See iohandlers.h.
+ * These macros define the PRESENCE_* functions according to the specified
+ * port, bit and IT handler.
+ */
 HWCONF_PIN(PRESENCE, 1, 2)
 HWCONF_IRQ(PRESENCE, 1, 2, myHandler)
 

@@ -70,7 +70,10 @@ myHandler(void)
 }
 
 /*---------------------------------------------------------------------------*/
-/*TODO_PTV : Preciser */
+/* See iohandlers.h.
+ * These macros define the BUTTON_* functions according to the specified
+ * port, bit and IT handler.
+ */
 HWCONF_PIN(BUTTON, 1, 4)
 HWCONF_IRQ(BUTTON, 1, 4, myHandler)
 
