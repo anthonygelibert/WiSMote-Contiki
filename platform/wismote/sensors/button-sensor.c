@@ -70,7 +70,7 @@ myHandler(void)
 }
 
 /*---------------------------------------------------------------------------*/
-
+/*TODO_PTV : Preciser */
 HWCONF_PIN(BUTTON, 1, 4)
 HWCONF_IRQ(BUTTON, 1, 4, myHandler)
 
