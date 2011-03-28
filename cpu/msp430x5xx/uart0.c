@@ -223,8 +223,11 @@ putchar(int c)
 #endif
 
 /*---------------------------------------------------------------------------*/
-/*TODO_PTV preciser le cas de declenchement du vecteur , RX, TX)
+
+/**
+ * UART A1 interrupt vector (RX/TX).
  *
+ * @param USCI_A1_VECTOR Interrupt vector USCI A1
  */
 interrupt(USCI_A1_VECTOR)
 uart0_interrupt(void)
@@ -234,13 +237,18 @@ uart0_interrupt(void)
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   watchdog_start();
 
+  /* Indicate a rx/tx operation */
   leds_toggle(LEDS_RED);
+  /* Test a RX */
   if (UCA1IFG & UCRXIFG) {
+    /* Check for an error */
     if (UCA1STAT & UCRXERR) {
       /* Clear error flags by forcing a dummy read. */
       c = UCA1RXBUF;
     } else {
+      /* Get the good value */
       c = UCA1RXBUF;
+      /* If an input handler is set, use it */
       if (uart0_input_handler != NULL) {
         if (uart0_input_handler(c)) {
           LPM4_EXIT;
@@ -248,9 +256,12 @@ uart0_interrupt(void)
       }
     }
   }
+/* If we use TX interrupt, also check it */
 #if TX_WITH_INTERRUPT
   else {
+    /* Checking */
     if (UCA1IFG & UCTXIFG) {
+      /* Last byte */
       if (ringbuf_elements(&txbuf) == 0) {
         transmitting = 0;
       } else {
