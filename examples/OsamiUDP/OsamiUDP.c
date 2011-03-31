@@ -432,6 +432,7 @@ static void event(void)
     *pu8Payload++ = 'e';
     *pu8Payload++ = 'm';
     *pu8Payload++ = 'p';
+    *pu8Payload++ = '1';
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
     /* Value 1 */
@@ -456,6 +457,7 @@ static void event(void)
     *pu8Payload++ = 'd';
     *pu8Payload++ = 'r';
     *pu8Payload++ = 'o';
+    *pu8Payload++ = '1';
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
     /* Value 2 */
