@@ -149,6 +149,10 @@ typedef unsigned short uip_stats_t;
 /** Buffer for the serial line receive buffer. */
 #define SERIAL_LINE_CONF_BUFSIZE 64
 
+/* ----- Diagnostic ----- */
+/** Diagnostic use a JSON output. */
+#define DIAGNOSTIC_CONF_OUTPUT JSON_OUTPUT
+
 /* ----- Includes ----- */
 #include "types.h"
 #include <msp430f5437.h>

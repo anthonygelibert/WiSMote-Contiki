@@ -50,6 +50,23 @@
 /* Export the name of the process. */
 PROCESS_NAME(diagnostic_process);
 
+/** Diagnostic will use an ASCII output. */
+#define ASCII_OUTPUT 1
+/** Diagnostic will use an XML output. */
+#define XML_OUTPUT   2
+/** Diagnostic will use a JSON output. */
+#define JSON_OUTPUT  3
+
+#ifndef DIAGNOSTIC_CONF_OUTPUT
+#define DIAGNOSTIC_OUTPUT ASCII_OUTPUT
+#else
+#define DIAGNOSTIC_OUTPUT (DIAGNOSTIC_CONF_OUTPUT)
+#endif
+
+#if ((DIAGNOSTIC_OUTPUT != ASCII_OUTPUT) && (DIAGNOSTIC_OUTPUT != XML_OUTPUT) && (DIAGNOSTIC_OUTPUT != JSON_OUTPUT))
+#error "The specified output type is unknown !"
+#endif
+
 /** Define the type "command handler". */
 typedef char * (*cmdHandler)(void);
 
