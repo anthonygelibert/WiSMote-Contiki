@@ -4,7 +4,7 @@
  * \author
  *         Lionel Debroux <lionel.debroux@lcis.grenoble-inp.fr>
  * \date
- *         March 28, 2011
+ *         March 31, 2011
  */
 
 /*
