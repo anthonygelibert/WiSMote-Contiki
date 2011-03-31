@@ -1,3 +1,40 @@
+/**
+ * \file
+ *         OsamiUDP Example - Program.
+ * \author
+ *         Lionel Debroux <lionel.debroux@lcis.grenoble-inp.fr>
+ * \date
+ *         March 31, 2011
+ */
+
+/*
+ * Copyright (c) 2011, LCIS/CTSYS.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the Institute nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
 
 /* From MSP430-GCC */
 #include <string.h>
@@ -40,13 +77,17 @@ static struct uip_udp_conn *udpconn_out_discovery;
 /*---------------------------------------------------------------------------*/
 
 /**
- * NOT_YET_DOCUMENTED_PTV
+ * Translate an unsigned 8 bits value (0 ~> 255) to a decimal string.
  *
- * @param u8Data  NOT_YET_DOCUMENTED_PTV
- * @param pString NOT_YET_DOCUMENTED_PTV
+ * \param u8Data  8 bits value.
+ * \param pString Target string.
  */
 static void Print8BitsToDecString(u8_t u8Data, u8_t *pString)
 {
+    /*
+     * Reminder:
+     * value between 0 ~> 9 + '0' == ASCII character between '0' ~> '9'.
+     */
     *pString++ = (u8Data / 100) + '0';
     u8Data %= 100;
     *pString++ = (u8Data / 10) + '0';
@@ -56,21 +97,25 @@ static void Print8BitsToDecString(u8_t u8Data, u8_t *pString)
 /*---------------------------------------------------------------------------*/
 
 /**
- * NOT_YET_DOCUMENTED_PTV
+ * Translate an unsigned 16 bits (0 ~> 65535) value to a decimal string.
  *
- * @param u16Data NOT_YET_DOCUMENTED_PTV
- * @param pString NOT_YET_DOCUMENTED_PTV
+ * \param u16Data  16 bits value.
+ * \param pString Target string.
  */
 static void Print16BitsToDecString(u16_t u16Data, u8_t *pString)
 {
-    *pString++ = (u16Data / 10000) + '0';
-    u16Data %= 10000;
-    *pString++ = (u16Data / 1000) + '0';
-    u16Data %= 1000;
-    *pString++ = (u16Data / 100) + '0';
-    u16Data %= 100;
-    *pString++ = (u16Data / 10) + '0';
-    *pString++ = u16Data % 10 + '0';
+  /*
+   * Reminder:
+   * value between 0 ~> 9 + '0' == ASCII character between '0' ~> '9'.
+   */
+  *pString++ = (u16Data / 10000) + '0';
+  u16Data %= 10000;
+  *pString++ = (u16Data / 1000) + '0';
+  u16Data %= 1000;
+  *pString++ = (u16Data / 100) + '0';
+  u16Data %= 100;
+  *pString++ = (u16Data / 10) + '0';
+  *pString++ = u16Data % 10 + '0';
 }
 
 /*
@@ -94,11 +139,11 @@ static void Print16BitsToHexString(const u16_t u16Data, u8_t *pString)
 /*---------------------------------------------------------------------------*/
 
 /**
- * NOT_YET_DOCUMENTED_PTV
+ * Translate an IPv4 address to a decimal string.
  *
- * @param psSock  NOT_YET_DOCUMENTED_PTV
- * @param pString NOT_YET_DOCUMENTED_PTV
- * @return NOT_YET_DOCUMENTED_PTV
+ * \param psSock The IPv4 address.
+ * \param pString Target string.
+ * \return 15
  */
 static int PrintAddr(const u8_t *psSock, u8_t *pString)
 {
@@ -112,6 +157,7 @@ static int PrintAddr(const u8_t *psSock, u8_t *pString)
     }
     return (4*3 + 3*1);
 }
+
 /*
 // IPv6 version, will be used later - please don't remove.
 static int PrintAddr(const u16_t *psSock, u8_t *pString)
@@ -131,7 +177,7 @@ static int PrintAddr(const u16_t *psSock, u8_t *pString)
 /*---------------------------------------------------------------------------*/
 
 /**
- * NOT_YET_DOCUMENTED_PTV
+ * Metadata message "handler".
  */
 static void metadata(void)
 {
@@ -246,7 +292,7 @@ static void metadata(void)
 /*---------------------------------------------------------------------------*/
 
 /**
- * NOT_YET_DOCUMENTED_PTV
+ * Discovery message "handler".
  */
 static void discovery(void)
 {
@@ -318,7 +364,7 @@ static void discovery(void)
 }
 
 /**
- * NOT_YET_DOCUMENTED_PTV
+ * Event message "handler".
  */
 static void event(void)
 {

@@ -65,8 +65,8 @@
 #define DEVICE_METADATA_KV_SEPARATOR    '|'
 #define DEVICE_METADATA_FIELD_SEPARATOR ';'
 
-#define DATA_PORT 61615
-#define DISCOVERY_PORT 61616
+#define DATA_PORT                       61615
+#define DISCOVERY_PORT                  61616
 
 #endif  /* __SENSORDEMOCONFIG_H__ */
 
