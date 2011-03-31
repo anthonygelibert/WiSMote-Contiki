@@ -220,7 +220,7 @@ main(void)
   print_sensors();
 #endif
 
-#if DEBUG_DIAGNOSTIC
+#if DEBUG_DIAGNOSTIC && (WITH_UIP || WITH_UIP6)
   process_start(&diagnostic_process, NULL);
   printf("Diagnostic :\n - local port: 7890\n - remote port: 7891\n");
 #else
