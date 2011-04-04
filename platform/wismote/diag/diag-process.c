@@ -1,6 +1,11 @@
 /* From this platform */
 #include "diag.h"
 
+/** Size of the version buffer. */
+#define PROCESS_SIZE 500
+/** Buffer for the answer. */
+static char process[PROCESS_SIZE];
+
 /**
  * Get the list of processes and auto-processes.
  *
@@ -26,10 +31,25 @@ COMMAND(process_command, "process", getProcess);
 static void
 print_processes(struct process * const processes[])
 {
-//  printf("Starting");
+#if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
+  sprintf(process,"List of process:\n");
+#elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
+  sprintf(process,"<wismote><process>");
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+
+#endif
+
   while(*processes != NULL) {
-//    printf(" '%s'", PROCESS_NAME_STRING(*processes));
+#if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
+    sprintf(process,"%s - %s\n",PROCESS_NAME_STRING(*processes));
+#elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+#endif
     processes++;
   }
-//  putchar('\n');
+
+#if DIAGNOSTIC_OUTPUT == XML_OUTPUT
+
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+#endif
 }

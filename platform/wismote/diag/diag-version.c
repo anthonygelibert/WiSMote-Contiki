@@ -25,8 +25,8 @@ static char * getVersion(void)
   version[VERSION_SIZE - 1] = '\0';
   return version;
 #elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
-  snprintf(version,VERSION_SIZE,"<wismote><module name=\"CONTIKI core\" version=\"%s\"/>", CONTIKI_VERSION_STRING);
-  strncat(version,"</wismote>",VERSION_SIZE);
+  snprintf(version,VERSION_SIZE,"<wismote><versions><module name=\"CONTIKI core\" version=\"%s\"/>", CONTIKI_VERSION_STRING);
+  strncat(version,"</versions></wismote>",VERSION_SIZE);
   version[VERSION_SIZE - 1] = '\0';
   return version;
 #elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
