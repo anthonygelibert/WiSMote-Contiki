@@ -60,7 +60,7 @@ static void listAllProcesses()
 #endif
   while(list) {
 #if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
-    snprintf(buffer, BUFFER_SIZE, " - %s (%s%s)\n",
+    snprintf(buffer, BUFFER_SIZE, " - %s [%s%s]\n",
         PROCESS_NAME_STRING(list),
         getASCIIState(list->state),
         getASCIIPoll(list->needspoll));
@@ -83,7 +83,7 @@ static void listAllProcesses()
   while (*autolist)
   {
 #if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
-    snprintf(buffer, BUFFER_SIZE, " - %s (%s%s)\n",
+    snprintf(buffer, BUFFER_SIZE, " - %s [%s%s]\n",
         PROCESS_NAME_STRING(*autolist),
         getASCIIState((*autolist)->state),
         getASCIIPoll(list->needspoll));
