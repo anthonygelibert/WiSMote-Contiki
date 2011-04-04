@@ -30,6 +30,7 @@ static char * getVersion(void)
   version[VERSION_SIZE - 1] = '\0';
   return version;
 #elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+  /* XXX_PTV: Ajouter une section version (pas directement lister comme là) */
   snprintf(version, VERSION_SIZE,"{\"CONTIKI core\":\"%s\"", CONTIKI_VERSION_STRING);
   strncat(version,"}",VERSION_SIZE);
   version[VERSION_SIZE - 1] = '\0';
