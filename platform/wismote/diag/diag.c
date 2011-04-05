@@ -115,7 +115,13 @@ static void requestHandler(void)
   else
   {
     PRINTF("I don't found the correct handler\n");
+#if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
     sendAnswer("Sorry, I can't find this command...");
+#elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
+    sendAnswer("<wismote></wismote>");
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+    sendAnswer("{\"wismote\":{}}");
+#endif
   }
 }
 

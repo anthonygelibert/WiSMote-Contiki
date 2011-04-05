@@ -151,7 +151,7 @@ typedef unsigned short uip_stats_t;
 
 /* ----- Diagnostic ----- */
 /** Diagnostic use a JSON output. */
-#define DIAGNOSTIC_CONF_OUTPUT ASCII_OUTPUT
+#define DIAGNOSTIC_CONF_OUTPUT JSON_OUTPUT
 
 /* ----- Includes ----- */
 #include "types.h"

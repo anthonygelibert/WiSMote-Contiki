@@ -52,11 +52,15 @@ static void listAllProcesses()
   struct process *  list = PROCESS_LIST();
   struct process ** autolist = (struct process **)autostart_processes;
   void * previous = NULL;
-#define BUFFER_SIZE 50
+#define BUFFER_SIZE 100
   char buffer[BUFFER_SIZE];
 
 #if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
   snprintf(process,PROCESS_SIZE,"List of process:\n");
+#elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
+  snprintf(process,PROCESS_SIZE,"<wismote><processus>");
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+  snprintf(process,PROCESS_SIZE,"{\"wismote\":{\"processus\":{\"process\":[");
 #endif
   while(list) {
 #if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
@@ -64,6 +68,10 @@ static void listAllProcesses()
         PROCESS_NAME_STRING(list),
         getASCIIState(list->state),
         getASCIIPoll(list->needspoll));
+#elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
+    snprintf(buffer, BUFFER_SIZE, "<process name=\"%s\" state=\"%s\"/>", PROCESS_NAME_STRING(list), getASCIIState(list->state));
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+    snprintf(buffer, BUFFER_SIZE, "{\"name\":\"%s\",\"state\":\"%s\"},", PROCESS_NAME_STRING(list), getASCIIState(list->state));
 #endif
     strncat(process, buffer, BUFFER_SIZE);
 
@@ -79,6 +87,10 @@ static void listAllProcesses()
 
 #if DIAGNOSTIC_OUTPUT == ASCII_OUTPUT
   strncat(process,"\nList of autoprocess:\n",22);
+#elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
+  strncat(process,"</processus><autoprocessus>",28);
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+  strncat(process,"]},\"autoprocessus\":{\"process\":[",32);
 #endif
   while (*autolist)
   {
@@ -87,6 +99,10 @@ static void listAllProcesses()
         PROCESS_NAME_STRING(*autolist),
         getASCIIState((*autolist)->state),
         getASCIIPoll(list->needspoll));
+#elif DIAGNOSTIC_OUTPUT == XML_OUTPUT
+    snprintf(buffer, BUFFER_SIZE, "<process name=\"%s\" state=\"%s\"/>", PROCESS_NAME_STRING(*autolist), getASCIIState((*autolist)->state));
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+    snprintf(buffer, BUFFER_SIZE, "{\"name\":\"%s\",\"state\":\"%s\"}", PROCESS_NAME_STRING(*autolist), getASCIIState((*autolist)->state));
 #endif
     strncat(process, buffer, BUFFER_SIZE);
     if (autolist != previous)
@@ -98,6 +114,12 @@ static void listAllProcesses()
   }
 
   watchdog_periodic();
+
+#if DIAGNOSTIC_OUTPUT == XML_OUTPUT
+  strncat(process,"</autoprocessus></wismote>",27);
+#elif DIAGNOSTIC_OUTPUT == JSON_OUTPUT
+  strncat(process,"]}}}",5);
+#endif
 }
 
 /**
