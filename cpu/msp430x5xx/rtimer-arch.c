@@ -61,18 +61,20 @@
 
 /*---------------------------------------------------------------------------*/
 
-interrupt(TIMER1_A0_VECTOR)
-timera0(void)
+interrupt(RTC_VECTOR)
+rtcIT(void)
 {
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
-
   watchdog_start();
-  rtimer_run_next();
-  if (process_nevents() > 0) {
-    LPM4_EXIT;
-  }
-  watchdog_stop();
 
+  if (RTCIV & RTC_RTCTEVIFG) {
+    rtimer_run_next();
+    if (process_nevents() > 0) {
+      LPM4_EXIT;
+    }
+  }
+
+  watchdog_stop();
   ENERGEST_OFF(ENERGEST_TYPE_IRQ);
 }
 
@@ -83,8 +85,25 @@ void
 rtimer_arch_init(void)
 {
   dint();
-  /* CCR0 interrupt enabled, interrupt occurs when timer equals CCR0. */
-  TA0CCTL0 |= CCIE;
+
+  /* Enable:
+   *  - Real-time clock time event interrupt
+   *  - RT1PS clock
+   *  - 16-bit overflow
+   *  - Counter (by default)
+   */
+  RTCCTL01 = RTCTEVIE | RTCSSEL__RT1PS | RTCTEV_1;
+
+  /* Set the PS0 clock:
+   *  - ACLK -- [/8] --> RT0PS
+   */
+  RTCPS0CTL = RT0PSDIV_2;
+
+  /* Set the PS1 clock:
+   *  - RT0PS -- [/16] --> RT1PS
+   */
+  RTCPS1CTL = RT1SSEL_2 | RT1PSDIV_3;
+
   /* Enable interrupts. */
   eint();
 }
@@ -96,8 +115,8 @@ rtimer_arch_now(void)
 {
   rtimer_clock_t t1, t2;
   do {
-    t1 = TA0R;
-    t2 = TA0R;
+    t1 = RTCNT12;
+    t2 = RTCNT12;
   }
   while (t1 != t2);
   return t1;
@@ -112,7 +131,8 @@ rtimer_arch_now(void)
 void
 rtimer_arch_schedule(rtimer_clock_t t)
 {
-  TA0CCR0 = t;
+  /* The events occur on a 16-bits counter overflow. */
+  RTCNT12 = (0xFFFF - t);
 }
 
 /*---------------------------------------------------------------------------*/
