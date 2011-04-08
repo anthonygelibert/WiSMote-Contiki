@@ -4,19 +4,12 @@
  */
 
 /**
- * \addtogroup rtimer
- * @{
- */
-
-/**
  * \file
- *         Low-level RTC implementation.
+ *         RClock on UART0.
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
  *         March 21, 2011
- *
- * \todo   XXX_PTV Timer -> RTC
  */
 
 /*
@@ -49,94 +42,51 @@
  */
 
 /* From MSP430-GCC */
-#include <io.h>
-#include <signal.h>
+#include <stdio.h>
 
 /* From CONTIKI */
 #include "contiki.h"
 
-/* From MSP430x5xx */
-#include "rtimer-arch.h"
-#include "dev/watchdog.h"
+static int current_second = 0;
+static int current_min    = 0;
+static int current_hour   = 0;
 
 /*---------------------------------------------------------------------------*/
 
-interrupt(RTC_VECTOR)
-rtcIT(void)
+static void
+timeout_handler(void)
 {
-  ENERGEST_ON(ENERGEST_TYPE_IRQ);
-  watchdog_start();
-
-  if (RTCIV & RTC_RTCTEVIFG) {
-    rtimer_run_next();
-    if (process_nevents() > 0) {
-      LPM4_EXIT;
+  if ((++current_second) >= 60) {
+    current_second = 0;
+    if ((++current_min) >= 60) {
+      current_min = 0;
+      current_hour++;
     }
   }
-
-  watchdog_stop();
-  ENERGEST_OFF(ENERGEST_TYPE_IRQ);
+  printf("%02d:%02d:%02d\n", current_hour, current_min, current_second);
 }
 
 /*---------------------------------------------------------------------------*/
-
-/** Initialize the Real-Timer. */
-void
-rtimer_arch_init(void)
-{
-  dint();
-
-  /* Enable:
-   *  - Real-time clock time event interrupt
-   *  - RT1PS clock
-   *  - 16-bit overflow
-   *  - Counter (by default)
-   */
-  RTCCTL01 = RTCTEVIE | RTCSSEL__RT1PS | RTCTEV_1;
-
-  /* Set the PS0 clock:
-   *  - ACLK -- [/4] --> RT0PS
-   */
-  RTCPS0CTL = RT0PSDIV_1;
-
-  /* Set the PS1 clock:
-   *  - RT0PS -- [/16] --> RT1PS
-   */
-  RTCPS1CTL = RT1SSEL_2 | RT1PSDIV_3;
-
-  /* NORMALLY: 2 MHz -- [/4] = 500 KHz -- [/16] --> 31,250 KHz
-  /* Enable interrupts. */
-  eint();
-}
-
+PROCESS(myTimer_process, "Timer Process");
+AUTOSTART_PROCESSES(&myTimer_process);
 /*---------------------------------------------------------------------------*/
-
-rtimer_clock_t
-rtimer_arch_now(void)
+PROCESS_THREAD(myTimer_process, ev, data)
 {
-  rtimer_clock_t t1, t2;
-  do {
-    t1 = RTCNT12;
-    t2 = RTCNT12;
+  static rtimer_clock_t t0;
+
+  PROCESS_BEGIN();
+
+  printf("I start the timer (1 s.)\n");
+  while(1) {
+    watchdog_periodic();
+    t0 = RTIMER_NOW();
+    while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + RTIMER_SECOND));
+    watchdog_periodic();
+    timeout_handler();
   }
-  while (t1 != t2);
-  return t1;
-}
 
+  PROCESS_END();
+}
 /*---------------------------------------------------------------------------*/
 
-/** Set the delay before the next Real-Timer interruption.
- *
- * \param t Delay before next interruption.
- */
-void
-rtimer_arch_schedule(rtimer_clock_t t)
-{
-  /* The events occur on a 16-bits counter overflow. */
-  RTCNT12 = (0xFFFF - t);
-}
-
-/*---------------------------------------------------------------------------*/
-
-/** @} */
 /** @} */

@@ -97,7 +97,7 @@ initXT1(void)
   /* MCLCK = XT1 , SMCLK = XT1 , ACLK = XT1 */
   UCSCTL4 = SELA__XT1CLK | SELS__XT1CLK | SELM__XT1CLK;
   /* Set Clock divider 4 -> Clock = 4MHz */
-  /* Set Clock divider 2 -> Clock = 2 MHz (ACLK = 2 MHz) */
+  /* Set Clock divider 8 -> Clock = 2 MHz (ACLK = 2 MHz) */
   UCSCTL5 |= DIVA__8 | DIVS__4 | DIVM__4;
 
   eint();

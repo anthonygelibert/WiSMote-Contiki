@@ -91,7 +91,7 @@ configure(int type, int c)
 
         /* For for about 11 ms before the SHT11 can be used. */
         t0 = RTIMER_NOW();
-        //while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + RTIMER_SECOND / 100));
+        while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + RTIMER_SECOND / 100));
       }
     } else {
       sht11_off();
