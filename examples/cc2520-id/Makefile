@@ -1,0 +1,7 @@
+CONTIKI_PROJECT = CC2520ID
+all: $(CONTIKI_PROJECT) 
+
+
+CLEAN += $(CONTIKI_PROJECT).$(TARGET) $(CONTIKI_PROJECT).hex
+CONTIKI = ../..
+include $(CONTIKI)/Makefile.include
