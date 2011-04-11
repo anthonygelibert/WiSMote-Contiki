@@ -56,7 +56,8 @@
 
 /* ----- Clock module ----- */
 #define CLOCK_CONF_SECOND 128UL
-typedef unsigned long clock_time_t;
+/* XXX_PTV Change to long */
+typedef unsigned short clock_time_t;
 
 /* ----- UIP module ----- */
 /* ---- General ---- */
