@@ -114,6 +114,10 @@
 #define CC2520_XOSC_MAX_STARTUP_TIME        300
 #define CC2520_SRXON_TO_RANDOM_READY_TIME   144
 
+// SREG definitions (BSET/BCLR unsupported)
+#define CC2520_CHIPID                  0x040
+#define CC2520_VERSION                 0x042
+
 #endif
 
 /** @} */
