@@ -46,6 +46,11 @@
 
 #include "contiki-conf.h"
 
+/** Get the high-part of a 16 bits variable */
+#define HI_UINT16(a) (((uint16_t)(a) >> 8) & 0xFF)
+/** Get the low-part of a 16 bits variable */
+#define LO_UINT16(a) ((uint16_t)(a) & 0xFF)
+
 /*******************************************************************************
 * @fn      CC2520_MEMWR
 *
