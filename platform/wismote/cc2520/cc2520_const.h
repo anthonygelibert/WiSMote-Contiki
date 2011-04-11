@@ -118,6 +118,56 @@
 #define CC2520_CHIPID                  0x040
 #define CC2520_VERSION                 0x042
 
+// INSTRUCTION
+#define CC2520_INS_SNOP                0x00
+#define CC2520_INS_IBUFLD              0x02
+#define CC2520_INS_SIBUFEX             0x03
+#define CC2520_INS_SSAMPLECCA          0x04
+#define CC2520_INS_SRES                0x0F
+#define CC2520_INS_MEMRD               0x10
+#define CC2520_INS_MEMWR               0x20
+#define CC2520_INS_RXBUF               0x30
+#define CC2520_INS_RXBUFCP             0x38
+#define CC2520_INS_RXBUFMOV            0x32
+#define CC2520_INS_TXBUF               0x3A
+#define CC2520_INS_TXBUFCP             0x3E
+#define CC2520_INS_RANDOM              0x3C
+#define CC2520_INS_SXOSCON             0x40
+#define CC2520_INS_STXCAL              0x41
+#define CC2520_INS_SRXON               0x42
+#define CC2520_INS_STXON               0x43
+#define CC2520_INS_STXONCCA            0x44
+#define CC2520_INS_SRFOFF              0x45
+#define CC2520_INS_SXOSCOFF            0x46
+#define CC2520_INS_SFLUSHRX            0x47
+#define CC2520_INS_SFLUSHTX            0x48
+#define CC2520_INS_SACK                0x49
+#define CC2520_INS_SACKPEND            0x4A
+#define CC2520_INS_SNACK               0x4B
+#define CC2520_INS_SRXMASKBITSET       0x4C
+#define CC2520_INS_SRXMASKBITCLR       0x4D
+#define CC2520_INS_RXMASKAND           0x4E
+#define CC2520_INS_RXMASKOR            0x4F
+#define CC2520_INS_MEMCP               0x50
+#define CC2520_INS_MEMCPR              0x52
+#define CC2520_INS_MEMXCP              0x54
+#define CC2520_INS_MEMXWR              0x56
+#define CC2520_INS_BCLR                0x58
+#define CC2520_INS_BSET                0x59
+#define CC2520_INS_CTR                 0x60
+#define CC2520_INS_CBCMAC              0x64
+#define CC2520_INS_UCBCMAC             0x66
+#define CC2520_INS_CCM                 0x68
+#define CC2520_INS_UCCM                0x6A
+#define CC2520_INS_ECB                 0x70
+#define CC2520_INS_ECBO                0x72
+#define CC2520_INS_ECBX                0x74
+#define CC2520_INS_ECBXO               0x76
+#define CC2520_INS_INC                 0x78
+#define CC2520_INS_ABORT               0x7F
+#define CC2520_INS_REGRD               0x80
+#define CC2520_INS_REGWR               0xC0
+
 #endif
 
 /** @} */
