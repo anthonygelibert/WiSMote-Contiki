@@ -56,8 +56,10 @@
 #include "clock-arch.h"
 
 #ifndef XT1_CONF_CLOCK
+/** Enable XT1 Clock by default */
 #define XT1_CLOCK 1
 #else
+/** Use the platform choice */
 #define XT1_CLOCK (XT1_CONF_CLOCK)
 #if !XT1_CLOCK
 #warning "Only the XT1 is initialized. Currently, we don't support other clocks (DCO,...)"
@@ -96,6 +98,7 @@ initXT1(void)
 
   /* MCLCK = XT1 , SMCLK = XT1 , ACLK = XT1 */
   UCSCTL4 = SELA__XT1CLK | SELS__XT1CLK | SELM__XT1CLK;
+  /* Set Clock divider 2 -> Clock = 8MHz */
   /* Set Clock divider 4 -> Clock = 4MHz */
   /* Set Clock divider 8 -> Clock = 2 MHz (ACLK = 2 MHz) */
   UCSCTL5 |= DIVA__8 | DIVS__4 | DIVM__4;

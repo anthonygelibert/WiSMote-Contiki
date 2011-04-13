@@ -62,19 +62,26 @@
 #include "uart0.h"
 
 #ifdef UART0_CONF_TX_WITH_INTERRUPT
+/** Size of the TX buffer size. */
 #define TX_WITH_INTERRUPT (UART0_CONF_TX_WITH_INTERRUPT)
 #else
+/** By default, UART0 doesn't use interrupt. */
 #define TX_WITH_INTERRUPT 0
 #endif /* UART0_CONF_TX_WITH_INTERRUPT */
 
 #if TX_WITH_INTERRUPT
 #ifdef UART0_CONF_TX_BUFSIZE
+/** Size of the TX buffer size. */
 #define TXBUFSIZE (UART0_CONF_TX_BUFSIZE)
 #else
+/** By default, TX buffer size is 64 bytes. */
 #define TXBUFSIZE 64
 #endif
+/** Indicate a transmitting. */
 static volatile uint8_t transmitting;
+/** TX buffer. */
 static struct ringbuf txbuf;
+/** Data of the TX buffer */
 static uint8_t txbuf_data[TXBUFSIZE];
 #endif /* TX_WITH_INTERRUPT */
 
@@ -179,7 +186,11 @@ uart0_writeb(const uint8_t c)
 uint8_t
 uart0_active(void)
 {
+#if UART0_CONF_TX_WITH_INTERRUPT
   return (UCA1STAT & UCBUSY) | transmitting;
+#else
+  return (UCA1STAT & UCBUSY);
+#endif
 }
 
 /*---------------------------------------------------------------------------*/
