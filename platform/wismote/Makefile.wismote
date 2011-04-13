@@ -1,10 +1,10 @@
 ### The parameters for our own target (our platform)
 # Code of the platform.
-FROM_CONTIKI = leds.c sensors.c sht11.c sht11-sensor.c
-ARCH = leds-arch.c clock-arch.c spi-arch.c uart-arch.c
-SENSORS = button-sensor.c parallax_pir-555-28027.c
-DIAG = diag.c diag-version.c diag-process.c diag-sensor.c
-NET = cc2520_util.c cc2520.c 
+FROM_CONTIKI += leds.c sensors.c sht11.c sht11-sensor.c
+ARCH += leds-arch.c clock-arch.c spi-arch.c uart-arch.c
+SENSORS += button-sensor.c parallax_pir-555-28027.c
+DIAG += diag.c diag-version.c diag-process.c diag-sensor.c
+NET += cc2520_util.c cc2520.c 
 
 # All the directories containing code for our platform (relative path from /platform/wismote).
 CONTIKI_TARGET_DIRS = . hard sensors diag cc2520
