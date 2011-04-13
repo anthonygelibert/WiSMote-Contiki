@@ -122,9 +122,9 @@ typedef unsigned short uip_stats_t;
 
 /* ----- SPI module ----- */
 /** SPI: Macro to wait for TX ready. */
-#define SPI_WAITFORTxREADY() while ((IFG2 & UCB0TXIFG) == 0)
+#define SPI_WAITFORTxREADY() while (!(IFG2 & UCB0TXIFG))
 /** SPI: Macro to wait for TX done. */
-#define SPI_WAITFOREOTx() while ((UCB0STAT & UCBUSY) != 0)
+#define SPI_WAITFOREOTx() while (UCB0STAT & UCBUSY)
 /** SPI: TX Buffer. */
 #define SPI_TXBUF UCB0TXBUF
 /** SPI: RX Buffer. */
