@@ -144,8 +144,8 @@ main(void)
   clock_init();
   /* Initialize the LEDs */
   leds_init();
-  leds_on(LEDS_RED);
 
+  leds_on(LEDS_RED);
   /* Initialize the UART */
   /* See MSP430x5xx/6xx Family User's Guide p. 588 */
   // 9600   -> uart0_init(416,UCBRS_6,UCBRF_0);   OK
@@ -153,12 +153,17 @@ main(void)
   // 57600  -> uart0_init(69, UCBRS_4,UCBRF_0);   OK
   // 115200 -> uart0_init(34,UCBRS_6,UCBRF_0);    NOK
   uart0_init(69, UCBRS_4,UCBRF_0);
+  leds_off(LEDS_RED);
+
+  leds_on(LEDS_BLUE);
+  /* Initialize the SPI bus */
+  spi_init();
+  leds_off(LEDS_BLUE);
 
 #if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
   slip_arch_init(0);
 #endif
   leds_on(LEDS_GREEN);
-  leds_off(LEDS_RED);
 
   /* Initialize the RTimer */
   rtimer_init();
