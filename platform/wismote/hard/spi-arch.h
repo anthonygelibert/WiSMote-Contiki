@@ -44,13 +44,19 @@
 #ifndef __SPI_ARCH_H__
 #define __SPI_ARCH_H__
 
+#define SPI_CS1N BIT0
 #define SPI_MOSI BIT1
 #define SPI_MISO BIT2
 #define SPI_CLK  BIT3
 
+/** SPI Port SEL. */
 #define SPI_Px_SEL P3SEL
+/** SPI Port DIR. */
 #define SPI_Px_DIR P3DIR
+/** SPI Port IN. */
 #define SPI_Px_IN  P3IN
+/** SPI Port OUT. */
+#define SPI_Px_OUT P3OUT
 
 #endif
 
