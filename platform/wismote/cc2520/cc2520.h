@@ -48,6 +48,38 @@
 
 PROCESS_NAME(cc2520_process);
 
+/**
+ * Initialize CC2520.
+ *
+ * @return
+ */
+int cc2520_init(void);
+
+/**
+ * Turn the radio on.
+ */
+int cc2520_on(void);
+
+
+/**
+ * Turn the radio off.
+ */
+int cc2520_off(void);
+
+/**
+ * Get the current CC2520 Chip Version.
+ *
+ * @return Chip Version.
+ */
+uint16_t cc2520_version(void);
+
+/**
+ * Get the current CC2520 Chip ID.
+ *
+ * @return Chip ID.
+ */
+uint16_t cc2520_chipid(void);
+
 #endif /* __CC2520_H__ */
 
 /** @} */

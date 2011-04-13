@@ -114,9 +114,92 @@
 #define CC2520_XOSC_MAX_STARTUP_TIME        300
 #define CC2520_SRXON_TO_RANDOM_READY_TIME   144
 
+// FREG definitions (BSET/BCLR supported)
+#define CC2520_FRMFILT0                0x000
+#define CC2520_FRMFILT1                0x001
+#define CC2520_SRCMATCH                0x002
+#define CC2520_SRCSHORTEN0             0x004
+#define CC2520_SRCSHORTEN1             0x005
+#define CC2520_SRCSHORTEN2             0x006
+#define CC2520_SRCEXTEN0               0x008
+#define CC2520_SRCEXTEN1               0x009
+#define CC2520_SRCEXTEN2               0x00A
+#define CC2520_FRMCTRL0                0x00C
+#define CC2520_FRMCTRL1                0x00D
+#define CC2520_RXENABLE0               0x00E
+#define CC2520_RXENABLE1               0x00F
+#define CC2520_EXCFLAG0                0x010
+#define CC2520_EXCFLAG1                0x011
+#define CC2520_EXCFLAG2                0x012
+#define CC2520_EXCMASKA0               0x014
+#define CC2520_EXCMASKA1               0x015
+#define CC2520_EXCMASKA2               0x016
+#define CC2520_EXCMASKB0               0x018
+#define CC2520_EXCMASKB1               0x019
+#define CC2520_EXCMASKB2               0x01A
+#define CC2520_EXCBINDX0               0x01C
+#define CC2520_EXCBINDX1               0x01D
+#define CC2520_EXCBINDY0               0x01E
+#define CC2520_EXCBINDY1               0x01F
+#define CC2520_GPIOCTRL0               0x020
+#define CC2520_GPIOCTRL1               0x021
+#define CC2520_GPIOCTRL2               0x022
+#define CC2520_GPIOCTRL3               0x023
+#define CC2520_GPIOCTRL4               0x024
+#define CC2520_GPIOCTRL5               0x025
+#define CC2520_GPIOPOLARITY            0x026
+#define CC2520_GPIOCTRL                0x028
+#define CC2520_DPUCON                  0x02A
+#define CC2520_DPUSTAT                 0x02C
+#define CC2520_FREQCTRL                0x02E
+#define CC2520_FREQTUNE                0x02F
+#define CC2520_TXPOWER                 0x030
+#define CC2520_TXCTRL                  0x031
+#define CC2520_FSMSTAT0                0x032
+#define CC2520_FSMSTAT1                0x033
+#define CC2520_FIFOPCTRL               0x034
+#define CC2520_FSMCTRL                 0x035
+#define CC2520_CCACTRL0                0x036
+#define CC2520_CCACTRL1                0x037
+#define CC2520_RSSI                    0x038
+#define CC2520_RSSISTAT                0x039
+#define CC2520_TXFIFO_BUF              0x03A
+#define CC2520_RXFIRST                 0x03C
+#define CC2520_RXFIFOCNT               0x03E
+#define CC2520_TXFIFOCNT               0x03F
+
 // SREG definitions (BSET/BCLR unsupported)
 #define CC2520_CHIPID                  0x040
 #define CC2520_VERSION                 0x042
+#define CC2520_EXTCLOCK                0x044
+#define CC2520_MDMCTRL0                0x046
+#define CC2520_MDMCTRL1                0x047
+#define CC2520_FREQEST                 0x048
+#define CC2520_RXCTRL                  0x04A
+#define CC2520_FSCTRL                  0x04C
+#define CC2520_FSCAL0                  0x04E
+#define CC2520_FSCAL1                  0x04F
+#define CC2520_FSCAL2                  0x050
+#define CC2520_FSCAL3                  0x051
+#define CC2520_AGCCTRL0                0x052
+#define CC2520_AGCCTRL1                0x053
+#define CC2520_AGCCTRL2                0x054
+#define CC2520_AGCCTRL3                0x055
+#define CC2520_ADCTEST0                0x056
+#define CC2520_ADCTEST1                0x057
+#define CC2520_ADCTEST2                0x058
+#define CC2520_MDMTEST0                0x05A
+#define CC2520_MDMTEST1                0x05B
+#define CC2520_DACTEST0                0x05C
+#define CC2520_DACTEST1                0x05D
+#define CC2520_ATEST                   0x05E
+#define CC2520_DACTEST2                0x05F
+#define CC2520_PTEST0                  0x060
+#define CC2520_PTEST1                  0x061
+#define CC2520_RESERVED                0x062
+#define CC2520_DPUBIST                 0x07A
+#define CC2520_ACTBIST                 0x07C
+#define CC2520_RAMBIST                 0x07E
 
 // INSTRUCTION
 #define CC2520_INS_SNOP                0x00
@@ -167,6 +250,11 @@
 #define CC2520_INS_ABORT               0x7F
 #define CC2520_INS_REGRD               0x80
 #define CC2520_INS_REGWR               0xC0
+
+// Local address definitions
+#define CC2520_RAM_EXTADDR             0x3EA
+#define CC2520_RAM_PANID               0x3F2
+#define CC2520_RAM_SHORTADDR           0x3F4
 
 #endif
 

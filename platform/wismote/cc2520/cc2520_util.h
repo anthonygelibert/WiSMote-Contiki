@@ -46,10 +46,14 @@
 
 #include "contiki-conf.h"
 
-/** Get the high-part of a 16 bits variable */
+/** Get the high 8 bits of a 16 bits variable */
 #define HI_UINT16(a) (((uint16_t)(a) >> 8) & 0xFF)
-/** Get the low-part of a 16 bits variable */
+/** Get the low 8 bits of a 16 bits variable */
 #define LO_UINT16(a) ((uint16_t)(a) & 0xFF)
+/** Get the high 16 bits of a 32 bits variable */
+#define HI_UINT32(a) ((uint16_t)(((uint32_t)(a)) >> 16))
+/** Get the low 16 bits of a 32 bits variable */
+#define LO_UINT32(a) ((uint16_t)((uint32_t)(a)))
 
 /*******************************************************************************
 * @fn      CC2520_MEMWR
@@ -191,6 +195,80 @@ uint16_t CC2520_REGRD16(uint8_t addr);
 * @return  uint32_t - result
 */
 uint32_t CC2520_REGRD24(uint8_t addr);
+
+/***********************************************************************************
+* @fn      CC2520_INS_WR_ARRAY
+*
+* @brief   Write array to CC2520
+*
+* @param   uint16_t  count -
+*          uint8_t  *pData -
+*
+* @return  none
+*/
+void CC2520_INS_WR_ARRAY(uint16_t count, uint8_t  *pData);
+
+/***********************************************************************************
+* @fn      CC2520_INS_RD_ARRAY
+*
+* @brief   Read array from CC2520
+*
+* @param   uint16_t  count -
+*          uint8_t  *pData -
+*
+* @return  none
+*/
+void CC2520_INS_RD_ARRAY(uint16_t count, uint8_t *pData);
+
+/*******************************************************************************
+* @fn      CC2520_REGWR
+*
+* @brief   Register write. Can only be started from addresses below 0x40
+*
+* @param  uint8_t addr - address
+*         uint8_t count - number of bytes
+*         uint8_t  *pValues - data buffer
+*
+* @return  uint8_t - status byte
+*/
+uint8_t CC2520_REGWR(uint8_t addr, uint8_t count, uint8_t  *pValues);
+
+/*******************************************************************************
+* @fn      CC2520_REGWR8
+*
+* @brief   Write one register byte
+*
+* @param  uint8_t addr - address
+*         uint8_t value
+*
+* @return  none
+*/
+void CC2520_REGWR8(uint8_t addr, uint8_t value);
+
+/*******************************************************************************
+* @fn      CC2520_REGWR16
+*
+* @brief   Write two register bytes
+*
+* @param  uint8_t addr - address
+*         uint16_t  value
+*
+* @return  none
+*/
+void CC2520_REGWR16(uint8_t addr, uint16_t  value);
+
+/*******************************************************************************
+* @fn      CC2520_REGWR24
+*
+* @brief   Write three register bytes
+*
+* @param  uint8_t addr
+*         uint32_t value
+*
+* @return  none
+*/
+void CC2520_REGWR24(uint8_t addr, uint32_t value);
+
 #endif
 
 /** @} */

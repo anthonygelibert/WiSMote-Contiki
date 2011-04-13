@@ -23,7 +23,7 @@
 							<targetPlatform binaryParser="org.eclipse.cdt.core.GNU_ELF" id="org.eclipse.cdt.build.core.prefbase.toolchain.1821812639.1461287301" name=""/>
 							<builder id="org.eclipse.cdt.build.core.settings.default.builder.1412182181" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="-1" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.libs.935013540" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs">
-								<option id="org.eclipse.cdt.build.core.settings.holder.libpaths.1159150706" superClass="org.eclipse.cdt.build.core.settings.holder.libpaths" valueType="libPaths">
+								<option id="org.eclipse.cdt.build.core.settings.holder.libpaths.1159150706" name="Library Paths" superClass="org.eclipse.cdt.build.core.settings.holder.libpaths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/lib"/>
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/msp430/lib"/>
 								</option>
@@ -35,7 +35,7 @@
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1106948906" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.651742425" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
-								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1468244132" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
+								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1468244132" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/include"/>
 									<listOptionValue builtIn="false" value="/opt/msp430-gcc-4.4.5/msp430/include"/>
 								</option>
