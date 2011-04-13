@@ -41,6 +41,9 @@
  * SUCH DAMAGE.
  */
 
+/* From MSP430-GCC */
+#include <signal.h>
+
 /* From CONTIKI */
 #include "spi.h"
 
@@ -50,6 +53,9 @@
 
 unsigned char spi_busy = 0;
 
+/**
+ * Initialize SPI bus.
+ */
 void
 spi_init(void)
 {
@@ -60,13 +66,14 @@ spi_init(void)
   UCB0CTL0 |=  UCCKPH | UCSYNC | UCMSB | UCMST; // 3-pin, 8-bit SPI master, rising edge capture
 
   /* SMCLK / (UCxxBR0 + UCxxBR1 x 256)  */
-  UCB0BRW = 0x08;
+  UCB0BRW = 0x04;
 
-  // Set MOSI and SCLK as OUT and MISO as IN ports
-  SPI_Px_SEL |= (SPI_MOSI | SPI_MISO | SPI_CLK); // Port3 = SPI peripheral
-  SPI_Px_DIR |= (SPI_MOSI | SPI_CLK);            // MOSI and SCLK as Output
-  SPI_Px_DIR &= ~SPI_MISO;                       // Don't forget to configure MISO as Input
-  UCB0IE |= UCTXIE | UCRXIE;                     // Enable interrupt for RX and TX SPI buffer
+  /* Set MOSI and SCLK as OUT and MISO as IN ports */
+  SPI_Px_SEL |= (SPI_MOSI | SPI_MISO | SPI_CLK);
+  SPI_Px_DIR |= (SPI_MOSI | SPI_CLK);
+  SPI_Px_DIR &= ~SPI_MISO;
+
+  /* We don't use SPI IT: UCB0IE |= UCTXIE | UCRXIE; */
 
   /* === Initialize USCI state machine === */
   UCB0CTL1 &= ~UCSWRST;
