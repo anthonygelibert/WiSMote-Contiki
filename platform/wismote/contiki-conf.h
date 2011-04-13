@@ -154,6 +154,35 @@ typedef unsigned short uip_stats_t;
 /** Diagnostic use a JSON output. */
 #define DIAGNOSTIC_CONF_OUTPUT JSON_OUTPUT
 
+#ifndef CONTIKI_NO_NET
+/* ----- Netstatck ----- */
+/* Network configuration */
+#define NETSTACK_CONF_MAC     csma_driver
+#define NETSTACK_CONF_RDC     contikimac_driver
+#define NETSTACK_CONF_RADIO   cc2520_driver
+#define NETSTACK_CONF_FRAMER  framer_802154
+
+#if WITH_UIP6
+/* Network setup for IPv6 */
+#define NETSTACK_CONF_NETWORK sicslowpan_driver
+#define CXMAC_CONF_ANNOUNCEMENTS         0
+#define XMAC_CONF_ANNOUNCEMENTS          0
+#define QUEUEBUF_CONF_NUM                8
+#else /* WITH_UIP6 */
+/* Network setup for non-IPv6 (rime). */
+#define NETSTACK_CONF_NETWORK rime_driver
+#define COLLECT_CONF_ANNOUNCEMENTS       1
+#define CXMAC_CONF_ANNOUNCEMENTS         0
+#define XMAC_CONF_ANNOUNCEMENTS          0
+#define CONTIKIMAC_CONF_ANNOUNCEMENTS    0
+#define CONTIKIMAC_CONF_COMPOWER         1
+#define XMAC_CONF_COMPOWER               1
+#define CXMAC_CONF_COMPOWER              1
+#define COLLECT_NEIGHBOR_CONF_MAX_COLLECT_NEIGHBORS     32
+#define QUEUEBUF_CONF_NUM                16
+#endif /* WITH_UIP6 */
+#endif /* CONTIKI_NO_NET */
+
 /* ----- Includes ----- */
 #include "types.h"
 #include <msp430f5437.h>
