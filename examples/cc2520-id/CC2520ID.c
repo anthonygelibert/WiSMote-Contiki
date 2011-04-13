@@ -46,6 +46,7 @@
 
 /* From CONTIKI */
 #include "contiki.h"
+#include "cc2520.h"
 
 /*---------------------------------------------------------------------------*/
 PROCESS(cc2520Version_process, "CC2520 Version Process");
@@ -54,10 +55,10 @@ AUTOSTART_PROCESSES(&cc2520Version_process);
 PROCESS_THREAD(cc2520Version_process, ev, data)
 {
   PROCESS_BEGIN();
-  printf("Hello World !!!\n");
-  printf("---------------\n");
-  printf("\nChip ID:\t\t: %d\n",cc2520_chipid());
-  printf("\nChip Version:\t\t: %d\n",cc2520_version());
+  cc2520_init();
+  printf("Hello World !!!\n---------------\nChip ID: %d\nChip Version: %d\n",
+      cc2520_chipid(),
+      cc2520_version());
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
