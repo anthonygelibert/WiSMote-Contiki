@@ -153,6 +153,8 @@ main(void)
   // 57600  -> uart0_init(69, UCBRS_4,UCBRF_0);   OK
   // 115200 -> uart0_init(34,UCBRS_6,UCBRF_0);    NOK
   uart0_init(69, UCBRS_4,UCBRF_0);
+  uart1_init(69, UCBRS_4,UCBRF_0);
+
   leds_off(LEDS_RED);
 
   leds_on(LEDS_BLUE);
@@ -175,7 +177,11 @@ main(void)
   ctimer_init();
   /* Initialize the Serial Line module */
 #if CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6)
+#if !SL_USE_UART1
   uart0_set_input(serial_line_input_byte);
+#else
+  uart1_set_input(serial_line_input_byte);
+#endif
   serial_line_init();
 #endif
 
