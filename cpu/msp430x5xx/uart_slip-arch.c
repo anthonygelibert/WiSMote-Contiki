@@ -51,6 +51,7 @@
 /* From MSP430x5xx */
 #include "msp430.h"
 #include "uart0.h"
+#include "uart1.h"
 
 /*---------------------------------------------------------------------------*/
 
@@ -62,7 +63,12 @@
 void
 slip_arch_writeb(unsigned char c)
 {
+#if !SLIP_USE_UART1
   uart0_writeb(c);
+#else
+  uart1_writeb(c);
+#endif
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -75,8 +81,13 @@ slip_arch_writeb(unsigned char c)
 void
 slip_arch_init(unsigned long ubr)
 {
+#if !SLIP_USE_UART1
   uart0_set_input(slip_input_byte);
+#else
+  uart1_set_input(slip_input_byte);
+#endif
 }
+
 
 /*---------------------------------------------------------------------------*/
 

@@ -1,15 +1,23 @@
 /**
- * \addtogroup wismote
+ * \addtogroup msp430x5xx
+ * @{
+ */
+
+/**
+ * \defgroup uart UART
+ *
+ * This is the module for the UART.
+ *
  * @{
  */
 
 /**
  * \file
- *         UARTs platform-dependent code.
+ *         UART0 routines.
  * \author
- *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
+ *         Fabien Rey <fabien-rey@wanadoo.fr>
  * \date
- *         March 21, 2011
+ *         April 15, 2011
  */
 
 /*
@@ -41,31 +49,46 @@
  * SUCH DAMAGE.
  */
 
-/* From platform */
-#include <contiki-conf.h>
+#ifndef __UART0_H__
+#define __UART0_H__
 
-/*---------------------------------------------------------------------------*/
+/* From MSP430-GCC */
+#include <stdint.h>
+
+/** Initialize the UART0.
+ *
+ * \param br The UCA1BRW value.
+ * \param brs The UCBRSx value.
+ * \param brf The UCBRFx value.
+ */
+void
+uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf);
+
+/** Write a byte on the UART0.
+ *
+ * \param c The byte to send.
+ * \return c
+ */
+int
+uart0_writeb(const uint8_t c);
+
+/** Test the activity of UART0
+ *
+ * \return Result of the test
+ */
+uint8_t
+uart0_active(void);
 
 /**
- * \brief Initialize the port for the UART0.
+ * Set the UART0 RX handler.
  *
- * In Wismote, UART0 is mini-USB.
+ * @param input The handler
  */
-void uart0_arch_init(void)
-{
-  P5SEL = 0xC0;
-}
+void
+uart0_set_input(int
+(* input)(const uint8_t c));
 
-/**
- * \brief Initialize the port for the UART1.
- *
- * In Wismote, UART1 is external pins.
- */
-void uart1_arch_init(void)
-{
-  P3SEL = 0x30;
-}
+#endif /* __UART0_H__ */
 
-/*---------------------------------------------------------------------------*/
-
+/** @} */
 /** @} */

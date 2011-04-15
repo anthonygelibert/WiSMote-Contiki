@@ -145,6 +145,14 @@ typedef unsigned short uip_stats_t;
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 /** UART0: size of the TX buffer. */
 #define UART0_CONF_TX_BUFSIZE      128
+/** UART1: SLIP doesn't use UART1 */
+#define SLIP_USE_UART1 1
+/** UART1: uses interrupt for TX. */
+#define UART1_CONF_TX_WITH_INTERRUPT 1
+/** UART1: size of the TX buffer. */
+#define UART1_CONF_TX_BUFSIZE      128
+
+
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line receive buffer. */
