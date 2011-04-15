@@ -209,7 +209,7 @@ uart0_set_input(int
 
 /*---------------------------------------------------------------------------*/
 
-#if !WITH_UIP
+#if !WITH_UIP && !STDIO_USE_UART1
 /**
  * \brief Writes character to the current position in the standard output.
  *

@@ -162,17 +162,19 @@ typedef unsigned short uip_stats_t;
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 /** UART0: size of the TX buffer. */
 #define UART0_CONF_TX_BUFSIZE      128
-
-/** UART1: SLIP doesn't use UART1 */
+/** UART1: SLIP doesn't use the MAIN_UART */
 #define SLIP_USE_UART1 (MAIN_UART)
 /** UART1: uses interrupt for TX. */
 #define UART1_CONF_TX_WITH_INTERRUPT 1
 /** UART1: size of the TX buffer. */
 #define UART1_CONF_TX_BUFSIZE      128
+/** UART1: "stdio.h" uses the MAIN_UART */
+#define STDIO_USE_UART1 (MAIN_UART)
+
 /* ----- Serial Line module ----- */
-/** Serial Line module doesn't use UART1 */
+/** Serial Line module uses the MAIN_UART */
 #define SL_USE_UART1 (MAIN_UART)
-/** Buffer for the serial line receive buffer. */
+/** Buffer for the serial line reception buffer. */
 #define SERIAL_LINE_CONF_BUFSIZE 64
 
 
