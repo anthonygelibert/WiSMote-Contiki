@@ -140,43 +140,27 @@ typedef unsigned short uip_stats_t;
 /** IOHANDLERS: disable debug. */
 #define IOHANDLERS_CONF_DEBUG 0
 
-
-/* If MAIN_UART == 1, the main UART is UART1.
- * If MAIN_UART == 0, the main UART is UART0.
- * Else, it's an error
- */
-#define MAIN_UART 0
-
-/* Just a dumb check. */
-#ifndef MAIN_UART
-#define MAIN_UART 0
-#endif
-
-/* And another... */
-#if MAIN_UART!=0 && MAIN_UART!=1
-#error "MAIN_UART == 1 or MAIN_UART == 0"
-#endif
+/* ----- UART choice ----- */
+/** UART1: SLIP doesn't use the MAIN_UART */
+#define SLIP_USE_UART1  0
+/** UART1: "stdio.h" uses the MAIN_UART */
+#define STDIO_USE_UART1 0
+/** Serial Line module uses the MAIN_UART */
+#define SL_USE_UART1    0
 
 /* ----- UART module ----- */
 /** UART0: uses interrupt for TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 /** UART0: size of the TX buffer. */
 #define UART0_CONF_TX_BUFSIZE      128
-/** UART1: SLIP doesn't use the MAIN_UART */
-#define SLIP_USE_UART1 (MAIN_UART)
 /** UART1: uses interrupt for TX. */
 #define UART1_CONF_TX_WITH_INTERRUPT 1
 /** UART1: size of the TX buffer. */
 #define UART1_CONF_TX_BUFSIZE      128
-/** UART1: "stdio.h" uses the MAIN_UART */
-#define STDIO_USE_UART1 (MAIN_UART)
 
 /* ----- Serial Line module ----- */
-/** Serial Line module uses the MAIN_UART */
-#define SL_USE_UART1 (MAIN_UART)
 /** Buffer for the serial line reception buffer. */
 #define SERIAL_LINE_CONF_BUFSIZE 64
-
 
 /* ----- Diagnostic ----- */
 /** Diagnostic use a JSON output. */
