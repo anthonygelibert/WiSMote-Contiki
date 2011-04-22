@@ -62,12 +62,6 @@
 #define PRINTLLADDR(addr)
 #endif
 
-/** NOT_YET_DOCUMENTED_PTV */
-#define UDP_NB 4
-
-/** NOT_YET_DOCUMENTED_PTV */
-#define UDP_MAX_DATA_LEN 200
-
 static uip_ipaddr_t ownaddr;
 static uip_ipaddr_t destaddr;
 static struct uip_udp_conn *udpconn_in_discovery;

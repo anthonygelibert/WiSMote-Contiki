@@ -15,8 +15,6 @@
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
  * \date
  *         March 21, 2011
- *
- * \todo   XXX_PTV Timer -> RTC
  */
 
 /*
