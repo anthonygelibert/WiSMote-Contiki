@@ -7,7 +7,7 @@ endif
 CONTIKI_CPU=$(CONTIKI)/cpu/msp430x5xx
 ## Define the source files we have in the MSP430 port
 
-CONTIKI_CPU_DIRS = .
+CONTIKI_CPU_DIRS = . diag
 MSP430     =  msp430.c iohandlers.c uart0.c uart1.c clock.c watchdog.c mtarch.c rtimer-arch.c spl.c
 UIPDRIVERS =  uart_slip-arch.c slip.c
 ELFLOADER  =
