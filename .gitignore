@@ -1,4 +1,4 @@
-syntax: regexp
+# syntax: regexp
 ^examples/.*/obj_.*$
 ^examples/.*/.*\.a$
 ^examples/.*/.*\.map$
