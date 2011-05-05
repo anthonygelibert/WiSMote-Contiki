@@ -49,8 +49,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef __UART0_H__
-#define __UART0_H__
+#ifndef __UART1_H__
+#define __UART1_H__
 
 /* From MSP430-GCC */
 #include <stdint.h>
@@ -62,7 +62,7 @@
  * \param brf The UCBRFx value.
  */
 void
-uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf);
+uart1_init(const uint16_t br, const uint8_t brs, const uint8_t brf);
 
 /** Write a byte on the UART0.
  *
@@ -70,14 +70,14 @@ uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf);
  * \return c
  */
 int
-uart0_writeb(const uint8_t c);
+uart1_writeb(const uint8_t c);
 
 /** Test the activity of UART0
  *
  * \return Result of the test
  */
 uint8_t
-uart0_active(void);
+uart1_active(void);
 
 /**
  * Set the UART0 RX handler.
@@ -85,7 +85,7 @@ uart0_active(void);
  * @param input The handler
  */
 void
-uart0_set_input(int
+uart1_set_input(int
 (* input)(const uint8_t c));
 
 #endif /* __UART0_H__ */
