@@ -256,7 +256,7 @@ main(void)
     /* Idle processing */
     int s = splhigh(); /* Disable interrupts. */
     /* uart1_active is for avoiding LPM3 when still sending or receiving */
-    if (process_nevents() != 0 || uart0_active()) {
+    if (process_nevents() != 0 || uart0_active() || uart1_active()) {
       /* Re-enable interrupts. */
       splx(s);
     } else {
