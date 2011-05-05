@@ -86,6 +86,7 @@ initXT1(void)
   UCSCTL6 &= ~XT1OFF;
   /* Max drive strength, adjust according to crystal frequency. LFXT1 HF mode */
   UCSCTL6 |= XT1DRIVE_2 | XTS | XT2OFF;
+  UCSCTL6 &= ~XT1DRIVE_1;
 
   /* Loop while oscillator fault flag. */
   do {
