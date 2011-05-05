@@ -1,14 +1,15 @@
 # syntax: regexp
-^examples/.*/obj_.*$
-^examples/.*/.*\.a$
-^examples/.*/.*\.map$
-^examples/.*/.*\.wismote$
-^examples/.*/.*\.hex$
-^.*\.DS\_Store$
-^tools/.*/tunslip$
-^tools/.*/tunslip6$
-^.*/.*\.class$
-^.*/.*\.ipr$
-^.*/.*\.iml$
-^.*/.*\.iws$
+syntax:glob
+*obj_*
+*.a
+*.map
+*.wismote
+*.hex
+.DS_Store
+*tunslip
+*tunslip6
+*.class
+*.ipr
+*.iml
+*.iws
 
