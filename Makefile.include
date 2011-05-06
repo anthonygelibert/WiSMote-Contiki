@@ -149,9 +149,8 @@ endif
 ### See http://make.paulandlesley.org/autodep.html#advanced
 
 define FINALIZE_DEPENDENCY
-cp $(@:.o=.d) $(@:.o=.$$$$); \
-sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-    -e '/^$$/ d' -e 's/$$/ :/' < $(@:.o=.$$$$) >> $(@:.o=.d); \
+cp $(@:.o=.d) $(@:.o=.$$$$) && \
+sed -e "s/#.*//" -e "s/^[^:]*: *//" -e "s/ *\\$$//"  -e "/^$$/ d" -e "s/$$/ :/" < $(@:.o=.$$$$) >> $(@:.o=.d) && \
 rm -f $(@:.o=.$$$$)
 endef
 
