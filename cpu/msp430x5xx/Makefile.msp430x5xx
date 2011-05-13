@@ -19,19 +19,14 @@ endif
 
 ### COMPILER DEFINITIONS
 
-## Compiler
-ifndef MSPGCCPATH
-    $(error MSPGCCPATH not defined! You must specify where msp430-gcc resides!)
-endif
-
-CC       = $(MSPGCCPATH)/msp430-gcc
-LD       = $(MSPGCCPATH)/msp430-gcc
-AS       = $(MSPGCCPATH)/msp430-as
-AR       = $(MSPGCCPATH)/msp430-ar
-NM       = $(MSPGCCPATH)/msp430-nm
-OBJCOPY  = $(MSPGCCPATH)/msp430-objcopy
-STRIP    = $(MSPGCCPATH)/msp430-strip
-BSL      = $(MSPGCCPATH)/msp430-bsl
+CC       = $(MSPGCCPATH)msp430-gcc
+LD       = $(MSPGCCPATH)msp430-gcc
+AS       = $(MSPGCCPATH)msp430-as
+AR       = $(MSPGCCPATH)msp430-ar
+NM       = $(MSPGCCPATH)msp430-nm
+OBJCOPY  = $(MSPGCCPATH)msp430-objcopy
+STRIP    = $(MSPGCCPATH)msp430-strip
+BSL      = $(MSPGCCPATH)msp430-bsl
 
 ## Flags
 ifndef MCU
