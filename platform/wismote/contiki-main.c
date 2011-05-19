@@ -55,6 +55,8 @@
 
 /* From MSP430x5xx */
 #include "uart0.h"
+#include "uart1.h"
+#include "spi.h"
 #include "spl.h"
 #include "msp430.h"
 
