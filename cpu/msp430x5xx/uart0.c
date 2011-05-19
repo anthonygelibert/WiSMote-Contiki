@@ -61,6 +61,13 @@
 #include "msp430.h"
 #include "uart0.h"
 
+
+#ifdef UART0_CONF_CUSTOM_INIT
+#define UART0_CUSTOM_INIT (UART0_CONF_CUSTOM_INIT)
+#else
+#define UART0_CUSTOM_INIT 0
+#endif
+
 #ifdef UART0_CONF_TX_WITH_INTERRUPT
 /** Size of the TX buffer size. */
 #define TX_WITH_INTERRUPT (UART0_CONF_TX_WITH_INTERRUPT)
@@ -97,6 +104,12 @@ static int
 extern void
 uart0_arch_init();
 
+#if UART0_CUSTOM_INIT
+/** UART0 application-dependent code. */
+extern void
+uart0_custom_init();
+#endif
+
 /*---------------------------------------------------------------------------*/
 
 /**
@@ -114,12 +127,17 @@ uart0_init(const uint16_t br, const uint8_t brs, const uint8_t brf)
   /* -- Put state machine in reset -- */
   UCA1CTL1 |= UCSWRST;
 
+#if UART0_CUSTOM_INIT
+  uart0_custom_init();
+#else
   /* Choose SMCLK */
   UCA1CTL1 |= UCSSEL__SMCLK;
   /* Set baudrate */
   UCA1BRW = br;
   /* Modulation */
   UCA1MCTL |= brs | brf;
+#endif
+
   /* Clear pending flags. */
   UCA1IFG &= ~UCRXIFG;
   UCA1IFG &= ~UCTXIFG;
