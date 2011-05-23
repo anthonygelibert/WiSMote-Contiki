@@ -169,6 +169,8 @@ typedef unsigned short uip_stats_t;
 /* ----- Includes ----- */
 #include "types.h"
 #include <msp430f5437.h>
+#include "ds2411-arch.h"
+#include "spl.h"
 
 #endif /* __CONTIKI_CONF_H__ */
 

@@ -49,9 +49,10 @@
 #include "contiki.h"
 #include "dev/leds.h"
 #include "dev/watchdog.h"
-#include "lib/sensors.h"
 #include "dev/button-sensor.h"
 #include "dev/sht11-sensor.h"
+#include "dev/ds2411.h"
+#include "lib/sensors.h"
 
 /* From MSP430x5xx */
 #include "uart0.h"
@@ -156,10 +157,15 @@ main(void)
   // 115200 -> uart0_init(34,UCBRS_6,UCBRF_0);    NOK
   uart0_init(69, UCBRS_4,UCBRF_0);
   uart1_init(69, UCBRS_4,UCBRF_0);
-
   leds_off(LEDS_RED);
 
   leds_on(LEDS_BLUE);
+  /* Initialize the DS2411 */
+  ds2411_init();
+  printf("I'm %X:%X:%X:%X:%X:%X:%X:%X\n",ds2411_id[0],ds2411_id[1],
+                                         ds2411_id[2],ds2411_id[3],
+                                         ds2411_id[4],ds2411_id[5],
+                                         ds2411_id[6],ds2411_id[7]);
   /* Initialize the SPI bus */
   spi_init();
   leds_off(LEDS_BLUE);
