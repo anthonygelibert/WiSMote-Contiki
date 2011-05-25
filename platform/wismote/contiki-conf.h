@@ -63,7 +63,7 @@ typedef unsigned short clock_time_t;
 /* ---- General ---- */
 typedef unsigned short uip_stats_t;
 /** Globally enable logging. */
-#define PLATFORM_LOGGING           1
+#define PLATFORM_LOGGING           0
 #if PLATFORM_LOGGING
 /** Enable UIP logging. */
 #define UIP_CONF_LOGGING           1
@@ -83,8 +83,6 @@ typedef unsigned short uip_stats_t;
 #define UIP_CONF_PINGADDRCONF      0
 /** Disable IP packet reassembly. */
 #define UIP_CONF_REASSEMBLY        0
-/** Size of the uIP buffer. */
-#define UIP_CONF_BUFFER_SIZE    1514
 /* ---- UDP ---- */
 /** Enable UDP compilation. */
 #define UIP_CONF_UDP               1
