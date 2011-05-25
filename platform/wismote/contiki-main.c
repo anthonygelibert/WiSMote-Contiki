@@ -97,12 +97,14 @@ static struct uip_fw_netif slipif =
 
 SENSORS(&PIR_555_28027_sensor, &button_sensor, &sht11_sensor);
 
-/** Doesn't display the list of auto-processes before executing them. */
+/** Don't display the list of auto-processes before executing them. */
 #define DEBUG_PROCESS 0
-/** Doesn't display the list of sensors before starting them. */
+/** Don't display the list of sensors before starting them. */
 #define DEBUG_SENSORS 0
-/** Enable the diagnostic port. */
-#define DEBUG_DIAGNOSTIC 1
+/** Don't display the diagnostic port. */
+#define DEBUG_DIAGNOSTIC 0
+/** Display the DS2411 address. */
+#define DEBUG_DS2411 1
 
 #if DEBUG_PROCESS
 /*---------------------------------------------------------------------------*/
@@ -162,10 +164,14 @@ main(void)
   leds_on(LEDS_BLUE);
   /* Initialize the DS2411 */
   ds2411_init();
-  printf("I'm %X:%X:%X:%X:%X:%X:%X:%X\n",ds2411_id[0],ds2411_id[1],
-                                         ds2411_id[2],ds2411_id[3],
-                                         ds2411_id[4],ds2411_id[5],
-                                         ds2411_id[6],ds2411_id[7]);
+  ds2411_id[0] = 0x00;
+  ds2411_id[1] = 0x12;
+  ds2411_id[2] = 0x75;
+#if DEBUG_DS2411
+  printf("I'm %02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X\n",
+         ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
+         ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]);
+#endif
   /* Initialize the SPI bus */
   spi_init();
   leds_off(LEDS_BLUE);
@@ -239,12 +245,16 @@ main(void)
   print_sensors();
 #endif
 
-#if DEBUG_DIAGNOSTIC && (WITH_UIP || WITH_UIP6)
+#if !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
   process_start(&diagnostic_process, NULL);
+#endif
+
+#if DEBUG_DIAGNOSTIC && !CONTIKI_NO_NET && (WITH_UIP || WITH_UIP6)
   printf("Diagnostic :\n - local port: 7890\n - remote port: 7891\n");
-#else
+#elif DEBUG_DIAGNOSTIC && (CONTIKI_NO_NET || (!WITH_UIP && !WITH_UIP6))
   printf("No diagnostic.\n");
 #endif
+
 
   /* Start the processes */
 #if DEBUG_PROCESS

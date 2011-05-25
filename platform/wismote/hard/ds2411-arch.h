@@ -49,14 +49,17 @@
 
 /** Initialize the port 1. */
 #define PIN_INIT() {\
-  P1DIR &= ~PIN; /* p2.4 in, resistor pull high */ \
-  P1OUT &= ~PIN; /* p2.4 == 0 but still input */ \
+  P1REN |= PIN;  /* Enable internal pull-up */ \
+  P1DIR &= ~PIN; /* Input */ \
 }
 
 /** Set 1-Wire to low. */
-#define OUTP_0() (P1DIR |=  PIN) /* output and p2.4 == 0 from above */
+#define OUTP_0() P1DIR |=  PIN;\
+                 P1OUT &= ~PIN;
 /** Set 1-wire to high. */
-#define OUTP_1() (P1DIR &= ~PIN) /* p2.4 in, external resistor pull high */
+#define OUTP_1() P1DIR |= PIN;\
+                 P1OUT |= PIN;\
+                 P1DIR &= ~PIN;
 
 /** Read one bit. */
 #define INP()    (P1IN & PIN)

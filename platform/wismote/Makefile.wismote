@@ -23,7 +23,7 @@ endif
 # Path to MSPGCC
 #MSPGCCPATH?=/opt/msp430-gcc-4.4.5/bin/
 # Enable the debug flags (see cpu/msp430f5x/Makefile.msp430f5x)
-#DEBUG_FLAGS=1
+DEBUG_FLAGS=1
 # Enable SMALL mode
 SMALL=1
 # MCU of our platform
