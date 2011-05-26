@@ -103,7 +103,7 @@ rtimer_arch_init(void)
   RTCPS1CTL = RT1SSEL_2 | RT1PSDIV_3;
 
   /* NORMALLY: 2 MHz -- [/4] = 500 KHz -- [/16] --> 31,250 KHz
-  /* Enable interrupts. */
+   * Enable interrupts. */
   eint();
 }
 
