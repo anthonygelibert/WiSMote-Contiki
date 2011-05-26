@@ -151,10 +151,14 @@ typedef unsigned short uip_stats_t;
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 /** UART0: size of the TX buffer. */
 #define UART0_CONF_TX_BUFSIZE      128
+/** UART0: custom setup. */
+#define UART0_CONF_CUSTOM_INIT       0
 /** UART1: uses interrupt for TX. */
 #define UART1_CONF_TX_WITH_INTERRUPT 1
 /** UART1: size of the TX buffer. */
 #define UART1_CONF_TX_BUFSIZE      128
+/** UART1: custom setup. */
+#define UART1_CONF_CUSTOM_INIT       0
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line reception buffer. */
