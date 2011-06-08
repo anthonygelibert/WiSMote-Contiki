@@ -1,0 +1,9 @@
+To use this example, you must replace the line:
+
+SENSORS(...); 
+
+where "..." matches the current list of sensors, by :
+
+#include "multsht15-sensors.h"
+SENSORS(..., &upper_sensor, &lower_sensor);
+ 

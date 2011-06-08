@@ -5,10 +5,9 @@
 
 /**
  * \file
- *         Parallax PIR sensor with IT example.
+ *         Multiple SHT15 Sensor example.
  * \author
  *         Anthony Gelibert <anthony.gelibert@lcis.grenoble-inp.fr>
- *         Fabien Rey <fabien-rey@wanadoo.fr>
  * \date
  *         March 21, 2011
  */
@@ -41,47 +40,80 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#include "contiki.h"
-#include "iohandlers.h"
-#include "leds.h"
 
+#include <stdint.h>
 #include <stdio.h>
 
-/*---------------------------------------------------------------------------*/
+#include "contiki.h"
+#include "lib/sensors.h"
+#include "iohandlers.h"
 
-static void
-myHandler(void)
+#include "multsht15-sensors.h"
+#include "sensors/sht1x-sensor.h"
+
+#define INTERVAL (CLOCK_CONF_SECOND * 5)
+
+static void printSensor(const struct sensors_sensor sensor)
 {
-  leds_toggle(LEDS_RED);
+  static unsigned int rh;
+  static unsigned int tmp;
+  static unsigned int pwr;
+
+  /* Enable the sensor. */
+  SENSORS_ACTIVATE(sensor);
+  /* Read the temperature. */
+  tmp = sensor.value(SHT1X_SENSOR_TEMP);
+  if (tmp == -1)
+  {
+    printf("TMP: N/A\n");
+  }
+  else
+  {
+    printf("TMP: %d\n", tmp);
+  }
+
+  /* Read the humidity */
+  rh = sensor.value(SHT1X_SENSOR_HUMIDITY);
+  if (rh == -1)
+  {
+    printf("HR:  N/A\n");
+  }
+  else
+  {
+    printf("HR:  %d\n", rh);
+  }
+  /* Check the battery warning */
+
+  pwr = sensor.value(SHT1X_SENSOR_BATTERY_INDICATOR);
+  if (pwr == -1)
+  {
+      printf("PWR: N/A\n");
+  }
+  else
+  {
+      printf("PWR: %d\n", pwr);
+  }
+  /* Disable the sensor */
+  SENSORS_DEACTIVATE(sensor);
 }
 
 /*---------------------------------------------------------------------------*/
-
-HWCONF_PIN(BUTTON, 1, 2)
-HWCONF_IRQ(BUTTON, 1, 2, myHandler)
-
+PROCESS(multsht15_process, "SHT15 process");
+AUTOSTART_PROCESSES(&multsht15_process);
 /*---------------------------------------------------------------------------*/
-PROCESS(parallaxPIRIT_process, "Parallax PIR IT process");
-AUTOSTART_PROCESSES(&parallaxPIRIT_process);
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(parallaxPIRIT_process, ev, data)
+PROCESS_THREAD(multsht15_process, ev, data)
 {
+  static struct etimer et;
+
   PROCESS_BEGIN();
-
-  leds_off(LEDS_RED);
-  leds_off(LEDS_GREEN);
-
-  BUTTON_RESISTOR_ENABLE();
-  BUTTON_CLEAR();
-  BUTTON_IRQ_EDGE_SELECTU();
-  BUTTON_SELECT();
-  BUTTON_MAKE_INPUT();
-  BUTTON_SET_HANDLER();
-  BUTTON_ENABLE_IRQ();
 
   while (1)
   {
-    PROCESS_PAUSE();
+    /* Check temperature every INTERVAL */
+    etimer_set(&et, INTERVAL);
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+    printSensor(upper_sensor);
+    printSensor(lower_sensor);
   }
   PROCESS_END();
 }

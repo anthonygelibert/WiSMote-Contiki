@@ -1,0 +1,8 @@
+To use this example, you must replace the line:
+
+SENSORS(...); 
+
+where "..." matches the current list of sensors, by :
+
+SENSORS(&PIR_555_28027_sensor, ...);
+ 
