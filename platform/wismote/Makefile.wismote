@@ -1,6 +1,6 @@
 ### The parameters for our own target (our platform)
 # Code of the platform.
-FROM_CONTIKI += leds.c sensors.c sht11.c sht11-sensor.c ds2411.c
+FROM_CONTIKI += leds.c sensors.c ds2411.c
 ARCH += leds-arch.c clock-arch.c spi-arch.c uart-arch.c
 SENSORS += button-sensor.c parallax_pir-555-28027.c
 DIAG += diag.c diag-version.c diag-process.c diag-sensor.c
