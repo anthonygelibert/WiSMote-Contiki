@@ -46,8 +46,17 @@
 #error Change SERIAL_LINE_CONF_BUFSIZE in contiki-conf.h.
 #endif
 
+#ifdef SERIAL_LINE_CONF_IGNORE_CHAR
+#define IGNORE_CHAR(c) (SERIAL_LINE_CONF_IGNORE_CHAR)
+#else
 #define IGNORE_CHAR(c) (c == 0x0d)
+#endif /* SERIAL_LINE_CONF_IGNORE_CHAR */
+
+#ifdef SERIAL_LINE_CONF_END_CHAR
+#define END (SERIAL_LINE_CONF_END_CHAR)
+#else
 #define END 0x0a
+#endif /* SERIAL_LINE_CONF_END_CHAR */
 
 static struct ringbuf rxbuf;
 static uint8_t rxbuf_data[BUFSIZE];
@@ -61,7 +70,7 @@ int
 serial_line_input_byte(unsigned char c)
 {
   static uint8_t overflow = 0; /* Buffer overflow: ignore until END */
-  
+
   if(IGNORE_CHAR(c)) {
     return 0;
   }
@@ -98,7 +107,7 @@ PROCESS_THREAD(serial_line_process, ev, data)
   while(1) {
     /* Fill application buffer until newline or empty */
     int c = ringbuf_get(&rxbuf);
-    
+
     if(c == -1) {
       /* Buffer empty, wait for poll */
       PROCESS_YIELD();

@@ -163,6 +163,8 @@ typedef unsigned short uip_stats_t;
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line reception buffer. */
 #define SERIAL_LINE_CONF_BUFSIZE 64
+//#define SERIAL_LINE_CONF_IGNORE_CHAR
+//#define SERIAL_LINE_CONF_END_CHAR
 
 /* ----- Diagnostic ----- */
 /** Diagnostic use a JSON output. */
