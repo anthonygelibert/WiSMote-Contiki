@@ -1,0 +1,4 @@
+In contiki-conf.h:
+#define SERIAL_LINE_CONF_BUFSIZE 64
+#define SERIAL_LINE_CONF_IGNORE_CHAR (c == 0x02 || c == 0x03)
+#define SERIAL_LINE_CONF_END_CHAR 0x0D
