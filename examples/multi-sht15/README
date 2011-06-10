@@ -1,4 +1,4 @@
-To use this example, you must replace the line:
+To use this example, you must replace in "contiki-main.c" the line:
 
 SENSORS(...); 
 
