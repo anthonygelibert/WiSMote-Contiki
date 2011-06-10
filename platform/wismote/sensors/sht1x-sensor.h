@@ -51,11 +51,13 @@
             } else {\
                 P##sda_port##DIR |=  BV(sda_bit);\
             }\
-            P##scl_port##OUT |=  BV(scl_bit); _NOP();_NOP();\
+            P##scl_port##OUT |=  BV(scl_bit);\
+            _NOP();_NOP();\
             P##scl_port##OUT &= ~BV(scl_bit);\
         }\
         P##sda_port##DIR &= ~BV(sda_bit);\
-        P##scl_port##OUT |=  BV(scl_bit);_NOP();_NOP();\
+        P##scl_port##OUT |=  BV(scl_bit);\
+        _NOP();_NOP();\
         ret = !(P##sda_port##IN & BV(sda_bit));\
         P##scl_port##OUT &= ~BV(scl_bit);\
         return ret;\
@@ -67,7 +69,8 @@
       P##sda_port##DIR &= ~BV(sda_bit);\
       for(i = 0; i < 8; i++) {\
           c <<= 1;\
-          P##scl_port##OUT |=  BV(scl_bit); _NOP();_NOP();\
+          P##scl_port##OUT |=  BV(scl_bit);\
+          _NOP();_NOP();\
           if(P##sda_port##IN & BV(sda_bit)) {\
               c |= 0x1;\
           }\
@@ -76,15 +79,19 @@
       if(send_ack) {\
           P##sda_port##DIR |=  BV(sda_bit);\
       }\
-      P##scl_port##OUT |=  BV(scl_bit); _NOP();_NOP();\
+      P##scl_port##OUT |=  BV(scl_bit);\
+      _NOP();_NOP();\
       P##scl_port##OUT &= ~BV(scl_bit);\
       P##sda_port##DIR &= ~BV(sda_bit);\
       return c;\
     }\
     \
     void var##_init(void) { \
+        P##pwr_port##DS  |= BV(pwr_bit);\
         P##pwr_port##OUT |= BV(pwr_bit);\
+        P##sda_port##DS  |= BV(sda_bit);\
         P##sda_port##OUT &= ~BV(sda_bit);\
+        P##scl_port##DS  |= BV(scl_bit);\
         P##scl_port##OUT &= ~BV(scl_bit);\
         P##pwr_port##DIR |= BV(pwr_bit);\
         P##scl_port##DIR |= BV(scl_bit);\
@@ -183,8 +190,7 @@
                     rtimer_clock_t t0;\
                     var##_init();\
                     var##_state = 1;\
-                    t0 = RTIMER_NOW();\
-                    while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + RTIMER_SECOND / 100));\
+                    t0 = RTIMER_NOW(); while(RTIMER_CLOCK_LT(RTIMER_NOW(), t0 + RTIMER_SECOND / 100));\
                 }\
             } else {\
                 var##_off();\
