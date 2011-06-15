@@ -5,5 +5,5 @@ SENSORS(...);
 where "..." matches the current list of sensors, by :
 
 #include "multsht15-sensors.h"
-SENSORS(..., &upper_sensor, &lower_sensor);
+SENSORS(..., &middle_upper_sensor, &middle_lower_sensor, &upper_sensor, &lower_sensor);
  

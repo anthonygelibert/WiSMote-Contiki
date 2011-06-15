@@ -47,11 +47,12 @@
 #include "contiki.h"
 #include "lib/sensors.h"
 #include "iohandlers.h"
+#include "watchdog.h"
 
 #include "multsht15-sensors.h"
 #include "sensors/sht1x-sensor.h"
 
-#define INTERVAL (CLOCK_CONF_SECOND * 5)
+#define INTERVAL (CLOCK_CONF_SECOND * 2)
 
 static void printSensor(const struct sensors_sensor sensor)
 {
@@ -59,6 +60,7 @@ static void printSensor(const struct sensors_sensor sensor)
   static unsigned int tmp;
   static unsigned int pwr;
 
+  printf("Sensor '%s':\n", sensor.type);
   /* Enable the sensor. */
   SENSORS_ACTIVATE(sensor);
   /* Read the temperature. */
@@ -106,13 +108,18 @@ PROCESS_THREAD(multsht15_process, ev, data)
   static struct etimer et;
 
   PROCESS_BEGIN();
-
   while (1)
   {
     /* Check temperature every INTERVAL */
     etimer_set(&et, INTERVAL);
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+
     printSensor(upper_sensor);
+    watchdog_periodic();
+    printSensor(middle_upper_sensor);
+    watchdog_periodic();
+    printSensor(middle_lower_sensor);
+    watchdog_periodic();
     printSensor(lower_sensor);
   }
   PROCESS_END();
