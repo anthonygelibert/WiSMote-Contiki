@@ -1,0 +1,9 @@
+To use this example, you must replace in "contiki-main.c" the line:
+
+SENSORS(...); 
+
+where "..." matches the current list of sensors, by :
+
+#include "multsht15-sensors.h"
+SENSORS(..., &middle_upper_sensor, &middle_lower_sensor, &upper_sensor, &lower_sensor);
+ 
