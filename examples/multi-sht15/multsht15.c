@@ -49,6 +49,10 @@
 #include "iohandlers.h"
 #include "watchdog.h"
 
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
+#include "dev/ds2411.h"
+#endif
+
 #include "multsht15-sensors.h"
 #include "sensors/sht1x-sensor.h"
 
@@ -60,6 +64,11 @@ static void printSensor(const struct sensors_sensor sensor)
   static unsigned int tmp;
   static unsigned int pwr;
 
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
+  printf("WiSMote '%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X'\n",
+      ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
+      ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]);
+#endif
   printf("Sensor '%s':\n", sensor.type);
   /* Enable the sensor. */
   SENSORS_ACTIVATE(sensor);
