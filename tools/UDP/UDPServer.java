@@ -42,7 +42,7 @@ public class UDPServer
     /**
      * UDP Buffer size.
      */
-    private static final int BUFFER_SIZE = 20;
+    private static final int BUFFER_SIZE = 500;
     /**
      * UDP Buffer.
      */
