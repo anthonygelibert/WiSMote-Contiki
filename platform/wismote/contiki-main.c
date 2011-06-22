@@ -162,6 +162,7 @@ main(void)
   leds_off(LEDS_RED);
 
   leds_on(LEDS_BLUE);
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
   /* Initialize the DS2411 */
   ds2411_init();
   ds2411_id[0] = 0x00;
@@ -171,6 +172,7 @@ main(void)
   printf("I'm %02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X\n",
          ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
          ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]);
+#endif
 #endif
   /* Initialize the SPI bus */
   spi_init();
@@ -208,7 +210,11 @@ main(void)
   {
       uip_ipaddr_t addr;
 
-      uip_ipaddr(&addr, 192,168,1,2);
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
+      uip_ipaddr(&addr, 192,168,1, ds2411_id[7]);
+#else
+      uip_ipaddr(&addr, 192,168,1, 2);
+#endif
       uip_sethostaddr(&addr);
 #if UIP_LOGGING
       printf("IP Address: %d.%d.%d.%d\n", uip_ipaddr_to_quad(&addr));
