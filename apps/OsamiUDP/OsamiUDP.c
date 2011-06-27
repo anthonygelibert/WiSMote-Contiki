@@ -51,13 +51,18 @@
 /** Enable debug. */
 #define DEBUG 1
 
+/** We're printing IPv4 addresses for now, so PRINTADDR should expand to PRINT4ADDR. */
+#define PRINTADDR PRINT4ADDR
+
 #if DEBUG
 #include <stdio.h>
 #define PRINTF(...) printf(__VA_ARGS__)
+#define PRINT4ADDR(addr) PRINTF(" %02u.%02u.%02u.%02u ", ((u8_t *)addr)[0], ((u8_t *)addr)[1], ((u8_t *)addr)[2], ((u8_t *)addr)[3])
 #define PRINT6ADDR(addr) PRINTF(" %02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x ", ((u8_t *)addr)[0], ((u8_t *)addr)[1], ((u8_t *)addr)[2], ((u8_t *)addr)[3], ((u8_t *)addr)[4], ((u8_t *)addr)[5], ((u8_t *)addr)[6], ((u8_t *)addr)[7], ((u8_t *)addr)[8], ((u8_t *)addr)[9], ((u8_t *)addr)[10], ((u8_t *)addr)[11], ((u8_t *)addr)[12], ((u8_t *)addr)[13], ((u8_t *)addr)[14], ((u8_t *)addr)[15])
 #define PRINTLLADDR(lladdr) PRINTF(" %02x:%02x:%02x:%02x:%02x:%02x ",(lladdr)->addr[0], (lladdr)->addr[1], (lladdr)->addr[2], (lladdr)->addr[3],(lladdr)->addr[4], (lladdr)->addr[5])
 #else
 #define PRINTF(...)
+#define PRINT4ADDR(addr)
 #define PRINT6ADDR(addr)
 #define PRINTLLADDR(addr)
 #endif
@@ -76,16 +81,21 @@ static struct uip_udp_conn *udpconn_out_discovery;
  * \param u8Data  8 bits value.
  * \param pString Target string.
  */
-static void Print8BitsToDecString(u8_t u8Data, u8_t *pString)
+static u8_t * Print8BitsToDecString(u8_t u8Data, u8_t *pString)
 {
     /*
      * Reminder:
      * value between 0 ~> 9 + '0' == ASCII character between '0' ~> '9'.
      */
-    *pString++ = (u8Data / 100) + '0';
+    u8_t c = (u8Data / 100);
+    if (c != 0)
+    {
+        *pString++ = c + '0';
+    }
     u8Data %= 100;
     *pString++ = (u8Data / 10) + '0';
     *pString++ = u8Data % 10 + '0';
+    return pString;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -96,20 +106,25 @@ static void Print8BitsToDecString(u8_t u8Data, u8_t *pString)
  * \param u16Data  16 bits value.
  * \param pString Target string.
  */
-static void Print16BitsToDecString(u16_t u16Data, u8_t *pString)
+static u8_t * Print16BitsToDecString(u16_t u16Data, u8_t *pString)
 {
   /*
    * Reminder:
    * value between 0 ~> 9 + '0' == ASCII character between '0' ~> '9'.
    */
-  *pString++ = (u16Data / 10000) + '0';
-  u16Data %= 10000;
-  *pString++ = (u16Data / 1000) + '0';
-  u16Data %= 1000;
-  *pString++ = (u16Data / 100) + '0';
-  u16Data %= 100;
-  *pString++ = (u16Data / 10) + '0';
-  *pString++ = u16Data % 10 + '0';
+    u8_t c = (u16Data / 10000);
+    if (c != 0)
+    {
+        *pString++ = c + '0';
+    }
+    u16Data %= 10000;
+    *pString++ = (u16Data / 1000) + '0';
+    u16Data %= 1000;
+    *pString++ = (u16Data / 100) + '0';
+    u16Data %= 100;
+    *pString++ = (u16Data / 10) + '0';
+    *pString++ = u16Data % 10 + '0';
+    return pString;
 }
 
 /*
@@ -144,8 +159,7 @@ static int PrintAddr(const u8_t *psSock, u8_t *pString)
     int i;
     for (i = 0; i < 4; i++)
     {
-      Print8BitsToDecString(psSock[i], pString);
-        pString += 3;
+        pString = Print8BitsToDecString(psSock[i], pString);
         if (i != 3)
             *pString++ = '.';
     }
@@ -183,7 +197,7 @@ static void metadata(void)
 //    u16_t * sAddr = (u16_t *)(&udpconn_out_data->ripaddr);
 
     PRINTF("Sender sending to: ");
-    PRINT6ADDR(sAddr);
+    PRINTADDR(sAddr);
     PRINTF("\n");
 
     // Check for GETMETADATA message.
@@ -213,8 +227,7 @@ static void metadata(void)
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Port */
-    Print16BitsToDecString(DISCOVERY_PORT, pu8Payload);
-    pu8Payload += 5;
+    pu8Payload = Print16BitsToDecString(DISCOVERY_PORT, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Payload separator */
@@ -242,6 +255,10 @@ static void metadata(void)
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_METADATA_KV_SEPARATOR;
     /* Value 1 */
+    *pu8Payload++ = 'U';
+    *pu8Payload++ = '1';
+    *pu8Payload++ = '4';
+    *pu8Payload++ = '-';
     *pu8Payload++ = 'S';
     *pu8Payload++ = 'H';
     *pu8Payload++ = 'T';
@@ -260,6 +277,10 @@ static void metadata(void)
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_METADATA_KV_SEPARATOR;
     /* Value 2 */
+    *pu8Payload++ = 'U';
+    *pu8Payload++ = '1';
+    *pu8Payload++ = '2';
+    *pu8Payload++ = '-';
     *pu8Payload++ = 'S';
     *pu8Payload++ = 'H';
     *pu8Payload++ = 'T';
@@ -298,7 +319,7 @@ static void discovery(void)
 //    u16_t * sAddr = (u16_t *)(&udpconn_out_data->ripaddr);
 
     PRINTF("Sender sending to: ");
-    PRINT6ADDR(sAddr);
+    PRINTADDR(sAddr);
     PRINTF("\n");
 
     // Send HELLO message.
@@ -318,8 +339,7 @@ static void discovery(void)
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Port */
-    Print16BitsToDecString(DISCOVERY_PORT, pu8Payload);
-    pu8Payload += 5;
+    pu8Payload = Print16BitsToDecString(DISCOVERY_PORT, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Payload separator */
@@ -340,8 +360,7 @@ static void discovery(void)
     pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
-    Print16BitsToDecString(DISCOVERY_PORT, pu8Payload);
-    pu8Payload += 5;
+    pu8Payload = Print16BitsToDecString(DISCOVERY_PORT, pu8Payload);
     /* Separator */
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
     /* END DISCOVERY MESSAGE */
@@ -366,12 +385,12 @@ static void event(void)
     u8_t * pu8Payload;
     const u8_t * sOwnAddr = ownaddr.u8;
     const u8_t * sAddr = destaddr.u8;
-    u16_t tmp, rh, val2;
+    u16_t tmp, rh;
 //    u16_t * sOwnAddr = (u16_t *)(&uip_netif_physical_if.addresses[0].ipaddr);
 //    u16_t * sAddr = (u16_t *)(&udpconn_out_data->ripaddr);
 
     PRINTF("Sender sending to: ");
-    PRINT6ADDR(sAddr);
+    PRINTADDR(sAddr);
     PRINTF("\n");
 
     // Send EVENT message containing measurements.
@@ -391,8 +410,7 @@ static void event(void)
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Port */
-    Print16BitsToDecString(PC_UDP_PORT, pu8Payload);
-    pu8Payload += 5;
+    pu8Payload = Print16BitsToDecString(PC_UDP_PORT, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Payload separator */
@@ -408,9 +426,9 @@ static void event(void)
     SENSORS_ACTIVATE(sht11_sensor);
     /* Read TEMP and HUMIDITY */
     tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
-    if (tmp == -1 || tmp == 0) tmp = 3970; // See below for formula.
+    if (tmp == -1 || tmp == 0) tmp = 3970; // T = -39.7 + 0.01 * tmp (14-bit tmp, at 3.5V)
     rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
-    if (rh == -1 || rh == 0) rh = 56; // See below for formula.
+    if (rh == -1 || rh == 0) rh = 56; // RHlinear = -2.0468 + 0.0367 * val - 1.5955e-6 * val * val (12-bit val)
     /* Disable the sensor */
     SENSORS_DEACTIVATE(sht11_sensor);
 
@@ -430,21 +448,12 @@ static void event(void)
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
     /* Value 1 */
-    // T = -39.7 + 0.01 * tmp (14-bit tmp, at 3.5V)
-    val2 = ((int)tmp - 3970) / 100;
-    PRINTF("T:%d %d\n", tmp, val2);
-    if (val2 < 0)
-    {
-        *pu8Payload++ = '-';
-        val2 = -val2;
-    }
-    Print8BitsToDecString(val2, pu8Payload);
-    pu8Payload += 3;
+    PRINTF("T:%d %d\n", tmp, ((int)tmp - 3970) / 100);
+    pu8Payload = Print16BitsToDecString(tmp, pu8Payload);
 
     /* Separator Pairs {Key/Value} */
     *pu8Payload++ = DEVICE_EVENT_FIELD_SEPARATOR;
 
-    u16_t acc1, acc2;
     /* Key 2 */
     *pu8Payload++ = 'H';
     *pu8Payload++ = 'y';
@@ -458,13 +467,8 @@ static void event(void)
     // RHlinear       = -2.0468 + 0.0367 * val - 1.5955e-6 * val * val (12-bit val)
     // 256 * RHLinear = -523.98 + 9.3952  * val - 4.0845e-4 * val * val
     // 256 * RHLinear ~ -524    + 9.4     * val - val * val / 2448;
-    acc1 = ((u32_t)rh * 940) / 100;
-    acc2 = ((u32_t)rh * rh) / 2448;
-    val2 = (u16_t)acc1 - (u16_t) acc2 - 524;
-    val2 >>= 8;
-    PRINTF("RH:%d %u %u %d\n", rh, acc1, acc2, val2);
-    Print8BitsToDecString(val2, pu8Payload);
-    pu8Payload += 3;
+    PRINTF("RH:%d %u %u %d\n", rh, (u16_t)((((u32_t)rh * 940) / 100)), (u16_t)((((u32_t)rh * rh) / 2448)), (((u16_t)(((u32_t)rh * 940) / 100) - (u16_t)(((u32_t)rh * rh) / 2448) - 524) >> 8));
+    pu8Payload = Print16BitsToDecString(rh, pu8Payload);
 
     /* Separator */
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
