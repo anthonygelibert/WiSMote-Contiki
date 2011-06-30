@@ -47,6 +47,7 @@
 
 /* From this example */
 #include "SensorDemoConfig.h"
+#include "multsht15-sensors.h"
 
 /** Enable debug. */
 #define DEBUG 1
