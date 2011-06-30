@@ -155,7 +155,7 @@ static void Print16BitsToHexString(const u16_t u16Data, u8_t *pString)
  * \param pString Target string.
  * \return 15
  */
-static int PrintAddr(const u8_t *psSock, u8_t *pString)
+static u8_t * PrintAddr(const u8_t *psSock, u8_t *pString)
 {
     int i;
     for (i = 0; i < 4; i++)
@@ -164,12 +164,12 @@ static int PrintAddr(const u8_t *psSock, u8_t *pString)
         if (i != 3)
             *pString++ = '.';
     }
-    return (4*3 + 3*1);
+    return pString;
 }
 
 /*
 // IPv6 version, will be used later - please don't remove.
-static int PrintAddr(const u16_t *psSock, u8_t *pString)
+static u8_t * PrintAddr(const u16_t *psSock, u8_t *pString)
 {
     int i;
     for (i = 0; i < 8; i++)
@@ -179,7 +179,7 @@ static int PrintAddr(const u16_t *psSock, u8_t *pString)
         if (i != 7)
             *pString++ = ':';
     }
-    return (8*4 + 7*1);
+    return pString;
 }
 */
 
@@ -220,11 +220,11 @@ static void metadata(void)
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_1;
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_2;
     /* From */
-    pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
+    pu8Payload = PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* To */
-    pu8Payload += PrintAddr(sAddr, pu8Payload);
+    pu8Payload = PrintAddr(sAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Port */
@@ -243,11 +243,12 @@ static void metadata(void)
     /* EVENT */
     *pu8Payload++ = DEVICE_METADATA_PREFIX;
     /* id : MAC address */
-    pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
+    pu8Payload = PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
-    /* Pairs Key/Value */
-    /* Key 1 */
+
+    /* Key/Value Pairs */
+    /* ---------------- Key 1 ---------------- */
     *pu8Payload++ = 'T';
     *pu8Payload++ = 'e';
     *pu8Payload++ = 'm';
@@ -255,7 +256,7 @@ static void metadata(void)
     *pu8Payload++ = '1';
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_METADATA_KV_SEPARATOR;
-    /* Value 1 */
+    /* --------------- Value 1 --------------- */
     *pu8Payload++ = 'U';
     *pu8Payload++ = '1';
     *pu8Payload++ = '4';
@@ -268,7 +269,7 @@ static void metadata(void)
     /* Separator Pairs {Key/Value} */
     *pu8Payload++ = DEVICE_METADATA_FIELD_SEPARATOR;
 
-    /* Key 2 */
+    /* ---------------- Key 2 ---------------- */
     *pu8Payload++ = 'H';
     *pu8Payload++ = 'y';
     *pu8Payload++ = 'd';
@@ -277,7 +278,50 @@ static void metadata(void)
     *pu8Payload++ = '1';
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_METADATA_KV_SEPARATOR;
-    /* Value 2 */
+    /* --------------- Value 2 --------------- */
+    *pu8Payload++ = 'U';
+    *pu8Payload++ = '1';
+    *pu8Payload++ = '2';
+    *pu8Payload++ = '-';
+    *pu8Payload++ = 'S';
+    *pu8Payload++ = 'H';
+    *pu8Payload++ = 'T';
+    *pu8Payload++ = '1';
+    *pu8Payload++ = 'x';
+    /* Separator Pairs {Key/Value} */
+    *pu8Payload++ = DEVICE_METADATA_FIELD_SEPARATOR;
+
+    /* ---------------- Key 3 ---------------- */
+    *pu8Payload++ = 'T';
+    *pu8Payload++ = 'e';
+    *pu8Payload++ = 'm';
+    *pu8Payload++ = 'p';
+    *pu8Payload++ = '2';
+    /* Separator Key/Value */
+    *pu8Payload++ = DEVICE_METADATA_KV_SEPARATOR;
+    /* --------------- Value 3 --------------- */
+    *pu8Payload++ = 'U';
+    *pu8Payload++ = '1';
+    *pu8Payload++ = '4';
+    *pu8Payload++ = '-';
+    *pu8Payload++ = 'S';
+    *pu8Payload++ = 'H';
+    *pu8Payload++ = 'T';
+    *pu8Payload++ = '1';
+    *pu8Payload++ = 'x';
+    /* Separator Pairs {Key/Value} */
+    *pu8Payload++ = DEVICE_METADATA_FIELD_SEPARATOR;
+
+    /* ---------------- Key 4 ---------------- */
+    *pu8Payload++ = 'H';
+    *pu8Payload++ = 'y';
+    *pu8Payload++ = 'd';
+    *pu8Payload++ = 'r';
+    *pu8Payload++ = 'o';
+    *pu8Payload++ = '2';
+    /* Separator Key/Value */
+    *pu8Payload++ = DEVICE_METADATA_KV_SEPARATOR;
+    /* --------------- Value 4 --------------- */
     *pu8Payload++ = 'U';
     *pu8Payload++ = '1';
     *pu8Payload++ = '2';
@@ -332,11 +376,11 @@ static void discovery(void)
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_1;
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_2;
     /* From */
-    pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
+    pu8Payload = PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* To */
-    pu8Payload += PrintAddr(sAddr, pu8Payload);
+    pu8Payload = PrintAddr(sAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Port */
@@ -354,11 +398,11 @@ static void discovery(void)
     /* HELLO */
     *pu8Payload++ = DEVICE_HELLO_PREFIX;
     /* id : MAC address */
-    pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
+    pu8Payload = PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
     /* ip : ipv6 address */
-    pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
+    pu8Payload = PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
     pu8Payload = Print16BitsToDecString(DISCOVERY_PORT, pu8Payload);
@@ -403,11 +447,11 @@ static void event(void)
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_1;
     *pu8Payload++ = MESSAGE_PROTOCOL_VERSION_2;
     /* From */
-    pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
+    pu8Payload = PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* To */
-    pu8Payload += PrintAddr(sAddr, pu8Payload);
+    pu8Payload = PrintAddr(sAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = MESSAGE_FIELD_SEPARATOR;
     /* Port */
@@ -424,23 +468,23 @@ static void event(void)
     *pu8Payload++ = DEVICE_PROTOCOL_VERSION_2;
 
     /* Enable the sensor */
-    SENSORS_ACTIVATE(sht11_sensor);
+    SENSORS_ACTIVATE(upper_sensor);
     /* Read TEMP and HUMIDITY */
-    tmp = sht11_sensor.value(SHT11_SENSOR_TEMP);
+    tmp = upper_sensor.value(SHT11_SENSOR_TEMP);
     if (tmp == -1 || tmp == 0) tmp = 3970; // T = -39.7 + 0.01 * tmp (14-bit tmp, at 3.5V)
-    rh = sht11_sensor.value(SHT11_SENSOR_HUMIDITY);
+    rh = upper_sensor.value(SHT11_SENSOR_HUMIDITY);
     if (rh == -1 || rh == 0) rh = 56; // RHlinear = -2.0468 + 0.0367 * val - 1.5955e-6 * val * val (12-bit val)
     /* Disable the sensor */
-    SENSORS_DEACTIVATE(sht11_sensor);
+    SENSORS_DEACTIVATE(upper_sensor);
 
     /* EVENT */
     *pu8Payload++ = DEVICE_EVENT_PREFIX;
     /* id : MAC address */
-    pu8Payload += PrintAddr(sOwnAddr, pu8Payload);
+    pu8Payload = PrintAddr(sOwnAddr, pu8Payload);
     /* Separator */
     *pu8Payload++ = DEVICE_FIELD_SEPARATOR;
-    /* Pairs Key/Value */
-    /* Key 1 */
+    /* Key/Value Pairs */
+    /* ---------------- Key 1 ---------------- */
     *pu8Payload++ = 'T';
     *pu8Payload++ = 'e';
     *pu8Payload++ = 'm';
@@ -448,14 +492,14 @@ static void event(void)
     *pu8Payload++ = '1';
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
-    /* Value 1 */
+    /* --------------- Value 1 --------------- */
     PRINTF("T:%d %d\n", tmp, ((int)tmp - 3970) / 100);
     pu8Payload = Print16BitsToDecString(tmp, pu8Payload);
 
     /* Separator Pairs {Key/Value} */
     *pu8Payload++ = DEVICE_EVENT_FIELD_SEPARATOR;
 
-    /* Key 2 */
+    /* ---------------- Key 2 ---------------- */
     *pu8Payload++ = 'H';
     *pu8Payload++ = 'y';
     *pu8Payload++ = 'd';
@@ -464,7 +508,52 @@ static void event(void)
     *pu8Payload++ = '1';
     /* Separator Key/Value */
     *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
-    /* Value 2 */
+    /* --------------- Value 2 --------------- */
+    // RHlinear       = -2.0468 + 0.0367 * val - 1.5955e-6 * val * val (12-bit val)
+    // 256 * RHLinear = -523.98 + 9.3952  * val - 4.0845e-4 * val * val
+    // 256 * RHLinear ~ -524    + 9.4     * val - val * val / 2448;
+    PRINTF("RH:%d %u %u %d\n", rh, (u16_t)((((u32_t)rh * 940) / 100)), (u16_t)((((u32_t)rh * rh) / 2448)), (((u16_t)(((u32_t)rh * 940) / 100) - (u16_t)(((u32_t)rh * rh) / 2448) - 524) >> 8));
+    pu8Payload = Print16BitsToDecString(rh, pu8Payload);
+
+    /* Separator Pairs {Key/Value} */
+    *pu8Payload++ = DEVICE_EVENT_FIELD_SEPARATOR;
+
+    /* Enable the sensor */
+    SENSORS_ACTIVATE(lower_sensor);
+    /* Read TEMP and HUMIDITY */
+    tmp = lower_sensor.value(SHT11_SENSOR_TEMP);
+    if (tmp == -1 || tmp == 0) tmp = 3970; // T = -39.7 + 0.01 * tmp (14-bit tmp, at 3.5V)
+    rh = lower_sensor.value(SHT11_SENSOR_HUMIDITY);
+    if (rh == -1 || rh == 0) rh = 56; // RHlinear = -2.0468 + 0.0367 * val - 1.5955e-6 * val * val (12-bit val)
+    /* Disable the sensor */
+    SENSORS_DEACTIVATE(lower_sensor);
+
+    /* Key/Value Pairs */
+    /* ---------------- Key 3 ---------------- */
+    *pu8Payload++ = 'T';
+    *pu8Payload++ = 'e';
+    *pu8Payload++ = 'm';
+    *pu8Payload++ = 'p';
+    *pu8Payload++ = '2';
+    /* Separator Key/Value */
+    *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
+    /* --------------- Value 3 --------------- */
+    PRINTF("T:%d %d\n", tmp, ((int)tmp - 3970) / 100);
+    pu8Payload = Print16BitsToDecString(tmp, pu8Payload);
+
+    /* Separator Pairs {Key/Value} */
+    *pu8Payload++ = DEVICE_EVENT_FIELD_SEPARATOR;
+
+    /* ---------------- Key 4 ---------------- */
+    *pu8Payload++ = 'H';
+    *pu8Payload++ = 'y';
+    *pu8Payload++ = 'd';
+    *pu8Payload++ = 'r';
+    *pu8Payload++ = 'o';
+    *pu8Payload++ = '2';
+    /* Separator Key/Value */
+    *pu8Payload++ = DEVICE_EVENT_KV_SEPARATOR;
+    /* --------------- Value 4 --------------- */
     // RHlinear       = -2.0468 + 0.0367 * val - 1.5955e-6 * val * val (12-bit val)
     // 256 * RHLinear = -523.98 + 9.3952  * val - 4.0845e-4 * val * val
     // 256 * RHLinear ~ -524    + 9.4     * val - val * val / 2448;
@@ -502,9 +591,8 @@ PROCESS_THREAD(OsamiUDP_process, ev, data)
 
     PRINTF("Process test UDP sender started\n");
     PRINTF("Local IPv6 address: ");
-    uip_ipaddr(&ownaddr, 169, 254, 5, 210);
-    uip_sethostaddr(&ownaddr);
-    uip_ipaddr(&destaddr, 169, 254, 5, 212);
+    uip_gethostaddr(&ownaddr);
+    uip_ipaddr(&destaddr, 192, 168, 1, 1);
     PRINTF("\n");
 
     /* new connection with remote host */

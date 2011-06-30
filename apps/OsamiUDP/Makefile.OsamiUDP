@@ -1,1 +1,1 @@
-OsamiUDP_src = OsamiUDP.c
+OsamiUDP_src = OsamiUDP.c multsht15-sensors.c
