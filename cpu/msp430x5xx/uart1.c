@@ -168,7 +168,9 @@ int
 uart1_writeb(const uint8_t c)
 {
   watchdog_periodic();
-
+#if UART1_ECHO_TX_ON_UART0
+  uart0_writeb(c);
+#endif
 #if UART1_TX_WITH_INTERRUPT
   /* Put the outgoing byte on the transmission buffer. If the buffer
    is full, we just keep on trying to put the byte into the buffer
@@ -292,7 +294,14 @@ uart1_interrupt(void)
       if (ringbuf_elements(&txbuf) == 0) {
         transmitting = 0;
       } else {
+        /* XXX_PTV Hack */
+        P4DIR |= BIT6;
+        P4OUT |= BIT6;
+        /* -- */
         UCA0TXBUF = ringbuf_get(&txbuf);
+        /* XXX_PTV Hack */
+        P4OUT &= ~BIT6;
+        /* -- */
       }
       /* In a stand-alone app won't work without this. Is the UG misleading? */
       UCA0IFG &= ~UCTXIFG;

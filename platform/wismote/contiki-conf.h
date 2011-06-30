@@ -161,6 +161,8 @@ typedef unsigned short uip_stats_t;
 #define UART1_CONF_TX_BUFSIZE      128
 /** UART1: custom setup. */
 #define UART1_CONF_CUSTOM_INIT       0
+/** UART1: TX echo on UART0. */
+#define UART1_ECHO_TX_ON_UART0       0
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line reception buffer. */
