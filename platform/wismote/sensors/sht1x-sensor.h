@@ -17,17 +17,17 @@
 #define NEW_SHT1X(var, name, sda_port, sda_bit, scl_port, scl_bit, pwr_port, pwr_bit) \
     static void var##_sstart(void) {\
         P##sda_port##DIR &= ~BV(sda_bit); P##scl_port##OUT &= ~BV(scl_bit);\
-        _NOP();_NOP();\
+        _NOP();_NOP(); _NOP();_NOP();\
         P##scl_port##OUT |=  BV(scl_bit);\
-        _NOP();_NOP();\
+        _NOP();_NOP(); _NOP();_NOP();\
         P##sda_port##DIR |=  BV(sda_bit);\
-        _NOP();_NOP();\
+        _NOP();_NOP(); _NOP();_NOP();\
         P##scl_port##OUT &= ~BV(scl_bit);\
-        _NOP();_NOP();\
+        _NOP();_NOP(); _NOP();_NOP();\
         P##scl_port##OUT |=  BV(scl_bit);\
-        _NOP();_NOP();\
+        _NOP();_NOP(); _NOP();_NOP();\
         P##sda_port##DIR &= ~BV(sda_bit);\
-        _NOP();_NOP();\
+        _NOP();_NOP(); _NOP();_NOP();\
         P##scl_port##OUT &= ~BV(scl_bit);\
     }\
     \
@@ -37,7 +37,7 @@
         P##scl_port##OUT &= ~BV(scl_bit);\
         for(i = 0; i < 9 ; i++) { \
             P##scl_port##OUT |= BV(scl_bit);\
-            _NOP();_NOP();\
+            _NOP();_NOP(); _NOP();_NOP();\
             P##scl_port##OUT &= ~BV(scl_bit);\
         }\
         var##_sstart();\
@@ -52,12 +52,12 @@
                 P##sda_port##DIR |=  BV(sda_bit);\
             }\
             P##scl_port##OUT |=  BV(scl_bit);\
-            _NOP();_NOP();\
+            _NOP();_NOP(); _NOP();_NOP();\
             P##scl_port##OUT &= ~BV(scl_bit);\
         }\
         P##sda_port##DIR &= ~BV(sda_bit);\
         P##scl_port##OUT |=  BV(scl_bit);\
-        _NOP();_NOP();\
+        _NOP();_NOP(); _NOP();_NOP();\
         ret = !(P##sda_port##IN & BV(sda_bit));\
         P##scl_port##OUT &= ~BV(scl_bit);\
         return ret;\
@@ -70,7 +70,7 @@
       for(i = 0; i < 8; i++) {\
           c <<= 1;\
           P##scl_port##OUT |=  BV(scl_bit);\
-          _NOP();_NOP();\
+          _NOP();_NOP(); _NOP();_NOP();\
           if(P##sda_port##IN & BV(sda_bit)) {\
               c |= 0x1;\
           }\
@@ -80,7 +80,7 @@
           P##sda_port##DIR |=  BV(sda_bit);\
       }\
       P##scl_port##OUT |=  BV(scl_bit);\
-      _NOP();_NOP();\
+      _NOP();_NOP(); _NOP();_NOP();\
       P##scl_port##OUT &= ~BV(scl_bit);\
       P##sda_port##DIR &= ~BV(sda_bit);\
       return c;\
