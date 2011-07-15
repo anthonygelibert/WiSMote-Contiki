@@ -182,12 +182,14 @@ uart0_writeb(const uint8_t c)
    the first byte into the UART. */
   if (transmitting == 0) {
     transmitting = 1;
+    leds_toggle(LEDS_BLUE);
     UCA1TXBUF = ringbuf_get(&txbuf);
   }
 #else
   /* Loop until the transmission buffer is available. */
   while((UCA1STAT & UCBUSY)) {
   }
+  leds_toggle(LEDS_BLUE);
   /* Transmit the data. */
   UCA1TXBUF = c;
 #endif /* TX_WITH_INTERRUPT */
@@ -266,15 +268,17 @@ uart0_interrupt(void)
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   watchdog_start();
 
-  /* Indicate a rx/tx operation */
-  leds_toggle(LEDS_RED);
   /* Test a RX */
   if (UCA1IFG & UCRXIFG) {
     /* Check for an error */
     if (UCA1STAT & UCRXERR) {
+      /* Indicate a rx/tx operation */
+      leds_toggle(LEDS_RED);
       /* Clear error flags by forcing a dummy read. */
       c = UCA1RXBUF;
     } else {
+      /* Indicate a rx/tx operation */
+      leds_toggle(LEDS_GREEN);
       /* Get the good value */
       c = UCA1RXBUF;
       /* If an input handler is set, use it */
@@ -294,6 +298,7 @@ uart0_interrupt(void)
       if (ringbuf_elements(&txbuf) == 0) {
         transmitting = 0;
       } else {
+        leds_toggle(LEDS_BLUE);
         UCA1TXBUF = ringbuf_get(&txbuf);
       }
       /* In a stand-alone app won't work without this. Is the UG misleading? */
