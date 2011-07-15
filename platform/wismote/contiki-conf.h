@@ -163,6 +163,10 @@ typedef unsigned short uip_stats_t;
 #define UART1_CONF_CUSTOM_INIT       0
 /** UART1: TX echo on UART0. */
 #define UART1_ECHO_TX_ON_UART0       0
+/** UART1: RX echo on UART0. */
+#define UART1_ECHO_RX_ON_UART0       0
+/** UART1: print RX errors flags on UART0 */
+#define UART1_PRINT_ERROR_FLAG_ON_UART0 1
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line reception buffer. */
