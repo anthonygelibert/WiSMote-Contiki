@@ -64,6 +64,7 @@ void uart0_arch_init(void)
 void uart1_arch_init(void)
 {
   P3SEL = 0x30;
+  P4DIR |= (BIT1 | BIT6);
 }
 
 /*---------------------------------------------------------------------------*/
