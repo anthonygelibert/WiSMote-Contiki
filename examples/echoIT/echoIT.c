@@ -43,7 +43,10 @@
 
 #include "contiki.h"
 #include "uart0.h"
+#include "uart1.h"
 #include <stdio.h>
+
+#define USE_UART1 1
 
 /*---------------------------------------------------------------------------*/
 
@@ -62,8 +65,11 @@ PROCESS_THREAD(echoIT_process, ev, data)
 {
   PROCESS_BEGIN();
 
+#if USE_UART1
+  uart1_set_input(echo_rx);
+#else
   uart0_set_input(echo_rx);
-
+#endif
   PROCESS_END();
 }
 /*---------------------------------------------------------------------------*/
