@@ -182,12 +182,14 @@ uart1_writeb(const uint8_t c)
    the first byte into the UART. */
   if (transmitting == 0) {
     transmitting = 1;
+    leds_toggle(LEDS_BLUE);
     UCA0TXBUF = ringbuf_get(&txbuf);
   }
 #else
   /* Loop until the transmission buffer is available. */
   while((UCA0STAT & UCBUSY)) {
   }
+  leds_toggle(LEDS_BLUE);
   /* Transmit the data. */
   UCA0TXBUF = c;
 #endif /* UART1_TX_WITH_INTERRUPT */
@@ -266,17 +268,35 @@ uart1_interrupt(void)
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   watchdog_start();
 
-  /* Indicate a rx/tx operation */
-  leds_toggle(LEDS_RED);
   /* Test a RX */
   if (UCA0IFG & UCRXIFG) {
     /* Check for an error */
     if (UCA0STAT & UCRXERR) {
+      leds_toggle(LEDS_RED);
+#if UART1_PRINT_ERROR_FLAG_ON_UART0
+      if (UCA0STAT & UCFE)
+      {
+          uart0_writeb('F');
+      }
+      if (UCA0STAT & UCOE)
+      {
+          uart0_writeb('O');
+      }
+      if (UCA0STAT & UCPE)
+      {
+          uart0_writeb('P');
+      }
+#endif
       /* Clear error flags by forcing a dummy read. */
       c = UCA0RXBUF;
     } else {
+      /* Indicate a rx/tx operation */
+      leds_toggle(LEDS_GREEN);
       /* Get the good value */
       c = UCA0RXBUF;
+#if UART1_ECHO_RX_ON_UART0
+      uart0_writeb(c);
+#endif
       /* If an input handler is set, use it */
       if (uart1_input_handler != NULL) {
         if (uart1_input_handler(c)) {
@@ -294,14 +314,8 @@ uart1_interrupt(void)
       if (ringbuf_elements(&txbuf) == 0) {
         transmitting = 0;
       } else {
-        /* XXX_PTV Hack */
-        P4DIR |= BIT6;
-        P4OUT |= BIT6;
-        /* -- */
+        leds_toggle(LEDS_BLUE);
         UCA0TXBUF = ringbuf_get(&txbuf);
-        /* XXX_PTV Hack */
-        P4OUT &= ~BIT6;
-        /* -- */
       }
       /* In a stand-alone app won't work without this. Is the UG misleading? */
       UCA0IFG &= ~UCTXIFG;
