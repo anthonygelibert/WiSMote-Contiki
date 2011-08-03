@@ -21,17 +21,21 @@
  *         "Modules" * section.
  */
 
+/**
+ * Updated by Anthony Gelibert the August 3, 2011.
+ */
+
 /* Single line comments look like this. */
 
 /*
- * Multi-line comments look like this. Comments should prefferably be
+ * Multi-line comments look like this. Comments should preferably be
  * full sentences, filled to look like real paragraphs.
  */
 
 #include "contiki.h"
 
 /*
- * Make sure that non-global variables are all maked with the static
+ * Make sure that non-global variables are all made with the static
  * keyword. This keeps the size of the symbol table down.
  */
 static int flag;
@@ -64,14 +68,14 @@ static int flag;
  *             between the name and the first parenthesis), followed
  *             by a single curly bracket on its own line.
  */
-void
+int
 code_style_example_function(void)
 {
   /*
    * Local variables should always be declared at the start of the
    * function.
    */
-  int i;                   /* Use short variable names for loop
+  int i, c;                   /* Use short variable names for loop
                               counters. */
 
   /*
@@ -90,9 +94,9 @@ code_style_example_function(void)
      * are less error prone.
      */
     if(i == c) {
-      return c;           /* No parentesis around return values. */
-    } else {              /* The else keyword is placed inbetween
-                             curly brackers, always on its own line. */
+      return c;           /* No parenthesis around return values. */
+    } else {              /* The else keyword is placed between
+                             curly brackets, always on its own line. */
       c++;
     }
   }
