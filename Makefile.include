@@ -58,7 +58,7 @@ NET     = netstack.c uip-debug.c packetbuf.c queuebuf.c packetqueue.c
 ifdef UIP_CONF_IPV6
   CFLAGS += -DUIP_CONF_IPV6=1
   UIP   = uip6.c tcpip.c psock.c uip-udp-packet.c uip-split.c \
-          resolv.c tcpdump.c uiplib.c
+          resolv.c tcpdump.c uiplib.c simple-udp.c
   NET   += $(UIP) uip-icmp6.c uip-nd6.c uip-packetqueue.c \
           sicslowpan.c neighbor-attr.c neighbor-info.c uip-ds6.c
   include $(CONTIKI)/core/net/rpl/Makefile.rpl
@@ -138,6 +138,14 @@ vpath %.c $(SOURCEDIRS)
 vpath %.S $(SOURCEDIRS)
 
 CFLAGS += ${addprefix -I,$(SOURCEDIRS)}
+
+### Check for a git repo and pass version if found
+### git.exe in Windows cmd shells may require no stderr redirection
+#RELSTR=${shell git describe --tags}
+RELSTR=${shell git describe --tags 2>/dev/null}
+ifneq ($(RELSTR),)
+CFLAGS += -DCONTIKI_VERSION_STRING=\"Contiki-$(RELSTR)\"
+endif
 
 ### Automatic dependency generation
 

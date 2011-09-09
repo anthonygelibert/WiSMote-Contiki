@@ -144,7 +144,7 @@ should_send_dao(rpl_dag_t *dag, rpl_dio_t *dio, rpl_parent_t *p)
 {
   /* if MOP is set to no downward routes no DAO should be sent */
   if(dag->mop == RPL_MOP_NO_DOWNWARD_ROUTES) return 0;
-  return dio->dtsn > p->dtsn && p == dag->preferred_parent;
+  return dio->dtsn != p->dtsn && p == dag->preferred_parent;
 }
 /************************************************************************/
 static int
@@ -191,8 +191,8 @@ rpl_set_root(uip_ipaddr_t *dag_id)
   dag->max_rankinc = DEFAULT_MAX_RANKINC;
   dag->min_hoprankinc = DEFAULT_MIN_HOPRANKINC;
 
-  dag->default_lifetime = DEFAULT_RPL_DEF_LIFETIME;
-  dag->lifetime_unit = DEFAULT_RPL_LIFETIME_UNIT;
+  dag->default_lifetime = RPL_DEFAULT_LIFETIME;
+  dag->lifetime_unit = RPL_DEFAULT_LIFETIME_UNIT;
 
   dag->rank = ROOT_RANK(dag);
 
@@ -238,11 +238,9 @@ rpl_set_default_route(rpl_dag_t *dag, uip_ipaddr_t *from)
     PRINTF("RPL: Adding default route through ");
     PRINT6ADDR(from);
     PRINTF("\n");
-    if(DEFAULT_ROUTE_LIFETIME == INFINITE_LIFETIME) {
-      dag->def_route = uip_ds6_defrt_add(from, 0);
-    } else {
-      dag->def_route = uip_ds6_defrt_add(from, DEFAULT_ROUTE_LIFETIME);
-    }
+    dag->def_route = uip_ds6_defrt_add(from,
+                                       RPL_LIFETIME(dag,
+                                                    dag->default_lifetime));
     if(dag->def_route == NULL) {
       return 0;
     }
@@ -357,6 +355,9 @@ rpl_select_parent(rpl_dag_t *dag)
   }
 
   if(dag->preferred_parent != best) {
+    PRINTF("RPL: Sending a No-Path DAO to old DAO parent\n");
+    dao_output(dag->preferred_parent, ZERO_LIFETIME);
+
     dag->preferred_parent = best; /* Cache the value. */
     dag->of->update_metric_container(dag);
     rpl_set_default_route(dag, &best->addr);
@@ -377,7 +378,7 @@ rpl_select_parent(rpl_dag_t *dag)
     dag->min_rank = dag->rank;
   } else if(!acceptable_rank(dag, best->rank)) {
     /* Send a No-Path DAO to the soon-to-be-removed preferred parent. */
-    dao_output(p, ZERO_LIFETIME);
+    dao_output(best, ZERO_LIFETIME);
 
     remove_parents(dag, 0);
     return NULL;

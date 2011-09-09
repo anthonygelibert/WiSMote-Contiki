@@ -1,18 +1,20 @@
 /**
- * \addtogroup rime
+ * \addtogroup uip
  * @{
  */
 
+
 /**
- * \defgroup rimequeuebuf Rime queue buffer management
+ * \defgroup simple-udp
+ *
+ * The default Contiki UDP API is difficult to use. The simple-udp
+ * module provides a significantly simpler API.
+ *
  * @{
- *
- * The queuebuf module handles buffers that are queued.
- *
  */
 
 /*
- * Copyright (c) 2006, Swedish Institute of Computer Science.
+ * Copyright (c) 2011, Swedish Institute of Computer Science.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,57 +43,52 @@
  *
  * This file is part of the Contiki operating system.
  *
- * $Id: queuebuf.h,v 1.4 2010/11/25 08:43:59 adamdunkels Exp $
- */
-
-/**
  * \file
- *         Header file for the Rime queue buffer management
+ *         Header file for the simple-udp module.
  * \author
  *         Adam Dunkels <adam@sics.se>
+ *
  */
 
-#ifndef __QUEUEBUF_H__
-#define __QUEUEBUF_H__
+#ifndef SIMPLE_UDP_H
+#define SIMPLE_UDP_H
 
-#include "net/packetbuf.h"
+#include "net/uip.h"
 
-#ifdef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_NUM QUEUEBUF_CONF_NUM
-#else
-#define QUEUEBUF_NUM 8
-#endif
+struct simple_udp_connection;
 
-#ifdef QUEUEBUF_CONF_DEBUG
-#define QUEUEBUF_DEBUG QUEUEBUF_CONF_DEBUG
-#else /* QUEUEBUF_CONF_DEBUG */
-#define QUEUEBUF_DEBUG 0
-#endif /* QUEUEBUF_CONF_DEBUG */
+typedef void (* simple_udp_callback)(struct simple_udp_connection *c,
+                                     const uip_ipaddr_t *source_addr,
+                                     uint16_t source_port,
+                                     const uip_ipaddr_t *dest_addr,
+                                     uint16_t dest_port,
+                                     const uint8_t *data, uint16_t datalen);
 
-struct queuebuf;
+struct simple_udp_connection {
+  struct simple_udp_connection *next;
+  uip_ipaddr_t remote_addr;
+  uint16_t remote_port, local_port;
+  simple_udp_callback receive_callback;
+  struct uip_udp_conn *udp_conn;
+  struct process *client_process;
+};
 
-void queuebuf_init(void);
+int simple_udp_register(struct simple_udp_connection *c,
+                        uint16_t local_port,
+                        uip_ipaddr_t *remote_addr,
+                        uint16_t remote_port,
+                        simple_udp_callback receive_callback);
 
-#if QUEUEBUF_DEBUG
-struct queuebuf *queuebuf_new_from_packetbuf_debug(const char *file, int line);
-#define queuebuf_new_from_packetbuf() queuebuf_new_from_packetbuf_debug(__FILE__, __LINE__)
-#else /* QUEUEBUF_DEBUG */
-struct queuebuf *queuebuf_new_from_packetbuf(void);
-#endif /* QUEUEBUF_DEBUG */
-void queuebuf_update_attr_from_packetbuf(struct queuebuf *b);
+int simple_udp_send(struct simple_udp_connection *c,
+                    const void *data, uint16_t datalen);
 
-void queuebuf_to_packetbuf(struct queuebuf *b);
-void queuebuf_free(struct queuebuf *b);
+int simple_udp_sendto(struct simple_udp_connection *c,
+                      const void *data, uint16_t datalen,
+                      const uip_ipaddr_t *to);
 
-void *queuebuf_dataptr(struct queuebuf *b);
-int queuebuf_datalen(struct queuebuf *b);
+void simple_udp_init(void);
 
-rimeaddr_t *queuebuf_addr(struct queuebuf *b, uint8_t type);
-packetbuf_attr_t queuebuf_attr(struct queuebuf *b, uint8_t type);
-
-void queuebuf_debug_print(void);
-
-#endif /* __QUEUEBUF_H__ */
+#endif /* SIMPLE_UDP_H */
 
 /** @} */
 /** @} */
