@@ -49,7 +49,9 @@
 #include "lib/sensors.h"
 #include "iohandlers.h"
 #include "watchdog.h"
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
 #include "dev/ds2411.h"
+#endif
 
 #include "multsht15-sensors.h"
 #include "sensors/sht1x-sensor.h"
@@ -85,9 +87,11 @@ static void getSensor(const int num, char *buf)
   unsigned int pwr;
   struct sensors_sensor * sensor = getSensorByNum(num);
 
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
   snprintf(buf,ARRAY_SIZE,"%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X::",
       ds2411_id[0], ds2411_id[1], ds2411_id[2], ds2411_id[3],
       ds2411_id[4], ds2411_id[5], ds2411_id[6], ds2411_id[7]);
+#endif
   strncat(buf,sensor->type,ARRAY_SIZE);
   SENSORS_ACTIVATE(*sensor);
   tmp = sensor->value(SHT1X_SENSOR_TEMP);

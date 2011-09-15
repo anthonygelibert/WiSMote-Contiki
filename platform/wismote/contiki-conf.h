@@ -166,7 +166,7 @@ typedef unsigned short uip_stats_t;
 /** UART1: RX echo on UART0. */
 #define UART1_ECHO_RX_ON_UART0       0
 /** UART1: print RX errors flags on UART0 */
-#define UART1_PRINT_ERROR_FLAG_ON_UART0 1
+#define UART1_PRINT_ERROR_FLAG_ON_UART0 0
 
 /* ----- Serial Line module ----- */
 /** Buffer for the serial line reception buffer. */
@@ -181,7 +181,9 @@ typedef unsigned short uip_stats_t;
 /* ----- Includes ----- */
 #include "types.h"
 #include <msp430f5437.h>
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
 #include "ds2411-arch.h"
+#endif
 #include "spl.h"
 
 #endif /* __CONTIKI_CONF_H__ */

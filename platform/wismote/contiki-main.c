@@ -51,7 +51,9 @@
 #include "dev/watchdog.h"
 #include "dev/button-sensor.h"
 #include "dev/sht11-sensor.h"
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
 #include "dev/ds2411.h"
+#endif
 #include "lib/sensors.h"
 
 /* From MSP430x5xx */
