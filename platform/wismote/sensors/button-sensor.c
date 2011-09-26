@@ -42,7 +42,7 @@
  */
 
 /* From MPS430-GCC */
-#include <signal.h>
+#include <legacymsp430.h>
 
 /* From CONTIKI*/
 #include "dev/button-sensor.h"
@@ -65,7 +65,9 @@ myHandler(void)
   if (timer_expired(&debouncetimer)) {
     timer_set(&debouncetimer, CLOCK_SECOND / 4);
     sensors_changed(&button_sensor);
-    LPM4_EXIT;
+/* XXX_PTV
+ * LPM4_EXIT;
+ */
   }
 }
 

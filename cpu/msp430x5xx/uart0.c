@@ -49,7 +49,7 @@
 /* From MSP430-GCC */
 #include <stdio.h>
 #include <errno.h>
-#include <signal.h>
+#include <legacymsp430.h>
 
 /* From CONTIKI */
 #include "contiki.h"
