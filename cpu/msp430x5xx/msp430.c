@@ -42,7 +42,7 @@
  */
 
 /* From MSP430-GCC */
-#include <signal.h>
+#include <legacymsp430.h>
 
 /* From CONTIKI*/
 #include "dev/watchdog.h"

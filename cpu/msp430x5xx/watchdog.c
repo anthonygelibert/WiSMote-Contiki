@@ -43,10 +43,11 @@
  */
 
 /* From MSP430-GCC */
-#include <io.h>
-#include <signal.h>
+#include <msp430.h>
+#include <legacymsp430.h>
 
 /* From CONTIKI */
+#include "contiki-conf.h"
 #include "dev/watchdog.h"
 
 static int counter = 0;

@@ -36,7 +36,7 @@
  * SUCH DAMAGE.
  */
 
-#include <signal.h>
+#include <legacymsp430.h>
 
 #include "parallax_pir-555-28027.h"
 #include "iohandlers.h"
