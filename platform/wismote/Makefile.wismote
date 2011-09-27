@@ -21,7 +21,7 @@ endif
 ### The parameters for our own cpu (the CPU of our platform)
 ## Macros
 # Path to MSPGCC
-MSPGCCPATH?=/opt/msp430-gcc-4.5.3/bin/
+# MSPGCCPATH?=/opt/msp430-gcc-4.5.3/bin/
 # Enable the debug flags (see cpu/msp430f5x/Makefile.msp430f5x)
 # DEBUG_FLAGS=1
 # Enable SMALL mode
