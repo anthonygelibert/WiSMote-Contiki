@@ -46,7 +46,7 @@
 
 /* From MSP430-GCC */
 #include <stdint.h>
-
+#include <sys/cdefs.h>
 /* These names are depreciated, use C99 names. */
 typedef uint8_t u8_t;
 typedef uint16_t u16_t;

@@ -12,7 +12,7 @@ MSP430     =  msp430.c iohandlers.c uart0.c uart1.c clock.c watchdog.c mtarch.c 
 UIPDRIVERS =  uart_slip-arch.c slip.c
 ELFLOADER  =
 
-CONTIKI_SOURCEFILES += $(MSP430)  $(ELFLOADER) 
+CONTIKI_SOURCEFILES += $(MSP430)  $(ELFLOADER)
 ifndef CONTIKI_NO_NET
 CONTIKI_SOURCEFILES += $(UIPDRIVERS)
 endif
@@ -49,6 +49,9 @@ ifdef SMALL
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections,--undefined=_reset_vector__,--undefined=InterruptVectors,--undefined=_copy_data_init__,--undefined=_clear_bss_init__,--undefined=_end_of_init__
 endif
+
+# Remove warnings from core
+CFLAGS += -fno-strict-aliasing
 
 CFLAGS += $(DEBUG) $(OPTIM) $(DIAGNOSTIC) $(WARNING) $(WARNING_EXTRA) $(MMCU)
 LDFLAGS += $(MMCU) -Wl,-Map=contiki-$(TARGET).map
