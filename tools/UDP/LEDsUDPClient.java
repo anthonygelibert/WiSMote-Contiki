@@ -31,11 +31,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
  * Client for the LEDsUDP application on Contiki.
- *
+ * <p/>
  * Display a prompt and if the user types "blue", "green" or "red", the application
  * send the corresponding UDP packet to toggle the LED.
  *
@@ -45,27 +46,34 @@ import java.util.Scanner;
 public class LEDsUDPClient
 {
     /** Help message. */
-    private static final String HELP_MESSAGE = "Usage: UDPClient.class @IP port\n";
+    private static final String HELP_MESSAGE     = "Usage: UDPClient.class @IP port\n";
     /** Prompt. */
-    private static final String PROMPT = "text>";
+    private static final String PROMPT           = "text>";
     /** Command to toggle the blue LED. */
-    private static final String BLUE_CMD = "blue";
+    private static final String BLUE_CMD         = "blue";
     /** Command to toggle the green LED. */
-    private static final String GREEN_CMD = "green";
+    private static final String GREEN_CMD        = "green";
     /** Command to toggle the red LED. */
-    private static final String RED_CMD = "red";
+    private static final String RED_CMD          = "red";
     /** Command to "exit". */
-    private static final String EXIT_CMD = "exit";
+    private static final String EXIT_CMD         = "exit";
     /** Packet to toggle the blue LED. */
-    private static final String BLUE_LED_PACKET = "LED-1";
+    private static final String BLUE_LED_PACKET  = "LED-1";
     /** Packet to toggle the green LED. */
     private static final String GREEN_LED_PACKET = "LED-2";
     /** Packet to toggle the red LED. */
-    private static final String RED_LED_PACKET = "LED-3";
+    private static final String RED_LED_PACKET   = "LED-3";
 
-    private LEDsUDPClient(){}
+    private LEDsUDPClient() {}
 
-    public static void main(final String[] args) throws IOException
+    /**
+     * Main method.
+     *
+     * @param args Wait for 2 arguments: "@IP", "port"
+     *
+     * @throws UnknownHostException Unknown DNS name
+     */
+    public static void main(final String[] args) throws UnknownHostException
     {
         if (args.length != 2)
         {
@@ -81,45 +89,59 @@ public class LEDsUDPClient
         /* Input. */
         final Scanner input = new Scanner(System.in);
         /* UDP socket. */
-        final DatagramSocket socket = new DatagramSocket();
-        while (true)
+        try
         {
-            System.out.print(PROMPT);
-            String line = input.nextLine();
-            /* Send the good packet or exit */
-            if (BLUE_CMD.compareTo(line) == 0)
+            final DatagramSocket socket = new DatagramSocket();
+            try
             {
-                line = BLUE_LED_PACKET;
-            }
-            else
-            {
-                if (GREEN_CMD.compareTo(line) == 0)
+                while (true)
                 {
-                    line = GREEN_LED_PACKET;
-                }
-                else
-                {
-                    if (RED_CMD.compareTo(line) == 0)
+                    System.out.print(PROMPT);
+                    String line = input.nextLine();
+                    /* Send the good packet or exit */
+                    if (BLUE_CMD.compareTo(line) == 0)
                     {
-                        line = RED_LED_PACKET;
+                        line = BLUE_LED_PACKET;
                     }
                     else
                     {
-                        if (EXIT_CMD.compareTo(line) == 0)
+                        if (GREEN_CMD.compareTo(line) == 0)
                         {
-                            break;
+                            line = GREEN_LED_PACKET;
                         }
                         else
                         {
-                            continue;
+                            if (RED_CMD.compareTo(line) == 0)
+                            {
+                                line = RED_LED_PACKET;
+                            }
+                            else
+                            {
+                                if (EXIT_CMD.compareTo(line) == 0)
+                                {
+                                    break;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
                         }
                     }
+                    packet.setData(line.getBytes());
+                    packet.setLength(line.getBytes().length);
+                    socket.send(packet);
                 }
             }
-            packet.setData(line.getBytes());
-            packet.setLength(line.getBytes().length);
-            socket.send(packet);
+            finally
+            {
+                socket.close();
+            }
         }
-        socket.close();
+        catch (final IOException e)
+        {
+            e.printStackTrace();
+
+        }
     }
 }

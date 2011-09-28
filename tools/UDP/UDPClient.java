@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
@@ -44,13 +45,21 @@ public class UDPClient
     /** Help message. */
     private static final String HELP_MESSAGE = "Usage: UDPClient.class @IP port\n";
     /** Prompt. */
-    private static final String PROMPT = "text>";
+    private static final String PROMPT       = "text>";
     /** Command to "exit". */
-    private static final String EXIT_CMD = "exit";
+    private static final String EXIT_CMD     = "exit";
 
-    private UDPClient(){}
+    private UDPClient() {}
 
-    public static void main(final String[] args) throws IOException
+
+    /**
+     * Main method.
+     *
+     * @param args Wait for 2 arguments: "@IP", "port"
+     *
+     * @throws UnknownHostException Unknown DNS name
+     */
+    public static void main(final String[] args) throws UnknownHostException
     {
         if (args.length != 2)
         {
@@ -66,19 +75,32 @@ public class UDPClient
         /* Input. */
         final Scanner input = new Scanner(System.in);
         /* UDP socket. */
-        final DatagramSocket socket = new DatagramSocket();
-        while (true)
+        try
         {
-            System.out.print(PROMPT);
-            final String line = input.nextLine();
-            if (EXIT_CMD.compareTo(line) == 0)
+            final DatagramSocket socket = new DatagramSocket();
+            try
             {
-                break;
+                while (true)
+                {
+                    System.out.print(PROMPT);
+                    final String line = input.nextLine();
+                    if (EXIT_CMD.compareTo(line) == 0)
+                    {
+                        break;
+                    }
+                    packet.setData(line.getBytes());
+                    packet.setLength(line.getBytes().length);
+                    socket.send(packet);
+                }
             }
-            packet.setData(line.getBytes());
-            packet.setLength(line.getBytes().length);
-            socket.send(packet);
+            finally
+            {
+                socket.close();
+            }
         }
-        socket.close();
+        catch (final IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

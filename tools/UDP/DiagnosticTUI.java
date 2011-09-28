@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
@@ -42,19 +43,26 @@ public class DiagnosticTUI
     /** Help message. */
     private static final String HELP_MESSAGE = "Usage: DiagTUI.class @IP local_port remote_port\n";
     /** Prompt of the technician. */
-    private static final String MY_PROMPT = "you> ";
+    private static final String MY_PROMPT    = "you> ";
     /** Prompt of the Wismote. */
-    private static final String ITS_PROMPT = "wismote> ";
+    private static final String ITS_PROMPT   = "wismote> ";
     /** Exit command. */
-    private static final String EXIT_CMD = "exit";
+    private static final String EXIT_CMD     = "exit";
     /** Size of the receiver buffer. */
-    private static final int BUFFER_SIZE = 500;
+    private static final int    BUFFER_SIZE  = 500;
     /** Reception buffer. */
-    private static final byte[] BUFFER = new byte[BUFFER_SIZE];
+    private static final byte[] BUFFER       = new byte[BUFFER_SIZE];
 
     private DiagnosticTUI() {}
 
-    public static void main(final String[] args) throws IOException
+    /**
+     * Main method.
+     *
+     * @param args Wait for 3 arguments: "@IP", "local_port", "remote_port"
+     *
+     * @throws UnknownHostException Unknown DNS name
+     */
+    public static void main(final String[] args) throws UnknownHostException
     {
         if (args.length != 3)
         {
@@ -69,31 +77,50 @@ public class DiagnosticTUI
         final DatagramPacket packet = new DatagramPacket(new byte[1], 1, address, port);
         /* Input. */
         final Scanner input = new Scanner(System.in);
-        /* UDP Client socket. */
-        final DatagramSocket socket = new DatagramSocket();
-        /* UDP Server socket. */
-        final DatagramSocket serverSocket = new DatagramSocket(Integer.parseInt(args[1]));
-        /* UDP Server socket: data */
-        final DatagramPacket data = new DatagramPacket(BUFFER, BUFFER_SIZE);
-        while (true)
+        try
         {
-            System.out.print(MY_PROMPT);
-            final String line = input.nextLine();
-            if (EXIT_CMD.compareTo(line) == 0)
+            /* UDP Client socket. */
+            final DatagramSocket socket = new DatagramSocket();
+            try
             {
-                break;
+                /* UDP Server socket. */
+                final DatagramSocket serverSocket = new DatagramSocket(Integer.parseInt(args[1]));
+                try
+                {
+                    /* UDP Server socket: data */
+                    final DatagramPacket data = new DatagramPacket(BUFFER, BUFFER_SIZE);
+                    while (true)
+                    {
+                        System.out.print(MY_PROMPT);
+                        final String line = input.nextLine();
+                        if (EXIT_CMD.compareTo(line) == 0)
+                        {
+                            break;
+                        }
+                        /* Send the packet of the technician */
+                        packet.setData(line.getBytes());
+                        packet.setLength(line.getBytes().length);
+                        socket.send(packet);
+                        /* Wait for an answer */
+                        serverSocket.receive(data);
+                        /* Display the answer with the remote prompt */
+                        System.out.println(ITS_PROMPT + new String(data.getData(), 0, data.getLength()) + '\n');
+                    }
+                }
+                finally
+                {
+                    serverSocket.close();
+                }
             }
-            /* Send the packet of the technician */
-            packet.setData(line.getBytes());
-            packet.setLength(line.getBytes().length);
-            socket.send(packet);
-            /* Wait for an answer */
-            serverSocket.receive(data);
-            /* Display the answer with the remote prompt */
-            System.out.println(ITS_PROMPT + new String(data.getData(), 0, data.getLength()) + '\n');
+            finally
+            {
+                /* Close the sockets. */
+                socket.close();
+            }
         }
-        /* Close the two sockets. */
-        socket.close();
-        serverSocket.close();
+        catch (final IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

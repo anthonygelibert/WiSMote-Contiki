@@ -42,63 +42,85 @@ import java.net.DatagramSocket;
  */
 public class SHT15UDP
 {
+    /* Server param. */
+    private static final int SERVER_PORT = 1234;
+
     /* UDP buffers */
     /** UDP Buffer size. */
-    private static final int BUFFER_SIZE = 10;
+    private static final int    BUFFER_SIZE = 10;
     /** UDP Buffer. */
-    private static final byte[] BUFFER = new byte[BUFFER_SIZE];
+    private static final byte[] BUFFER      = new byte[BUFFER_SIZE];
 
     /* Temperature (14 bits / 3.5V) constants */
-    private static final double D1 = -39.7;
-    private static final double D2 = 0.01;
+    private static final double TMP_D1 = -39.7;
+    private static final double TMP_D2 = 0.01;
 
     /* Relative humidity (12 bits) constants */
-    private static final double C1 = -2.0468;
-    private static final double C2 = 0.0367;
-    private static final double C3 = -0.0000015955;
+    private static final double HUM_C1 = -2.0468;
+    private static final double HUM_C2 = 0.0367;
+    private static final double HUM_C3 = -0.0000015955;
 
-	/* Relative humidity, temperature compensation constants */
-	private static final double T1 = 0.01;
-	private static final double T2 = 0.00008;
+    /* Relative humidity, temperature compensation constants */
+    private static final double TMP_HUM_T1 = 0.01;
+    private static final double TMP_HUM_T2 = 0.00008;
 
-    private SHT15UDP(){}
+    private SHT15UDP() {}
 
-    public static void main(final String[] args) throws IOException
+    /**
+     * Main method.
+     *
+     * @param args No args.
+     */
+    public static void main(final String[] args)
     {
         /* UDP socket: packet */
         final DatagramPacket data = new DatagramPacket(BUFFER, BUFFER_SIZE);
-        /* UDP socket */
-        final DatagramSocket socket = new DatagramSocket(1234);
-        System.out.println("I wait tmp/hr data on UDP port 1234\n");
-        while (true)
+        try
         {
-            socket.receive(data);
-            /* Parse answer */
-            final String[] values = new String(data.getData()).split("-", 2);
-            /* Temperature */
-            double tmp = 0;
-			try
-            {
-                tmp = D1 + D2 * Double.parseDouble(values[0]);
-                System.out.println("TMP: " + round(tmp) + "°C");
-            }
-            catch (final NumberFormatException ex)
-            {
-                System.err.println("TMP: N/A");
-            }
-            /* Relative humidity */
+            /* UDP socket */
+            final DatagramSocket socket = new DatagramSocket(SERVER_PORT);
             try
             {
-                final double rh = Double.parseDouble(values[1]);
-                final double rhl = C1 + C2 * rh + C3 * rh * rh;
-				final double hr = (tmp - 25) * (T1 + T2*rh) + rhl;
-                System.out.println("HR:  " + round(hr) + "%");
+                System.out.println("I wait tmp/hr data on UDP port 1234\n");
+                while (true)
+                {
+                    socket.receive(data);
+                    /* Parse answer */
+                    final String[] values = new String(data.getData()).split("-", 2);
+                    /* Temperature */
+                    double tmp = 0;
+                    try
+                    {
+                        tmp = TMP_D1 + TMP_D2 * Double.parseDouble(values[0]);
+                        System.out.println("TMP: " + round(tmp) + "°C");
+                    }
+                    catch (final NumberFormatException ex)
+                    {
+                        System.err.println("TMP: N/A (" + ex.getMessage() + ')');
+                    }
+                    /* Relative humidity */
+                    try
+                    {
+                        final double rh = Double.parseDouble(values[1]);
+                        final double rhl = HUM_C1 + HUM_C2 * rh + HUM_C3 * rh * rh;
+                        final double hr = (tmp - 25) * (TMP_HUM_T1 + TMP_HUM_T2 * rh) + rhl;
+                        System.out.println("HR:  " + round(hr) + '%');
+                    }
+                    catch (final NumberFormatException ex)
+                    {
+                        System.err.println("HR:  N/A (" + ex.getMessage() + ')');
+                    }
+                    System.out.println("-------------");
+                }
             }
-            catch (final NumberFormatException ex)
+            finally
             {
-                System.err.println("HR:  N/A");
+                socket.close();
             }
-            System.out.println("-------------");
+        }
+        catch (final IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -106,6 +128,7 @@ public class SHT15UDP
      * Round a double to 2 decimal digits.
      *
      * @param d Original double.
+     *
      * @return Rounded version.
      */
     static double round(final double d)
