@@ -82,6 +82,9 @@ static struct uip_udp_conn *localconn;
 /** The remote connection. */
 static struct uip_udp_conn *remoteconn;
 
+#if UIP_CONF_IPV6
+const uip_ipaddr_t uip_all_zeroes_addr = { { 0x0, /* rest is 0 */ } };
+#endif
 /**
  * Send the answer.
  */
