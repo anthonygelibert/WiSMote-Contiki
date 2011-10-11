@@ -12,6 +12,9 @@
 #define  MEASURE_HUMI   0x05    /* 000    0010    1 */
 #define  RESET          0x1e    /* 000    1111    0 */
 
+
+#define BV(bit)   (1 << (bit))
+
 #define EXPORT_SHT1X(var) extern const struct sensors_sensor var;
 
 #define NEW_SHT1X(var, name, sda_port, sda_bit, scl_port, scl_bit, pwr_port, pwr_bit) \
