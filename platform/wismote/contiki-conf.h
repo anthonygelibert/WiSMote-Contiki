@@ -61,7 +61,7 @@ typedef unsigned short clock_time_t;
 
 /* ----- UIP module ----- */
 /* ---- Perso ----- */
-#define UIP_USE_DS2411_FOR_MAC_ADDRESS 1
+#define UIP_USE_DS2411_FOR_MAC_ADDRESS 0
 /* ---- General ---- */
 typedef unsigned short uip_stats_t;
 /** Globally enable logging. */
