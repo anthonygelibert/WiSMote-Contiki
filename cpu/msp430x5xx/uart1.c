@@ -61,6 +61,14 @@
 #include "msp430.h"
 #include "uart1.h"
 
+#if UART1_CONF_RXTX_INDICATOR_SIMPLE && UART1_CONF_RXTX_INDICATOR_COMPLEX
+    #error "Enable only \"simple\" OR \"complex\" RXTX_INDICATOR for UART1"
+#endif
+
+#if !UART1_CONF_RXTX_INDICATOR_SIMPLE && !UART1_CONF_RXTX_INDICATOR_COMPLEX
+    #warning "No led toggling enabled for UART1 RX/TX operation"
+#endif
+
 #ifdef UART1_CONF_CUSTOM_INIT
 #define UART1_CUSTOM_INIT (UART1_CONF_CUSTOM_INIT)
 #else
@@ -182,14 +190,12 @@ uart1_writeb(const uint8_t c)
    the first byte into the UART. */
   if (transmitting == 0) {
     transmitting = 1;
-    leds_toggle(LEDS_BLUE);
     UCA0TXBUF = ringbuf_get(&txbuf);
   }
 #else
   /* Loop until the transmission buffer is available. */
   while((UCA0STAT & UCBUSY)) {
   }
-  leds_toggle(LEDS_BLUE);
   /* Transmit the data. */
   UCA0TXBUF = c;
 #endif /* UART1_TX_WITH_INTERRUPT */
@@ -268,11 +274,18 @@ uart1_interrupt(void)
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   watchdog_start();
 
+#if UART1_CONF_RXTX_INDICATOR_SIMPLE
+  /* Indicate a rx/tx operation */
+  leds_toggle(LEDS_RED);
+#endif
   /* Test a RX */
   if (UCA0IFG & UCRXIFG) {
     /* Check for an error */
     if (UCA0STAT & UCRXERR) {
+#if UART1_CONF_RXTX_INDICATOR_COMPLEX
+      /* Indicate a rx/tx operation */
       leds_toggle(LEDS_RED);
+#endif
 #if UART1_PRINT_ERROR_FLAG_ON_UART0
       if (UCA0STAT & UCFE)
       {
@@ -290,8 +303,10 @@ uart1_interrupt(void)
       /* Clear error flags by forcing a dummy read. */
       c = UCA0RXBUF;
     } else {
+#if UART1_CONF_RXTX_INDICATOR_COMPLEX
       /* Indicate a rx/tx operation */
       leds_toggle(LEDS_GREEN);
+#endif
       /* Get the good value */
       c = UCA0RXBUF;
 #if UART1_ECHO_RX_ON_UART0
@@ -314,7 +329,9 @@ uart1_interrupt(void)
       if (ringbuf_elements(&txbuf) == 0) {
         transmitting = 0;
       } else {
+#if UART1_CONF_RXTX_INDICATOR_COMPLEX
         leds_toggle(LEDS_BLUE);
+#endif
         UCA0TXBUF = ringbuf_get(&txbuf);
       }
       /* In a stand-alone app won't work without this. Is the UG misleading? */

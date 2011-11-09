@@ -61,6 +61,13 @@
 #include "msp430.h"
 #include "uart0.h"
 
+#if UART0_CONF_RXTX_INDICATOR_SIMPLE && UART0_CONF_RXTX_INDICATOR_COMPLEX
+    #error "Enable only \"simple\" OR \"complex\" RXTX_INDICATOR for UART0"
+#endif
+
+#if !UART0_CONF_RXTX_INDICATOR_SIMPLE && !UART0_CONF_RXTX_INDICATOR_COMPLEX
+    #warning "No led toggling enabled for UART0 RX/TX operation"
+#endif
 
 #ifdef UART0_CONF_CUSTOM_INIT
 #define UART0_CUSTOM_INIT (UART0_CONF_CUSTOM_INIT)
@@ -182,14 +189,12 @@ uart0_writeb(const uint8_t c)
    the first byte into the UART. */
   if (transmitting == 0) {
     transmitting = 1;
-    leds_toggle(LEDS_BLUE);
     UCA1TXBUF = ringbuf_get(&txbuf);
   }
 #else
   /* Loop until the transmission buffer is available. */
   while((UCA1STAT & UCBUSY)) {
   }
-  leds_toggle(LEDS_BLUE);
   /* Transmit the data. */
   UCA1TXBUF = c;
 #endif /* TX_WITH_INTERRUPT */
@@ -268,17 +273,25 @@ uart0_interrupt(void)
   ENERGEST_ON(ENERGEST_TYPE_IRQ);
   watchdog_start();
 
+#if UART0_CONF_RXTX_INDICATOR_SIMPLE
+  /* Indicate a rx/tx operation */
+  leds_toggle(LEDS_RED);
+#endif
   /* Test a RX */
   if (UCA1IFG & UCRXIFG) {
     /* Check for an error */
     if (UCA1STAT & UCRXERR) {
+#if UART0_CONF_RXTX_INDICATOR_COMPLEX
       /* Indicate a rx/tx operation */
       leds_toggle(LEDS_RED);
+#endif
       /* Clear error flags by forcing a dummy read. */
       c = UCA1RXBUF;
     } else {
+#if UART0_CONF_RXTX_INDICATOR_COMPLEX
       /* Indicate a rx/tx operation */
       leds_toggle(LEDS_GREEN);
+#endif
       /* Get the good value */
       c = UCA1RXBUF;
       /* If an input handler is set, use it */
@@ -298,7 +311,9 @@ uart0_interrupt(void)
       if (ringbuf_elements(&txbuf) == 0) {
         transmitting = 0;
       } else {
+#if UART0_CONF_RXTX_INDICATOR_COMPLEX
         leds_toggle(LEDS_BLUE);
+#endif
         UCA1TXBUF = ringbuf_get(&txbuf);
       }
       /* In a stand-alone app won't work without this. Is the UG misleading? */

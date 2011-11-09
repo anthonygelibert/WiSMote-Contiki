@@ -149,12 +149,22 @@ typedef unsigned short uip_stats_t;
 #define SL_USE_UART1    0
 
 /* ----- UART module ----- */
+/** Use simple RX/TX indicator. */
+#define UART0_CONF_RXTX_INDICATOR_SIMPLE 1
+/** Doesn't use complex RX/TX indicator. */
+#define UART0_CONF_RXTX_INDICATOR_COMPLEX 0
 /** UART0: uses interrupt for TX. */
 #define UART0_CONF_TX_WITH_INTERRUPT 1
 /** UART0: size of the TX buffer. */
 #define UART0_CONF_TX_BUFSIZE      128
 /** UART0: custom setup. */
 #define UART0_CONF_CUSTOM_INIT       0
+
+
+/** Use simple RX/TX indicator. */
+#define UART1_CONF_RXTX_INDICATOR_SIMPLE 1
+/** Doesn't use complex RX/TX indicator. */
+#define UART1_CONF_RXTX_INDICATOR_COMPLEX 0
 /** UART1: uses interrupt for TX. */
 #define UART1_CONF_TX_WITH_INTERRUPT 1
 /** UART1: size of the TX buffer. */
