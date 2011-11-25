@@ -1,8 +1,13 @@
 #ifndef __SHT1X_SENSOR_H__
 #define __SHT1X_SENSOR_H__
 
+/** Constant to get the sensor temperature. */
 #define SHT1X_SENSOR_TEMP              0
+
+/** Constant to get the sensor humidity. */
 #define SHT1X_SENSOR_HUMIDITY          1
+
+/** Constant to get the sensor battery indicator. */
 #define SHT1X_SENSOR_BATTERY_INDICATOR 2
 
 /* adr   command  r/w */
@@ -13,24 +18,39 @@
 #define  RESET          0x1e    /* 000    1111    0 */
 
 
+/** Size of the pause used to generate the signal. */
+#define SHT1X_PAUSE _NOP();_NOP(); _NOP();_NOP();
+
 #define BV(bit)   (1 << (bit))
 
+/** Macro to export an SHT1X. */
 #define EXPORT_SHT1X(var) extern const struct sensors_sensor var;
 
+/** Macro to create a new SHT1X
+ *
+ * \param var variable name.
+ * \param name symbolic name.
+ * \param sda_port SDA port.
+ * \param sda_bit  SDA bit.
+ * \param scl_port SCL port.
+ * \param scl_bit  SCL bit.
+ * \param pwr_port PWR port.
+ * \param pwr_bit  PWR bit.
+ */
 #define NEW_SHT1X(var, name, sda_port, sda_bit, scl_port, scl_bit, pwr_port, pwr_bit) \
     static void var##_sstart(void) {\
         P##sda_port##DIR &= ~BV(sda_bit); P##scl_port##OUT &= ~BV(scl_bit);\
-        _NOP();_NOP(); _NOP();_NOP();\
+        SHT1X_PAUSE;\
         P##scl_port##OUT |=  BV(scl_bit);\
-        _NOP();_NOP(); _NOP();_NOP();\
+        SHT1X_PAUSE;\
         P##sda_port##DIR |=  BV(sda_bit);\
-        _NOP();_NOP(); _NOP();_NOP();\
+        SHT1X_PAUSE;\
         P##scl_port##OUT &= ~BV(scl_bit);\
-        _NOP();_NOP(); _NOP();_NOP();\
+        SHT1X_PAUSE;\
         P##scl_port##OUT |=  BV(scl_bit);\
-        _NOP();_NOP(); _NOP();_NOP();\
+        SHT1X_PAUSE;\
         P##sda_port##DIR &= ~BV(sda_bit);\
-        _NOP();_NOP(); _NOP();_NOP();\
+        SHT1X_PAUSE;\
         P##scl_port##OUT &= ~BV(scl_bit);\
     }\
     \
@@ -40,7 +60,7 @@
         P##scl_port##OUT &= ~BV(scl_bit);\
         for(i = 0; i < 9 ; i++) { \
             P##scl_port##OUT |= BV(scl_bit);\
-            _NOP();_NOP(); _NOP();_NOP();\
+            SHT1X_PAUSE;\
             P##scl_port##OUT &= ~BV(scl_bit);\
         }\
         var##_sstart();\
@@ -55,12 +75,12 @@
                 P##sda_port##DIR |=  BV(sda_bit);\
             }\
             P##scl_port##OUT |=  BV(scl_bit);\
-            _NOP();_NOP(); _NOP();_NOP();\
+            SHT1X_PAUSE;\
             P##scl_port##OUT &= ~BV(scl_bit);\
         }\
         P##sda_port##DIR &= ~BV(sda_bit);\
         P##scl_port##OUT |=  BV(scl_bit);\
-        _NOP();_NOP(); _NOP();_NOP();\
+        SHT1X_PAUSE;\
         ret = !(P##sda_port##IN & BV(sda_bit));\
         P##scl_port##OUT &= ~BV(scl_bit);\
         return ret;\
@@ -73,7 +93,7 @@
       for(i = 0; i < 8; i++) {\
           c <<= 1;\
           P##scl_port##OUT |=  BV(scl_bit);\
-          _NOP();_NOP(); _NOP();_NOP();\
+          SHT1X_PAUSE;\
           if(P##sda_port##IN & BV(sda_bit)) {\
               c |= 0x1;\
           }\
@@ -83,7 +103,7 @@
           P##sda_port##DIR |=  BV(sda_bit);\
       }\
       P##scl_port##OUT |=  BV(scl_bit);\
-      _NOP();_NOP(); _NOP();_NOP();\
+      SHT1X_PAUSE;\
       P##scl_port##OUT &= ~BV(scl_bit);\
       P##sda_port##DIR &= ~BV(sda_bit);\
       return c;\
