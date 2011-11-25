@@ -60,6 +60,16 @@
 typedef unsigned short clock_time_t;
 
 /* ----- UIP module ----- */
+/* ---- Stack ----- */
+#if WITH_UIP6
+#ifndef NETSTACK_CONF_NETWORK
+#define NETSTACK_CONF_NETWORK sicslowpan_driver
+#endif
+#else
+#ifndef NETSTACK_CONF_NETWORK
+#define NETSTACK_CONF_NETWORK rime_driver
+#endif
+#endif
 /* ---- Perso ----- */
 #define UIP_USE_DS2411_FOR_MAC_ADDRESS 0
 /* ---- General ---- */
