@@ -1,1 +1,1 @@
-SUBSYSTEMS=="usb", KERNEL=="ttyUSB*", ATTRS{product}=="CP2102 USB to UART Bridge Controller", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="wismote", GROUP="wismote"
+SUBSYSTEMS=="usb", KERNEL=="ttyUSB*", ATTRS{interface}=="ARAGO SYSTEMS - WiSMote v1.01", SYMLINK+="wismote", GROUP="wismote"
