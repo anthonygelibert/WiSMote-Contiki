@@ -130,11 +130,11 @@ PT_THREAD(generate_routes(struct httpd_state *s))
   SEND_STRING(&s->sout, TOP);
 
   blen = 0;
-  ADD("<h2>Neighbors</h2>");
+  ADD("Neighbors<pre>");
   for(i = 0; i < UIP_DS6_NBR_NB; i++) {
     if(uip_ds6_nbr_cache[i].isused) {
       ipaddr_add(&uip_ds6_nbr_cache[i].ipaddr);
-      ADD("<br>\n");
+      ADD("\n");
       if(blen > sizeof(buf) - 45) {
         SEND_STRING(&s->sout, buf);
         blen = 0;
@@ -142,7 +142,7 @@ PT_THREAD(generate_routes(struct httpd_state *s))
     }
   }
 
-  ADD("<h2>Routes</h2>");
+  ADD("</pre>Routes<pre>");
   SEND_STRING(&s->sout, buf);
   blen = 0;
   for(i = 0; i < UIP_DS6_ROUTE_NB; i++) {
@@ -151,18 +151,19 @@ PT_THREAD(generate_routes(struct httpd_state *s))
       ADD("/%u (via ", uip_ds6_routing_table[i].length);
       ipaddr_add(&uip_ds6_routing_table[i].nexthop);
       if(uip_ds6_routing_table[i].state.lifetime < 600) {
-        ADD(") %lus<br>\n", uip_ds6_routing_table[i].state.lifetime);
+        ADD(") %lus\n", uip_ds6_routing_table[i].state.lifetime);
       } else {
-        ADD(")<br>\n");
+        ADD(")\n");
       }
       SEND_STRING(&s->sout, buf);
       blen = 0;
     }
   }
-  if(blen > 0) {
+  ADD("</pre>");
+//if(blen > 0) {
     SEND_STRING(&s->sout, buf);
-    blen = 0;
-  }
+// blen = 0;
+//}
 
   SEND_STRING(&s->sout, BOTTOM);
 
@@ -239,7 +240,7 @@ PROCESS_THREAD(border_router_process, ev, data)
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
   }
 
-  dag = rpl_set_root((uip_ip6addr_t *)dag_id);
+  dag = rpl_set_root(RPL_DEFAULT_INSTANCE,(uip_ip6addr_t *)dag_id);
   if(dag != NULL) {
     rpl_set_prefix(dag, &prefix, 64);
     PRINTF("created a new RPL dag\n");
@@ -257,7 +258,7 @@ PROCESS_THREAD(border_router_process, ev, data)
     PROCESS_YIELD();
     if (ev == sensors_event && data == &button_sensor) {
       PRINTF("Initiating global repair\n");
-      rpl_repair_dag(rpl_get_dag(RPL_ANY_INSTANCE));
+      rpl_repair_root(RPL_DEFAULT_INSTANCE);
     }
   }
 
