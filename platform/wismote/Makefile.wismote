@@ -4,6 +4,7 @@ FROM_CONTIKI += leds.c sensors.c ds2411.c
 ARCH += leds-arch.c clock-arch.c spi-arch.c uart-arch.c
 SENSORS += button-sensor.c parallax_pir-555-28027.c
 DIAG += diag.c diag-version.c diag-process.c diag-sensor.c
+RADIO += cc2520.c cc2520-arch.c cc2520-arch-sfd.c
 
 # All the directories containing code for our platform (relative path from /platform/wismote).
 CONTIKI_TARGET_DIRS = . hard sensors diag
@@ -13,7 +14,7 @@ CONTIKI_TARGET_MAIN = contiki-main.c
 CONTIKI_SOURCEFILES += $(FROM_CONTIKI) $(ARCH) $(SENSORS) $(CONTIKI_TARGET_MAIN)
 
 ifndef CONTIKI_NO_NET
-CONTIKI_SOURCEFILES += $(DIAG)
+CONTIKI_SOURCEFILES += $(DIAG) $(RADIO)
 endif
 
 .SUFFIXES:
