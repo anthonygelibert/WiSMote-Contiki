@@ -59,6 +59,14 @@
 /* XXX_PTV Change to long */
 typedef unsigned short clock_time_t;
 
+/* ----- Includes ----- */
+#include "types.h"
+#include <msp430f5437.h>
+#if UIP_USE_DS2411_FOR_MAC_ADDRESS
+#include "ds2411-arch.h"
+#endif
+#include "spl.h"
+
 /* ----- UIP module ----- */
 /* ---- Stack ----- */
 #if WITH_UIP6
@@ -68,6 +76,9 @@ typedef unsigned short clock_time_t;
 #else
 #ifndef NETSTACK_CONF_NETWORK
 #define NETSTACK_CONF_NETWORK rime_driver
+#endif
+#ifndef NETSTACK_CONF_RADIO
+#define NETSTACK_CONF_RADIO   cc2520_driver
 #endif
 #endif
 /* ---- Perso ----- */
@@ -267,13 +278,6 @@ typedef unsigned short uip_stats_t;
 #define CC2520_SPI_IS_ENABLED() ((CC2520_CSN_PORT(OUT) & BV(CC2520_CSN_PIN)) != BV(CC2520_CSN_PIN))
 
 
-/* ----- Includes ----- */
-#include "types.h"
-#include <msp430f5437.h>
-#if UIP_USE_DS2411_FOR_MAC_ADDRESS
-#include "ds2411-arch.h"
-#endif
-#include "spl.h"
 
 #endif /* __CONTIKI_CONF_H__ */
 
