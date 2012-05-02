@@ -212,19 +212,20 @@ uip_ds6_periodic(void)
         }
         break;
       case NBR_DELAY:
-        if(stimer_expired(&locnbr->reachable) && (uip_len == 0)) {
+        if(stimer_expired(&locnbr->reachable)) {
           locnbr->state = NBR_PROBE;
-          locnbr->nscount = 1;
-          PRINTF("DELAY: moving to PROBE + NS %u\n", locnbr->nscount);
-          uip_nd6_ns_output(NULL, &locnbr->ipaddr, &locnbr->ipaddr);
-          stimer_set(&locnbr->sendns, uip_ds6_if.retrans_timer / 1000);
+          locnbr->nscount = 0;
+          PRINTF("DELAY: moving to PROBE\n");
+          stimer_set(&locnbr->sendns, 0);
         }
         break;
       case NBR_PROBE:
         if(locnbr->nscount >= UIP_ND6_MAX_UNICAST_SOLICIT) {
           PRINTF("PROBE END\n");
           if((locdefrt = uip_ds6_defrt_lookup(&locnbr->ipaddr)) != NULL) {
-            uip_ds6_defrt_rm(locdefrt);
+            if (!locdefrt->isinfinite) {
+              uip_ds6_defrt_rm(locdefrt);
+            }
           }
           uip_ds6_nbr_rm(locnbr);
         } else if(stimer_expired(&locnbr->sendns) && (uip_len == 0)) {
@@ -279,7 +280,7 @@ uip_ds6_list_loop(uip_ds6_element_t *list, uint8_t size,
 
 /*---------------------------------------------------------------------------*/
 uip_ds6_nbr_t *
-uip_ds6_nbr_add(uip_ipaddr_t *ipaddr, uip_lladdr_t * lladdr,
+uip_ds6_nbr_add(uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr,
                 uint8_t isrouter, uint8_t state)
 {
   int r;
@@ -365,6 +366,7 @@ uip_ds6_nbr_lookup(uip_ipaddr_t *ipaddr)
      ((uip_ds6_element_t *)uip_ds6_nbr_cache, UIP_DS6_NBR_NB,
       sizeof(uip_ds6_nbr_t), ipaddr, 128,
       (uip_ds6_element_t **)&locnbr) == FOUND) {
+    locnbr->last_lookup = clock_time();
     return locnbr;
   }
   return NULL;
@@ -527,7 +529,7 @@ uip_ds6_prefix_add(uip_ipaddr_t *ipaddr, uint8_t ipaddrlen,
 
 /*---------------------------------------------------------------------------*/
 void
-uip_ds6_prefix_rm(uip_ds6_prefix_t * prefix)
+uip_ds6_prefix_rm(uip_ds6_prefix_t *prefix)
 {
   if(prefix != NULL) {
     prefix->isused = 0;
@@ -676,7 +678,7 @@ uip_ds6_maddr_add(uip_ipaddr_t *ipaddr)
 
 /*---------------------------------------------------------------------------*/
 void
-uip_ds6_maddr_rm(uip_ds6_maddr_t * maddr)
+uip_ds6_maddr_rm(uip_ds6_maddr_t *maddr)
 {
   if(maddr != NULL) {
     maddr->isused = 0;
@@ -715,7 +717,7 @@ uip_ds6_aaddr_add(uip_ipaddr_t *ipaddr)
 
 /*---------------------------------------------------------------------------*/
 void
-uip_ds6_aaddr_rm(uip_ds6_aaddr_t * aaddr)
+uip_ds6_aaddr_rm(uip_ds6_aaddr_t *aaddr)
 {
   if(aaddr != NULL) {
     aaddr->isused = 0;
@@ -869,7 +871,7 @@ uip_ds6_select_src(uip_ipaddr_t *src, uip_ipaddr_t *dst)
 
 /*---------------------------------------------------------------------------*/
 void
-uip_ds6_set_addr_iid(uip_ipaddr_t *ipaddr, uip_lladdr_t * lladdr)
+uip_ds6_set_addr_iid(uip_ipaddr_t *ipaddr, uip_lladdr_t *lladdr)
 {
   /* We consider only links with IEEE EUI-64 identifier or
    * IEEE 48-bit MAC addresses */
@@ -944,7 +946,7 @@ uip_ds6_dad(uip_ds6_addr_t *addr)
  * address can not be used).
  */
 int
-uip_ds6_dad_failed(uip_ds6_addr_t * addr)
+uip_ds6_dad_failed(uip_ds6_addr_t *addr)
 {
   if(uip_is_addr_link_local(&addr->ipaddr)) {
     PRINTF("Contiki shutdown, DAD for link local address failed\n");

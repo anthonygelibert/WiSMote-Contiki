@@ -28,21 +28,14 @@
  *
  * This file is part of the Contiki operating system.
  *
- * Author: Joakim Eriksson, Nicolas Tsiftes
+ * \file
+ *   Private declarations for ContikiRPL.
+ * \author
+ *   Joakim Eriksson <joakime@sics.se>, Nicolas Tsiftes <nvt@sics.se>
  */
 
 #ifndef RPL_PRIVATE_H
 #define RPL_PRIVATE_H
-
-/*
- * ContikiRPL - an implementation of the routing protocol for low power and
- * lossy networks. See: draft-ietf-roll-rpl-17.
- *
- * --
- * The DIOs handle prefix information option for setting global IP addresses
- * on the nodes, but the current handling is not awaiting the join of the DAG
- * so it does not currently support multiple DAGs.
- */
 
 #include "net/rpl/rpl.h"
 
@@ -110,10 +103,10 @@
 /* Default values for RPL constants and variables. */
 
 /* The default value for the DAO timer. */
-#define DEFAULT_DAO_LATENCY             (CLOCK_SECOND * 8)
+#define RPL_DAO_LATENCY                 (CLOCK_SECOND * 4)
 
 /* Special value indicating immediate removal. */
-#define ZERO_LIFETIME                   0
+#define RPL_ZERO_LIFETIME               0
 
 /* Default route lifetime unit. */
 #define RPL_DEFAULT_LIFETIME_UNIT       0xffff
@@ -125,13 +118,14 @@
           ((unsigned long)(instance)->lifetime_unit * (lifetime))
 
 #ifndef RPL_CONF_MIN_HOPRANKINC
-#define DEFAULT_MIN_HOPRANKINC          256
+#define RPL_MIN_HOPRANKINC          256
 #else
-#define DEFAULT_MIN_HOPRANKINC          RPL_CONF_MIN_HOPRANKINC
+#define RPL_MIN_HOPRANKINC          RPL_CONF_MIN_HOPRANKINC
 #endif
-#define DEFAULT_MAX_RANKINC             (7 * DEFAULT_MIN_HOPRANKINC)
+#define RPL_MAX_RANKINC             (7 * RPL_MIN_HOPRANKINC)
 
-#define DAG_RANK(fixpt_rank, instance)	((fixpt_rank) / (instance)->min_hoprankinc)
+#define DAG_RANK(fixpt_rank, instance) \
+  ((fixpt_rank) / (instance)->min_hoprankinc)
 
 /* Rank of a virtual root node that coordinates DAG root nodes. */
 #define BASE_RANK                       0
@@ -148,23 +142,23 @@
    means 8 milliseconds, but that is an unreasonable value if
    using power-saving / duty-cycling    */
 #ifdef RPL_CONF_DIO_INTERVAL_MIN
-#define DEFAULT_DIO_INTERVAL_MIN        RPL_CONF_DIO_INTERVAL_MIN
+#define RPL_DIO_INTERVAL_MIN        RPL_CONF_DIO_INTERVAL_MIN
 #else
-#define DEFAULT_DIO_INTERVAL_MIN        12
+#define RPL_DIO_INTERVAL_MIN        12
 #endif
 
 /* Maximum amount of timer doublings. */
 #ifdef RPL_CONF_DIO_INTERVAL_DOUBLINGS
-#define DEFAULT_DIO_INTERVAL_DOUBLINGS  RPL_CONF_DIO_INTERVAL_DOUBLINGS
+#define RPL_DIO_INTERVAL_DOUBLINGS  RPL_CONF_DIO_INTERVAL_DOUBLINGS
 #else
-#define DEFAULT_DIO_INTERVAL_DOUBLINGS  8
+#define RPL_DIO_INTERVAL_DOUBLINGS  8
 #endif
 
 /* Default DIO redundancy. */
 #ifdef RPL_CONF_DIO_REDUNDANCY
-#define DEFAULT_DIO_REDUNDANCY          RPL_CONF_DIO_REDUNDANCY
+#define RPL_DIO_REDUNDANCY          RPL_CONF_DIO_REDUNDANCY
 #else
-#define DEFAULT_DIO_REDUNDANCY          10
+#define RPL_DIO_REDUNDANCY          10
 #endif
 
 /* Expire DAOs from neighbors that do not respond in this time. (seconds) */
@@ -206,6 +200,20 @@
 #define RPL_DIS_INTERVAL                60
 #endif
 #define RPL_DIS_START_DELAY             5
+/*---------------------------------------------------------------------------*/
+/* Lollipop counters */
+
+#define RPL_LOLLIPOP_MAX_VALUE           255
+#define RPL_LOLLIPOP_CIRCULAR_REGION     127
+#define RPL_LOLLIPOP_SEQUENCE_WINDOWS    16
+#define RPL_LOLLIPOP_INIT                (RPL_LOLLIPOP_MAX_VALUE - RPL_LOLLIPOP_SEQUENCE_WINDOWS + 1)
+#define RPL_LOLLIPOP_INCREMENT(counter)					\
+  ((counter) > RPL_LOLLIPOP_CIRCULAR_REGION ?				\
+   ++(counter) & RPL_LOLLIPOP_MAX_VALUE :				\
+   ++(counter) & RPL_LOLLIPOP_CIRCULAR_REGION)
+
+#define RPL_LOLLIPOP_IS_INIT(counter)		\
+  ((counter) > RPL_LOLLIPOP_CIRCULAR_REGION)
 /*---------------------------------------------------------------------------*/
 /* Logical representation of a DAG Information Object (DIO.) */
 struct rpl_dio {
@@ -272,9 +280,9 @@ void rpl_process_dio(uip_ipaddr_t *, rpl_dio_t *);
 int rpl_process_parent_event(rpl_instance_t *, rpl_parent_t *);
 
 /* DAG object management. */
-rpl_dag_t *rpl_alloc_dodag(uint8_t, uip_ipaddr_t *);
+rpl_dag_t *rpl_alloc_dag(uint8_t, uip_ipaddr_t *);
 rpl_instance_t *rpl_alloc_instance(uint8_t);
-void rpl_free_dodag(rpl_dag_t *);
+void rpl_free_dag(rpl_dag_t *);
 void rpl_free_instance(rpl_instance_t *);
 
 /* DAG parent management function. */
@@ -285,7 +293,7 @@ void rpl_nullify_parent(rpl_dag_t *, rpl_parent_t *);
 void rpl_remove_parent(rpl_dag_t *, rpl_parent_t *);
 void rpl_move_parent(rpl_dag_t *dag_src, rpl_dag_t *dag_dst, rpl_parent_t *parent);
 rpl_parent_t *rpl_select_parent(rpl_dag_t *dag);
-rpl_dag_t *rpl_select_dodag(rpl_instance_t *instance,rpl_parent_t *parent);
+rpl_dag_t *rpl_select_dag(rpl_instance_t *instance,rpl_parent_t *parent);
 void rpl_recalculate_ranks(void);
 
 /* RPL routing table functions. */
